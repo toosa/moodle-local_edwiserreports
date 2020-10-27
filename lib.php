@@ -75,19 +75,6 @@ function local_edwiserreports_output_fragment_userslist($args) {
     return $response;
 }
 
-/**
- * Get Learning Program stats fragment
- * @param [array] $args Array of arguments
- * @return [string] HTML table
- */
-function local_edwiserreports_output_fragment_lpstats($args) {
-    global $DB;
-    $lpid = clean_param($args["lpid"], PARAM_TEXT);
-    $cohortid = clean_param($args["cohortid"], PARAM_TEXT);
-
-    return json_encode(\local_edwiserreports\lpstats_block::get_lpstats_usersdata($lpid, $cohortid));
-}
-
 require_once("$CFG->libdir/formslib.php");
 
 /**
@@ -525,11 +512,7 @@ function local_edwiserreports_extend_navigation(navigation_node $nav) {
     $PAGE->requires->js_call_amd('local_edwiserreports/install', 'init');
 
     if ($hasblocks) {
-        if ($PAGE->theme->resolve_image_location('icon', 'local_edwiserreports', null)) {
-            $icon = new pix_icon('icon', '', 'local_edwiserreports', array('class' => 'icon pluginicon'));
-        } else {
-            $icon = new pix_icon('i/stats', '');
-        }
+        $icon = new pix_icon('i/stats', '');
 
         $node = $nav->add(
             get_string('reportsandanalytics', 'local_edwiserreports'),
@@ -541,17 +524,16 @@ function local_edwiserreports_extend_navigation(navigation_node $nav) {
         );
         $node->showinflatnavigation = true;
     }
-
     $iscompletionpage = strpos($PAGE->url, '/local/edwiserreports/completion.php');
     if ($PAGE->pagelayout !== 'course' && $PAGE->pagelayout !== 'incourse' && !$iscompletionpage) {
         return true;
     }
 
-    if ($PAGE->theme->resolve_image_location('icon', 'local_edwiserreports', null)) {
-        $icon = new pix_icon('icon', '', 'local_edwiserreports', array('class' => 'icon pluginicon'));
-    } else {
-        $icon = new pix_icon('i/report', '');
+    if (!has_capability('moodle/course:viewhiddencourses', context_course::instance($COURSE->id))) {
+        return;
     }
+
+    $icon = new pix_icon('i/report', '');
 
     $node = $nav->add(
         get_string('completionreports', 'local_edwiserreports'),
@@ -561,13 +543,7 @@ function local_edwiserreports_extend_navigation(navigation_node $nav) {
         'completionreports',
         $icon
     );
-    $node->showinflatnavigation = true;
-
-    if ($PAGE->theme->resolve_image_location('icon', 'local_edwiserreports', null)) {
-        $icon = new pix_icon('icon', '', 'local_edwiserreports', array('class' => 'icon pluginicon'));
-    } else {
-        $icon = new pix_icon('i/report', '');
-    }
+    $node->showinflatnavigation = true;  
 }
 
 /**

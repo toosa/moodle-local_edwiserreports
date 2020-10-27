@@ -56,7 +56,15 @@ function local_edwiserreports_get_block_exportlinks($url, $data) {
     $links->blockcertificates = local_edwiserreports_get_exportlinks($url, $region, "certificates");
     $links->blockf2fsessions = local_edwiserreports_get_exportlinks($url, $region, "f2fsession");
     $links->blocklpstats = local_edwiserreports_get_exportlinks($url, $region, "lpstats", $lpfilter);
-    $links->blockinactiveusers = local_edwiserreports_get_exportlinks($url, $region, "inactiveusers", "never", false, false, "mt-20");
+    $links->blockinactiveusers = local_edwiserreports_get_exportlinks(
+        $url,
+        $region,
+        "inactiveusers",
+        "never",
+        false,
+        false,
+        "mt-20"
+    );
     return $links;
 }
 
@@ -719,6 +727,7 @@ function local_edwiserreports_get_schedule_emaillist() {
                 $val->blockname,
                 $val->component
             ) . local_edwiserreports_create_manage_icons_for_emaillist(
+                $key,
                 $val->blockname,
                 $val->component,
                 $emailinfo->esremailenable

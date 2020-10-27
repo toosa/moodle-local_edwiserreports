@@ -58,15 +58,6 @@ class edwiserReportController extends controllerAbstract {
         echo json_encode(\local_edwiserreports\utility::get_course_progress_data($data));
     }
 
-    /**
-     * Get Face to Face session data
-     * @param [string] $data Data for external service
-     */
-    public function get_f2fsession_data_ajax_action() {
-        $data = json_decode(required_param('data', PARAM_RAW));
-        echo json_encode(\local_edwiserreports\utility::get_f2fsessiondata_data($data));
-    }
-
     public function get_certificates_data_ajax_action() {
         $data = json_decode(optional_param('data', false, PARAM_RAW));
         echo json_encode(\local_edwiserreports\utility::get_certificates_data($data));
@@ -85,19 +76,9 @@ class edwiserReportController extends controllerAbstract {
         echo json_encode(\local_edwiserreports\utility::get_todaysactivity_data($data));
     }
 
-    public function get_lpstats_data_ajax_action() {
-        $data = json_decode(required_param('data', PARAM_RAW));
-        echo json_encode(\local_edwiserreports\utility::get_lpstats_data($data));
-    }
-
     public function get_inactiveusers_data_ajax_action() {
         $data = json_decode(required_param('data', PARAM_RAW));
         echo json_encode(\local_edwiserreports\utility::get_inactiveusers_data($data));
-    }
-
-    public function get_userslist_ajax_action() {
-        $data = json_decode(required_param('data', PARAM_RAW));
-        echo json_encode(\local_edwiserreports\utility::get_userslist_data($data));
     }
 
     public function get_courseengage_data_ajax_action() {
@@ -147,13 +128,6 @@ class edwiserReportController extends controllerAbstract {
         echo json_encode(\local_edwiserreports\utility::get_customreport_selectors($filter));
     }
 
-    public function get_customreport_data_ajax_action() {
-        // Get data.
-        $data = json_decode(required_param('data', PARAM_RAW));
-
-        // Response for ajax action.
-        echo json_encode(\local_edwiserreports\utility::get_customreport_data($data));
-    }
     public function get_customqueryreport_data_ajax_action() {
         // Get data.
         $data = json_decode(required_param('data', PARAM_RAW));
