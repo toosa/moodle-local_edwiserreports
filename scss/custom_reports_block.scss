@@ -47,13 +47,9 @@
     }
     // Fixing header background glitch because of block configurable_rerport plugin.
     .dataTable {
-<<<<<<< HEAD
-        .sorting_asc, .sorting_desc, .sorting {
-=======
         .sorting_asc,
         .sorting_desc,
         .sorting {
->>>>>>> dev
             background-image: none !important;
         }
     }
