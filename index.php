@@ -73,6 +73,8 @@ $PAGE->set_url($pageurl);
 // Set Page layout.
 $PAGE->set_pagelayout('standard');
 
+$PAGE->add_body_classes(array('theme_' . $PAGE->theme->name));
+
 // Get renderable.
 $renderable = new \local_edwiserreports\output\elucidreport_renderable();
 $output = $PAGE->get_renderer($component)->render($renderable);

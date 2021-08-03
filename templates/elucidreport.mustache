@@ -32,9 +32,9 @@
     {{# blocks }}
         <div class="{{{extraclasses}}} mb-5 edwiserReport-block {{# hiddenblock }} block-hidden {{/ hiddenblock}}">
             <div id="{{id}}" data-sesskey="{{sesskey}}" data-blockname="{{name}}">
-                <div class="panel m-0">
-                    <div class="panel-header d-flex">
-                        <div class="panel-title px-0 col-10">
+                <div class="panel m-0 p-0">
+                    <div class="panel-header p-3 d-flex">
+                        <div class="panel-title p-0">
                             <strong class="mb-1">
                                 {{{name}}}
                                 <a href="javascript:void(0)" data-title="{{info}}" class="small" data-toggle="tooltip" data-trigger="hover" data-placement="bottom">
@@ -42,15 +42,15 @@
                                 </a>
                             </strong>
 
-                            <div class="block-filters">{{{ filters }}}</div>
                         </div>
                         {{# editopt }}
-                        <div class="col-2 p-0">
+                        <div class="ml-auto p-0">
                             {{> local_edwiserreports/blocksettingdropdown }}
                         </div>
                         {{/ editopt }}
                     </div>
-                    <div class="panel-body p-0">
+                    <div class="panel-body px-3 py-0">
+                        <div class="block-filters position-relative pb-1">{{{ filters }}}</div>
                         {{{ blockview }}}
                         <div class="loader w-full text-center">
                             {{# pix }} loader, local_edwiserreports{{/ pix }}
@@ -59,7 +59,7 @@
                             <table class="table customreportdata w-full"></table>
                         {{/iscustomblock}}
                     </div>
-                    <div class="panel-footer row m-0">
+                    <div class="panel-footer row m-0 p-3">
                         {{# morelink }}
                             <div class="">
                                 <a href="{{{.}}}" class="btn btn-primary btn-sm">{{#str}} more, local_edwiserreports {{/str}}</a>
@@ -101,7 +101,7 @@
                                     data: data.reportsdata,
                                     bInfo: false,
                                     lengthChange: false,
-                                    language: { 
+                                    language: {
                                         searchPlaceholder: "{{#str}}searchreports, local_edwiserreports{{/str}}",
                                         emptyTable: "{{#str}}noresult, local_edwiserreports{{/str}}"
                                     },

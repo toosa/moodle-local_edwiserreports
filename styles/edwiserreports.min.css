@@ -231,13 +231,6 @@ tr[aria-expanded="true"] .accordion-arrow.icon {
     min-width: 100%;
 }
 
-#wdm-edwiserreports .blocksetting {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 5px;
-}
-
 #wdm-edwiserreports a[id^="blocksetting-"] {
     font-size: 20px;
     text-decoration: none;
@@ -252,12 +245,8 @@ tr[aria-expanded="true"] .accordion-arrow.icon {
     margin: 0;
 }
 
-#wdm-edwiserreports .panel-title {
-    min-height: 60px;
-}
-
 #wdm-edwiserreports .panel-body {
-    min-height: 400px;
+    min-height: 200px;
 }
 
 #wdm-edwiserreports input.dropdown-item {
@@ -304,13 +293,9 @@ tr[aria-expanded="true"] .accordion-arrow.icon {
 #wdm-edwiserreports .edwiserReport-block > div {
     position: relative;
     height: 100%;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-#wdm-edwiserreports .edwiserReport-block > div:hover {
-    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25), 0 3px 4px rgba(0, 0, 0, 0.22);
+    background: white;
+    box-shadow: 0 0 0.875rem 0 rgba(41, 48, 66, 0.05);
+    border-radius: .25rem;
 }
 
 #wdm-edwiserreports .edwiserReport-block > div .panel {
@@ -1085,6 +1070,19 @@ table.dataTable td.dataTables_empty {
 
 #wdm-edwiserreports #siteaccessblock tr.siteaccess-tablerow {
     background-color: #e0e0e0;
+}
+
+#page-local-edwiserreports-index.theme_remui #page #region-main > .card {
+    background: transparent;
+    padding: 0;
+}
+
+#page-local-edwiserreports-index.theme_remui #page > .container {
+    max-width: none;
+}
+
+#page-local-edwiserreports-index.theme_remui #page #region-main {
+    padding: 0;
 }
 
 #wdm-edwiserreports #todaysactivityblock input.input-group-addon {
