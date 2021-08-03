@@ -22,55 +22,36 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_edwiserreports;
+namespace local_edwiserreports\task;
 
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . "/local/edwiserreports/classes/constants.php");
 
-use stdClass;
-use cache;
-
 /**
- * Class Site Access Inforamtion Block. To get the data related to site access.
+ * Scheduled Task to Update Report Plugin Table.
  */
-class siteaccessblock extends block_base {
+class site_access_data extends \core\task\scheduled_task {
+
     /**
      * Set response object for site access information
      * @var array
      */
-    public $siteaccess = array();
+    private $siteaccess = array();
 
     /**
-     * Preapre layout for each block
+     * Return the task's name as shown in admin screens.
+     *
+     * @return string
      */
-    public function get_layout() {
-
-        // Layout related data.
-        $this->layout->id = 'siteaccessblock';
-        $this->layout->name = get_string('accessinfo', 'local_edwiserreports');
-        $this->layout->info = get_string('accessinfoblockhelp', 'local_edwiserreports');
-
-        // Block related data.
-        $this->block = new stdClass();
-        $this->block->displaytype = 'line-chart';
-
-        // Add block view in layout.
-        $this->layout->blockview = $this->render_block('siteaccessblock', $this->block);
-        // Set block edit capabilities.
-        $this->set_block_edit_capabilities($this->layout->id);
-
-        // Return blocks layout.
-        return $this->layout;
+    public function get_name() {
+        return get_string('siteaccessheader', 'local_edwiserreports');
     }
 
     /**
      * Constructoe
      */
     public function __construct() {
-        // Call parent constructor.
-        parent::__construct();
-
         // Initialize the site access information response.
         $value = array(
             "opacity" => 0,
@@ -119,40 +100,75 @@ class siteaccessblock extends block_base {
     }
 
     /**
-     * Get Site access inforamtion data
-     * @param  object $params Parameters
-     * @return object         Site access information
+     * Execute the task.
      */
-    public function get_data($params = false) {
-        $response = new stdClass();
+    public function execute() {
+        global $DB;
+        // SQL to gey access info log.
+        $sql = "SELECT id, action, timecreated
+            FROM {logstore_standard_log}
+            WHERE action = :action
+            AND timecreated > :timecreated";
 
-        $cache = cache::make('local_edwiserreports', 'siteaccess');
+        // Getting access log.
+        $params = array (
+            "action" => "viewed",
+            "timecreated" => time() - LOCAL_SITEREPORT_ONEYEAR
+        );
+        $accesslog = $DB->get_records_sql($sql, $params);
 
-        if (!$data = $cache->get('siteaccessinfodata')) {
-            $data = $this->get_siteaccess_info();
-            $cache->set('siteaccessinfodata', $data);
-        }
-
-        $response->data = $data;
-        return $response;
+        // Getting site access information object.
+        $siteaccess = $this->get_accessinfo(array_values($accesslog));
+        set_config('siteaccessinformation', json_encode($siteaccess), 'local_edwiserreports');
+        return true;
     }
 
     /**
-     * Get site access information
-     * @return [object] Site access inforamtion
+     * Get Access information
+     * @param  array $accesslog Array of access log
+     * @return object Site Access Information
      */
-    public function get_siteaccess_info() {
-        global $DB;
+    public function get_accessinfo($accesslog) {
 
-        // Getting site access information object.
-        $response = new stdClass();
-        $response->siteaccess = [];
+        // Getting number of weeks to get access log.
+        $timeduration = end($accesslog)->timecreated - $accesslog[0]->timecreated;
+        $weeks = ceil($timeduration / LOCAL_SITEREPORT_ONEWEEK); // Weeks in time duaration.
+        $weekmax = 0;
+        // If weeks are there then.
+        if ($weeks) {
+            // Parse access log to save in access inforamtion object.
+            foreach ($accesslog as $log) {
+                // Column for weeks.
+                $col = number_format(date("w", $log->timecreated));
 
-        $accesslog = get_config('local_edwiserreports', 'siteaccessinformation');
-        if ($accesslog && $accesslog = json_decode($accesslog, true)) {
-            $response->siteaccess = $accesslog;
+                // Row for hours.
+                $row = number_format(date("H", $log->timecreated));
+
+                // Calculate site access for row and colums.
+                $this->siteaccess[$row]["access"][$col]["value"] += (1 / ($weeks * 10));
+            }
+
+            // Checking maximum value in a week.
+            // Written separate loop to save time and resource.
+            foreach ($this->siteaccess as $row => $value) {
+                foreach ($value["access"] as $col => $val) {
+                    // Maximum value in week.
+                    if ($weekmax < $this->siteaccess[$row]["access"][$col]["value"]) {
+                        $weekmax = $this->siteaccess[$row]["access"][$col]["value"];
+                    }
+                }
+            }
+
+            // Get Opacity value for siteaccess inforamtion.
+            if ($weekmax) {
+                foreach ($this->siteaccess as $row => $value) {
+                    foreach ($value["access"] as $col => $val) {
+                        $this->siteaccess[$row]["access"][$col]["opacity"] = $val["value"] / $weekmax;
+                        $this->siteaccess[$row]["access"][$col]["value"] = (string)number_format($val['value'], 2);
+                    }
+                }
+            }
         }
-
-        return $response;
+        return $this->siteaccess;
     }
 }
