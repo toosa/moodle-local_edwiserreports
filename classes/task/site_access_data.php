@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->dirroot . "/local/edwiserreports/classes/constants.php");
 
+use local_edwiserreports\controller\progress;
+
 /**
  * Scheduled Task to Update Report Plugin Table.
  */
@@ -38,6 +40,13 @@ class site_access_data extends \core\task\scheduled_task {
      * @var array
      */
     private $siteaccess = array();
+
+
+    /**
+     * Object to show progress of task
+     * @var \local_edwiserreports\task\progress
+     */
+    private $progress;
 
     /**
      * Return the task's name as shown in admin screens.
@@ -52,6 +61,8 @@ class site_access_data extends \core\task\scheduled_task {
      * Constructoe
      */
     public function __construct() {
+
+        $this->progress = new progress('siteaccessdata');
         // Initialize the site access information response.
         $value = array(
             "opacity" => 0,
@@ -104,6 +115,7 @@ class site_access_data extends \core\task\scheduled_task {
      */
     public function execute() {
         global $DB;
+
         // SQL to gey access info log.
         $sql = "SELECT id, action, timecreated
             FROM {logstore_standard_log}
@@ -115,10 +127,17 @@ class site_access_data extends \core\task\scheduled_task {
             "action" => "viewed",
             "timecreated" => time() - LOCAL_SITEREPORT_ONEYEAR
         );
+
+        if (defined('EDWISER_REPORTS_WEB_SCRIPT')) {
+            // Increase memory limit.
+            raise_memory_limit(MEMORY_UNLIMITED);
+        }
+        $this->progress->start_progress();
         $accesslog = $DB->get_records_sql($sql, $params);
 
         // Getting site access information object.
         $siteaccess = $this->get_accessinfo(array_values($accesslog));
+        $this->progress->end_progress();
         set_config('siteaccessinformation', json_encode($siteaccess), 'local_edwiserreports');
         return true;
     }
@@ -136,6 +155,9 @@ class site_access_data extends \core\task\scheduled_task {
         $weekmax = 0;
         // If weeks are there then.
         if ($weeks) {
+            $progress = 0;
+            $updater = 0;
+            $increament = 100 / count($accesslog);
             // Parse access log to save in access inforamtion object.
             foreach ($accesslog as $log) {
                 // Column for weeks.
@@ -146,6 +168,12 @@ class site_access_data extends \core\task\scheduled_task {
 
                 // Calculate site access for row and colums.
                 $this->siteaccess[$row]["access"][$col]["value"] += (1 / ($weeks * 10));
+
+                $progress += $increament;
+                if (++$updater >= 500) {
+                    $updater = 0;
+                    $this->progress->update_progress($progress);
+                }
             }
 
             // Checking maximum value in a week.
