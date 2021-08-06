@@ -134,6 +134,10 @@ $string['nocourses'] = "No Courses Found";
 /* Block Learning Program */
 $string['nolearningprograms'] = "No Learning Programs Found";
 
+/* Block Site access information */
+$string['siteaccessinformationtask'] = 'Calculate site access information';
+$string['siteaccessinformationcronwarning'] = '<strong>Calculate site access information</strong> task has not in last 24 hours. Please <a target="_blank" href="{$a}">run now</a> to see accurate result.';
+
 /* Block Inactive Users */
 $string['siteaccess'] = "Site Access:";
 $string['before1month'] = "Before 1 Month";

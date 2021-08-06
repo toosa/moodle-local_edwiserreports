@@ -54,7 +54,7 @@ class site_access_data extends \core\task\scheduled_task {
      * @return string
      */
     public function get_name() {
-        return get_string('siteaccessheader', 'local_edwiserreports');
+        return get_string('siteaccessinformationtask', 'local_edwiserreports');
     }
 
     /**

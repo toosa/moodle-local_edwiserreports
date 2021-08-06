@@ -86,7 +86,7 @@ class report_blocks {
             // Get block preferences.
             $pref = \local_edwiserreports\utility::get_reportsblock_preferences($block);
 
-            if ($pref["hidden"] && !$USER->editing) {
+            if (isset($pref["hidden"]) && $pref["hidden"] && (isset($USER->editing) && !$USER->editing)) {
                 continue;
             } else if ($pref["hidden"]) {
                 $layout->hiddenblock = true;

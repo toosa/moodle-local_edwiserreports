@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . "/local/edwiserreports/classes/constants.php");
 
 use stdClass;
+use moodle_url;
 use cache;
 
 /**
@@ -45,7 +46,6 @@ class siteaccessblock extends block_base {
      * Preapre layout for each block
      */
     public function get_layout() {
-
         // Layout related data.
         $this->layout->id = 'siteaccessblock';
         $this->layout->name = get_string('accessinfo', 'local_edwiserreports');
@@ -124,6 +124,7 @@ class siteaccessblock extends block_base {
      * @return object         Site access information
      */
     public function get_data($params = false) {
+        global $DB;
         $response = new stdClass();
 
         $cache = cache::make('local_edwiserreports', 'siteaccess');
@@ -134,6 +135,23 @@ class siteaccessblock extends block_base {
         }
 
         $response->data = $data;
+
+        $lastrun = $DB->get_field('task_scheduled', 'lastruntime', array(
+            'component' => 'local_edwiserreports',
+            'classname' => '\local_edwiserreports\task\site_access_data'
+        ));
+
+        if (is_siteadmin() && ($lastrun == false || $lastrun < time() - LOCAL_SITEREPORT_ONEDAY)) {
+            $url = new moodle_url(
+                '/admin/tool/task/schedule_task.php',
+                array('task' => 'local_edwiserreports\task\site_access_data')
+            );
+            $response->data->cronwarning = get_string(
+                'siteaccessinformationcronwarning',
+                'local_edwiserreports',
+                $url->out()
+            );
+        }
         return $response;
     }
 
