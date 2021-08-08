@@ -63,5 +63,19 @@
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
         </TABLE>
+        <!-- Authentication table -->
+        <TABLE
+            COMMENT="Keeps secret keys for user authentication"
+            NAME="edwreports_authentication">
+            <FIELDS>
+                <FIELD COMMENT="Id" NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD COMMENT="User id" NAME="user" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD COMMENT="Secret key" NAME="secret" TYPE="text" LENGTH="10" NOTNULL="true"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="unique" TYPE="unique" FIELDS="user"/>
+            </KEYS>
+        </TABLE>
     </TABLES>
 </XMLDB>

@@ -91,5 +91,21 @@ function xmldb_local_edwiserreports_upgrade($oldversion) {
         $dbman->change_field_type($table, $field);
     }
 
+    // Authentication table.
+    $table = new xmldb_table('edwreports_authentication');
+    if (!$dbman->table_exists($table)) {
+        // Table fields.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, 10, null, true, true);
+        $table->add_field('user', XMLDB_TYPE_INTEGER, 10, null, true);
+        $table->add_field('secret', XMLDB_TYPE_TEXT, 10, null, true);
+
+        // Table keys.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('unique', XMLDB_KEY_UNIQUE, array('user'));
+
+        // Create the table.
+        $dbman->create_table($table);
+    }
+
     return true;
 }
