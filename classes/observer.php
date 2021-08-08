@@ -40,4 +40,7 @@ class event_observer {
 
     // Use course observer.
     use course_observer;
+
+    // Authentication observer.
+    use authentication;
 }

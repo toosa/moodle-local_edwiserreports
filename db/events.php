@@ -83,5 +83,19 @@ $observers = array(
         'eventname' => '\core\event\course_module_completion_updated',
         'callback' => $observerclassname . '::course_module_completion_updated',
         'includefile' => $observerfile
+    ),
+
+    // User login observer.
+    array(
+        'eventname' => 'core\event\user_loggedin',
+        'callback' => $observerclassname . '::user_loggedin',
+        'includefile' => $observerfile
+    ),
+
+    // User logout observer.
+    array(
+        'eventname' => 'core\event\user_loggedout',
+        'callback' => $observerclassname . '::user_loggedout',
+        'includefile' => $observerfile
     )
 );
