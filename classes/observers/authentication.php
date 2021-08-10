@@ -27,8 +27,6 @@
  */
 namespace local_edwiserreports\observers;
 
-use stdClass;
-
 defined('MOODLE_INTERNAL') || die();
 
 // Require files.
@@ -38,6 +36,8 @@ require_once($CFG->dirroot . '/local/edwiserreports/classes/constants.php');
 trait authentication {
     /**
      * User logged in event
+     * Delete previous secret key(If any).
+     * Then create new secret key.
      * @param \core\event\user_loggedin $event Event Data
      */
     public static function user_loggedin(\core\event\user_loggedin $event) {
@@ -45,18 +45,20 @@ trait authentication {
 
         $userid = $event->get_data()['userid'];
 
-        $DB->delete_records('edwreports_authentication', array('user' => $userid));
-
-        $auth = new stdClass;
-        $auth->user = $userid;
-        $auth->key = random_string(10);
-        $DB->insert_record('edwreports_authentication', $auth);
+        $authentication = new \local_edwiserreports\controller\authentication();
+        $authentication->create_secret_key($userid);
     }
 
     /**
-     * User logged in event
+     * User logged in event.
+     * Delete user's secret key.
      * @param \core\event\user_loggedout $event Event Data
      */
     public static function user_loggedout(\core\event\user_loggedout $event) {
+        global $DB;
+
+        $userid = $event->get_data()['userid'];
+        $authentication = new \local_edwiserreports\controller\authentication();
+        $authentication->delete_secret_key($userid);
     }
 }

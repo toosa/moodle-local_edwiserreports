@@ -32,6 +32,7 @@ use renderer_base;
 use stdClass;
 use templatable;
 use context_system;
+use local_edwiserreports\controller\authentication;
 
 require_once($CFG->dirroot."/local/edwiserreports/lib.php");
 require_once($CFG->dirroot."/local/edwiserreports/classes/report_blocks.php");
@@ -53,6 +54,9 @@ class elucidreport_renderable implements renderable, templatable {
 
         $output = null;
         $export = new stdClass();
+        $authentication = new authentication();
+
+        $export->secret = $authentication->get_secret_key($USER->id);
         $context = context_system::instance();
 
         // Prepare reports blocks.
