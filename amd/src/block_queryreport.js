@@ -113,7 +113,7 @@ define([
                     dataType: cfg.requestDataType,
                     data: {
                         action: 'get_customqueryreport_data_ajax',
-                        sesskey: M.cfg.sesskey,
+                        secret: M.local_edwiserreports.secret,
                         data: JSON.stringify({
                             lpids: values
                         })

@@ -20,6 +20,12 @@
  * @copyright   2019 wisdmlabs <support@wisdmlabs.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+if (isset($_GET['secret']) || isset($_POST['secret'])) {
+    define('NO_MOODLE_COOKIES', true);
+    define('ALLOW_GET_PARAMETERS', true);
+}
+
+ob_start();
 require('../../config.php');
 
 use local_edwiserreports\controller\edwiserReportKernel;
@@ -31,27 +37,22 @@ if (!isset($action) || empty($action)) {
     return;
 }
 
-// Only make ajax true if action has ajax in name.
-$actionpattern = '/_ajax$/i';
-
-// Include Moodle config.
-require_once(__DIR__.'/../../config.php');
-
-require_sesskey();
-
 $systemcontext = context_system::instance();
 
 $contextid = optional_param('contextid', $systemcontext->id, PARAM_INT);
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 
-$nologinactions = ['get_loginstatus', 'read_page', 'get_courses_ajax']; // Actions which do not require login checks.
-if (!in_array($action, $nologinactions)) {
-    $courseactions = ['get_media', 'get_page'];
-    if (in_array($action, $courseactions)) {
-        require_login($course, false, $cm, false, true);
-    } else {
-        require_login();
+$secret = optional_param('secret', null, PARAM_TEXT);
+if ($secret == null) {
+    $nologinactions = ['get_loginstatus', 'read_page', 'get_courses_ajax']; // Actions which do not require login checks.
+    if (!in_array($action, $nologinactions)) {
+        $courseactions = ['get_media', 'get_page'];
+        if (in_array($action, $courseactions)) {
+            require_login($course, false, $cm, false, true);
+        } else {
+            require_login();
+        }
     }
 }
 

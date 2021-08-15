@@ -166,7 +166,7 @@ define([
                 url: defaultConfig.requestUrl,
                 data: {
                     action: 'get_activeusers_graph_data_ajax',
-                    sesskey: $(panel).data("sesskey"),
+                    secret: M.local_edwiserreports.secret,
                     data: JSON.stringify({
                         filter: filter
                     })

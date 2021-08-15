@@ -52,7 +52,7 @@ define([
                 dataType: cfg.requestDataType,
                 data: {
                     action: 'get_certificates_data_ajax',
-                    sesskey: $(panel).data("sesskey")
+                    secret: M.local_edwiserreports.secret
                 },
             }).done(function(response) {
                 templates.render('local_edwiserreports/certificatestable', response.data)

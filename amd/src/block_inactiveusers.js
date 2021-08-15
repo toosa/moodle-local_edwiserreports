@@ -103,7 +103,7 @@ define([
                 dataType: 'json',
                 data: {
                     action: 'get_inactiveusers_data_ajax',
-                    sesskey: $(panel).data("sesskey"),
+                    secret: M.local_edwiserreports.secret,
                     data: JSON.stringify({
                         filter: filter
                     })

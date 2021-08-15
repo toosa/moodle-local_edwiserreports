@@ -59,7 +59,7 @@ define([
                 dataType: cfg.requestDataType,
                 data: {
                     action: 'get_liveusers_data_ajax',
-                    sesskey: $(panel).data("sesskey")
+                    secret: M.local_edwiserreports.secret
                 },
             }).done(function(response) {
                 createRealtimeUsersBlock(response.data);

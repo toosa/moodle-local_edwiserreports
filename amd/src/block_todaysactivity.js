@@ -75,9 +75,6 @@ define([
             // Show loader.
             common.loader.show('#todaysactivityblock');
 
-            // Get session key
-            var sesskey = $(panel).data("sesskey");
-
             // Send Ajax call to get todays activity information
             $.ajax({
                 url: cfg.requestUrl,
@@ -85,7 +82,7 @@ define([
                 dataType: cfg.requestDataType,
                 data: {
                     action: 'get_todaysactivity_data_ajax',
-                    sesskey: sesskey,
+                    secret: M.local_edwiserreports.secret,
                     data: JSON.stringify({
                         date: date
                     })

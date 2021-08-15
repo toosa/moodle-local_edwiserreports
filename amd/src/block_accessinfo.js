@@ -55,7 +55,7 @@ define([
                     dataType: cfg.requestDataType,
                     data: {
                         action: 'get_siteaccess_data_ajax',
-                        sesskey: $(panel).data("sesskey")
+                        secret: M.local_edwiserreports.secret
                     },
                 })
                 .done(function(response) {

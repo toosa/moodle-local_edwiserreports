@@ -176,7 +176,7 @@ define([
         });
 
         // Prepare url to get selector related data
-        var url = v.requestUrl + '?action=get_customreport_selectors_ajax&sesskey=' + M.cfg.sesskey + '&filter=' + filter;
+        var url = v.requestUrl + '?action=get_customreport_selectors_ajax&secret=' + M.local_edwiserreports.secret + '&filter=' + filter;
 
         // Show custom report selectors
         rootContainer.show();

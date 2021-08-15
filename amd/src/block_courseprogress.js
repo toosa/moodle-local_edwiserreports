@@ -87,7 +87,7 @@ define([
                 dataType: cfg.requestDataType,
                 data: {
                     action: 'get_courseprogress_graph_data_ajax',
-                    sesskey: $(panel).data("sesskey"),
+                    secret: M.local_edwiserreports.secret,
                     data: JSON.stringify({
                         courseid: courseId
                     })
