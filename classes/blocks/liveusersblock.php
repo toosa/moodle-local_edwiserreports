@@ -67,6 +67,53 @@ class liveusersblock extends block_base {
     }
 
     /**
+     * Get the listing of online users
+     *
+     * @param int $now Time now
+     * @param int $timetoshowusers Number of seconds to show online users
+     * @return array
+     */
+    protected static function get_users($now, $timetoshowusers) {
+        global $USER, $DB, $CFG;
+
+        $timefrom = 100 * floor(($now - $timetoshowusers) / 100); // Round to nearest 100 seconds for better query cache.
+
+        $groupmembers = "";
+        $groupselect  = "";
+        $groupby       = "";
+        $lastaccess    = ", lastaccess, lastlogin";
+        $uservisibility = "";
+        $uservisibilityselect = "";
+        if ($CFG->block_online_users_onlinestatushiding) {
+            $uservisibility = ", up.value AS uservisibility";
+            $uservisibilityselect = "AND (" . $DB->sql_cast_char2int('up.value') . " = 1
+                                    OR up.value IS NULL
+                                    OR u.id = :userid)";
+        }
+        $params = array();
+
+        $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
+        $userfields = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
+
+        $params['now'] = $now;
+        $params['timefrom'] = $timefrom;
+        $params['userid'] = $USER->id;
+        $params['name'] = 'block_online_users_uservisibility';
+
+        $sql = "SELECT $userfields $lastaccess $uservisibility
+                    FROM {user} u $groupmembers
+                LEFT JOIN {user_preferences} up ON up.userid = u.id
+                        AND up.name = :name
+                    WHERE u.lastaccess > :timefrom
+                        AND u.lastaccess <= :now
+                        AND u.deleted = 0
+                        $uservisibilityselect
+                        $groupselect $groupby
+                ORDER BY lastaccess DESC ";
+        return $DB->get_records_sql($sql, $params);
+    }
+
+    /**
      * Get online users data
      * @return array Array of online users
      */
@@ -74,32 +121,20 @@ class liveusersblock extends block_base {
         global $DB;
 
         $timenow = time();
-        $context = context_system::instance();
         $activeusertimeout = 60;
         $inactiveusertimeout = 30 * 60;
 
-        $activefetcher = new fetcher(null, $timenow, $activeusertimeout, $context);
-        $inactivefetcher = new fetcher(null, $timenow, $inactiveusertimeout, $context);
-
-        $activeusers = $activefetcher->get_users(0);
-        $inactiveusers = $inactivefetcher->get_users(0);
+        $activeusers = self::get_users($timenow, $activeusertimeout);
+        $inactiveusers = self::get_users($timenow, $inactiveusertimeout);
 
         $users = array();
         foreach ($inactiveusers as $inactiveuser) {
             $user = array();
             $user["name"] = fullname($inactiveuser);
 
-            $lastlogin = array_values(
-                $DB->get_records("logstore_standard_log", array(
-                    "target" => "user",
-                    "action" => "loggedin",
-                    "userid" => $inactiveuser->id
-                ), "timecreated DESC", "timecreated", 0, 1)
-            );
-
-            if (isset($lastlogin[0]->timecreated) && $lastlogin[0]->timecreated) {
-                $user["lastlogin"] = '<div class="d-none">'.$lastlogin[0]->timecreated.'</div>';
-                $user["lastlogin"] .= format_time($timenow - $lastlogin[0]->timecreated);
+            if ($inactiveuser->lastlogin != 0) {
+                $user["lastlogin"] = '<div class="d-none">' . $inactiveuser->lastlogin . '</div>';
+                $user["lastlogin"] .= format_time($timenow - $inactiveuser->lastlogin);
             } else {
                 $user["lastlogin"] = get_string('never');
             }
