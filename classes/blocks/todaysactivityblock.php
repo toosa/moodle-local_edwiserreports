@@ -160,26 +160,28 @@ class todaysactivityblock extends block_base {
     public function get_visits_in_hours($starttime, $endtime) {
         global $DB;
 
-        $starttimehour = $starttime;
-        $endtimehour = $starttime + 60 * 60;
+        // Prepare default array.
+        $visitshour = array_fill(0, 24, []);
 
-        $visitsssql = "SELECT DISTINCT userid
+        $visitsssql = "SELECT id, userid, timecreated
             FROM {logstore_standard_log}
             WHERE timecreated >= :starttime
-            AND timecreated < :endtime";
-        $params = array(
-            'starttime' => $starttimehour,
-            'endtime' => $endtimehour
-        );
+            AND timecreated < :endtime
+            ORDER BY timecreated ASC";
 
-        $visitshour = array();
-        do {
-            $visitshour[] = count($DB->get_records_sql($visitsssql, $params));
-            $starttimehour = $endtimehour;
-            $endtimehour = $endtimehour + 60 * 60;
-            $params['starttime'] = $starttimehour;
-            $params['endtime'] = $endtimehour;
-        } while ($starttimehour < $endtime);
+        $visits = $DB->get_records_sql($visitsssql, array(
+            'starttime' => $starttime,
+            'endtime' => $endtime
+        ));
+
+        foreach ($visits as $visit) {
+            $hour = date('G', $visit->timecreated);
+            $visitshour[$hour][$visit->userid] = true;
+        }
+
+        foreach ($visitshour as $key => $value) {
+            $visitshour[$key] = count($value);
+        }
 
         return $visitshour;
     }
