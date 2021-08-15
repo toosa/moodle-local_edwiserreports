@@ -67,6 +67,7 @@ class progress {
     public function end_progress() {
         if (!defined('EDWISER_REPORTS_WEB_SCRIPT')) {
             echo "\rCompleted - 100%";
+            return;
         }
         $this->update_progress_web(100);
     }

@@ -66,14 +66,15 @@ class activecoursesblock extends block_base {
      * @return object         Response for Active Courses
      */
     public function get_data($params = false) {
-        $id = isset($params->id) ? $params->id : false;
-        $cohortid = isset($params->cohortid) ? $params->cohortid : false;
 
         $response = new stdClass();
 
         $cache = cache::make('local_edwiserreports', 'activecourses');
         if (!$data = $cache->get('activecoursesdata')) {
-            $data = self::get_course_data();
+            $data = get_config('local_edwiserreports', 'activecoursesdata');
+            if (!$data || !$data = json_decode($data, true)) {
+                $data = $this->get_course_data();
+            }
             $cache->set('activecoursesdata', $data);
         }
 
