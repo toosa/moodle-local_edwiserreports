@@ -45,7 +45,7 @@ class todaysactivityblock extends block_base {
         $this->layout->info = get_string('todaysactivityblockhelp', 'local_edwiserreports');
         $this->layout->filters = '<div class="flatpickr-wrapper">';
         $this->layout->filters .= '<input class="btn btn-sm dropdown-toggle input-group-addon"';
-        $this->layout->filters .= 'id="flatpickrCalender" placeholder="' .
+        $this->layout->filters .= 'id="flatpickrCalender-todaysactivity" placeholder="' .
         get_string('selectdate', 'local_edwiserreports') .
         '" data-input/></div>';
 

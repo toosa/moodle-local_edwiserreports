@@ -159,6 +159,9 @@ $string['jsondecodefailed'] = 'Json decode failed';
 $string['emaildataisnotasarray'] = 'Email data is not an array';
 $string['sceduledemailnotexist'] = 'Schedule email not exist';
 
+/* Active courses block */
+$string['activecoursestask'] = 'Calculate site access information';
+
 /* Course Progress Page */
 $string['coursename'] = "Course Name";
 $string['enrolled'] = "Enrolled";

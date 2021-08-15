@@ -35,7 +35,7 @@ define([
         var todaysVisits;
         var panel = cfg.getPanel("#todaysactivityblock");
         var panelBody = cfg.getPanel("#todaysactivityblock", "body");
-        var flatpickrCalender = panel + " #flatpickrCalender";
+        var flatpickrCalender = panel + " #flatpickrCalender-todaysactivity";
 
         /**
          * On document ready do the bellow stuff

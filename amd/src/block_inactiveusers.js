@@ -48,8 +48,8 @@ define([
         var table = panelBody + " #inactiveuserstable";
         var tableWrapper = panelBody + " #inactiveuserstable_wrapper";
         var loader = panelBody + " .loader";
-        var dropdown = panelTitle + " .dropdown-menu .dropdown-item";
-        var dropdownToggle = panelTitle + " button.dropdown-toggle";
+        var dropdown = panelBody + " .dropdown-menu .dropdown-item";
+        var dropdownToggle = panelBody + " button.dropdown-toggle";
         var inActiveUsersTable = null;
         var exportUrlLink = panel + " .dropdown-menu[aria-labelledby='export-dropdown'] .dropdown-item";
 
@@ -97,8 +97,8 @@ define([
 
             $.ajax({
                 url: cfg.requestUrl,
-                type: 'GET',
-                dataType: 'json',
+                type: cfg.requestType,
+                dataType: cfg.requestDataType,
                 data: {
                     action: 'get_inactiveusers_data_ajax',
                     secret: M.local_edwiserreports.secret,

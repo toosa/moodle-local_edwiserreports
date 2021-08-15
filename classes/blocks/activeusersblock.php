@@ -182,9 +182,9 @@ class activeusersblock extends block_base {
         );
 
         // Prepare dropdown items for active users filter.
-        foreach ($filteropt as $key => $value) {
+        foreach ($filteropt as $value) {
             $filterhtml .= html_writer::link('javascript:void(0)', $value['name'], array(
-                'class' => 'dropdown-item',
+                'class' => 'dropdown-item ' . $value['classes'],
                 'role' => 'menuitem',
                 'value' => $value['value']
             ));
