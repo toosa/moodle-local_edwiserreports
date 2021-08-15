@@ -109,9 +109,13 @@ define([
                     })
                 },
             })
-                .done(function(response) {
-                    createInactiveUsersTable(response.data);
-                })
+            .done(function(response) {
+                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                    invalidUser('inactiveusersblock', response);
+                    return;
+                }
+                createInactiveUsersTable(response.data);
+            })
                 .fail(function(error) {
                     console.log(error);
                 }).always(function() {

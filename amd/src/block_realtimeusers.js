@@ -62,17 +62,20 @@ define([
                     secret: M.local_edwiserreports.secret
                 },
             }).done(function(response) {
+                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                    invalidUser('liveusersblock', response);
+                    return;
+                }
+                setTimeout(function() {
+                    init(invalidUser);
+                }, 2 * 60 * 1000);
                 createRealtimeUsersBlock(response.data);
             })
             .fail(function(error) {
                 console.log(error);
             }).always(function() {
-                listner("realTimeUsers");
-                setTimeout(getOnlineUsersData, 2 * 60 * 1000);
-
                 // Hide loader.
                 common.loader.hide("#liveusersblock");
-
             });
         } else {
             listner("realTimeUsers");

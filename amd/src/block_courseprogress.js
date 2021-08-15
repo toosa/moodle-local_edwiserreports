@@ -93,9 +93,13 @@ define([
                     })
                 },
             })
-                .done(function(response) {
-                    cpBlockData.graph.data = response.data;
-                })
+            .done(function(response) {
+                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                    invalidUser('courseprogressblock', response);
+                    return;
+                }
+                cpBlockData.graph.data = response.data;
+            })
                 .fail(function(error) {
                     console.log(error);
                 })

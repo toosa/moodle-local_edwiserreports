@@ -172,9 +172,12 @@ define([
                     })
                 },
             }).done(function(response) {
-                response = JSON.parse(response);
-                cfg.graph.data = response.data;
-                cfg.graph.labels = response.labels;
+                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                    invalidUser('activeusersblock', response);
+                    return;
+                }
+                activeUsersData.graph.data = response.data;
+                activeUsersData.graph.labels = response.labels;
             }).fail(function(error) {
                 console.log(error);
             }).always(function() {

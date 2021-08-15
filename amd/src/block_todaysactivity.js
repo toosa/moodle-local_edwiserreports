@@ -87,20 +87,24 @@ define([
                         date: date
                     })
                 }
-            })
-                .done(function(response) {
-                    /**
-                     * After getting todays activity information
-                     * update the value in todays activity block
-                     */
-                    $.each(response.data, function(indx, el) {
-                        var section = $(panelBody + " #todays-" + indx);
-                        section.find(".data").html(el);
-                    });
+            }).done(function(response) {
+                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                    invalidUser('todaysactivityblock', response);
+                    return;
+                }
+                /**
+                 * After getting todays activity information
+                 * update the value in todays activity block
+                 */
+                $.each(response.data, function(indx, el) {
+                    var section = $(panelBody + " #todays-" + indx);
+                    section.find(".data").html(el);
+                });
 
-                    /* Generate Todays Activity Graph */
-                    generateTodaysVisitsGraph(response.data.visitshour);
-                })
+                /* Generate Todays Activity Graph */
+                generateTodaysVisitsGraph(response.data.visitshour);
+            })
+
                 .fail(function(error) {
                     console.log(error);
                 }).always(function() {

@@ -55,6 +55,9 @@ define([
                     secret: M.local_edwiserreports.secret
                 },
             }).done(function(response) {
+                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                    invalidUser('certificatestatsblock', response);
+                }
                 templates.render('local_edwiserreports/certificatestable', response.data)
                     .then(function(html, js) {
                         $(panelBody).empty();

@@ -54,6 +54,29 @@ if ($secret == null) {
             require_login();
         }
     }
+} else {
+    $authentication = new local_edwiserreports\controller\authentication();
+    $user = $authentication->get_user($secret);
+    if ($user === null) {
+        ob_clean();
+        try {
+            throw new moodle_exception('invalidsecretkey', 'local_edwiserreports');
+        } catch (Throwable $e) {
+            $exception = get_exception_info($e);
+            unset($exception->a);
+            $exception->backtrace = format_backtrace($exception->backtrace, true);
+            if (!debugging('', DEBUG_DEVELOPER)) {
+                unset($exception->debuginfo);
+                unset($exception->backtrace);
+            }
+            echo json_encode([
+                'error' => true,
+                'exception' => $exception
+            ]);
+            die;
+            // Do not process the remaining requests.
+        }
+    }
 }
 
 $PAGE->set_context($context);

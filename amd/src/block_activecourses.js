@@ -53,6 +53,10 @@ define([
                     secret: M.local_edwiserreports.secret
                 },
             }).done(function(response) {
+                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                    invalidUser('activecoursesblock', response);
+                    return;
+                }
                 /* Create active course table */
                 createActiveCourseTable(response.data);
             })

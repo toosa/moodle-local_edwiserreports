@@ -59,6 +59,10 @@ define([
                     },
                 })
                 .done(function(response) {
+                    if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                        invalidUser('siteaccessblock', response);
+                        return;
+                    }
                     // eslint-disable-next-line promise/catch-or-return
                     templates.render(cfg.getTemplate("siteaccessblock"), response.data)
                     .then(function(html, js) {

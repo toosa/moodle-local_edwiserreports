@@ -87,6 +87,16 @@ define([
     };
 
     /**
+     * This function will show validation error in block card.
+     * @param {String} blockid Block id
+     * @param {Object} response User validation response
+     */
+    function validateUser(blockid, response) {
+        $(`#${blockid} .panel-body`).html(response.exception.message);
+    }
+
+
+    /**
      * Execute function by name
      * @param  {string} blockName Block Name
      */
