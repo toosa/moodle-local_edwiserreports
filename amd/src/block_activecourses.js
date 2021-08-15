@@ -29,9 +29,9 @@ define([
 ], function($, Chart, cfg, common) {
     /**
      * Initialize
-     * @param {function} notifyListner Callback function
+     * @param {function} invalidUser Callback function
      */
-    function init(notifyListner) {
+    function init(invalidUser) {
         var activeCourseTable;
 
         var panel = cfg.getPanel("#activecoursesblock");
@@ -59,11 +59,6 @@ define([
                 }
                 /* Create active course table */
                 createActiveCourseTable(response.data);
-            })
-            .fail(function(error) {
-                console.log(error);
-            })
-            .always(function() {
                 /* Added fixed column rank in datatable */
                 activeCourseTable.on('order.dt search.dt', function() {
                     activeCourseTable.column(0, {search: 'applied', order: 'applied'}).nodes().each(function(cell, i) {
@@ -79,15 +74,14 @@ define([
                     });
                     $(table + " td:not(.bg-secondary)").addClass("bg-white");
                 }).draw();
-
-                /* Notify that this event is completed */
-                notifyListner("activeCourses");
-
+            })
+            .fail(function(error) {
+                // console.log(error);
+            })
+            .always(function() {
                 // Hide loader.
                 common.loader.hide('#activecoursesblock');
             });
-        } else {
-            notifyListner("activeCourses");
         }
 
         /**

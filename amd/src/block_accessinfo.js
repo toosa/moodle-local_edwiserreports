@@ -34,12 +34,10 @@ define([
 
     /**
      * Initialize
-     * @param {function} notifyListner Callback function
+     * @param {function} invalidUser Callback function
      */
-    function init(notifyListner) {
-        $(document).ready(function() {
-            generateAccessInfoGraph();
-        });
+    function init(invalidUser) {
+        generateAccessInfoGraph();
 
         /**
          * Generate access info graph
@@ -83,15 +81,11 @@ define([
                     });
                 })
                 .fail(function(error) {
-                    console.log(error);
+                    // console.log(error);
                 }).always(function() {
-                    notifyListner("accessInfo");
-
                     // Hide loader.
                     common.loader.hide('#siteaccessblock');
                 });
-            } else {
-                notifyListner("accessInfo");
             }
         }
     }

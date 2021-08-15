@@ -28,9 +28,9 @@ define([
 ], function($, Chart, cfg, common) {
     /**
      * Initialize
-     * @param {function} notifyListner Callback function
+     * @param {function} invalidUser Callback function
      */
-    function init(notifyListner) {
+    function init(invalidUser) {
         // Global data got todays activity block
         var todaysVisits;
         var panel = cfg.getPanel("#todaysactivityblock");
@@ -60,9 +60,6 @@ define([
                         getTodaysActivity(dateStr);
                     }
                 });
-            } else {
-                /* Notify that this event is completed */
-                notifyListner("todaysActivity");
             }
         });
 
@@ -104,15 +101,12 @@ define([
                 /* Generate Todays Activity Graph */
                 generateTodaysVisitsGraph(response.data.visitshour);
             })
-
-                .fail(function(error) {
-                    console.log(error);
-                }).always(function() {
-                    notifyListner("todaysActivity");
-
-                    // Hide loader.
-                    common.loader.hide('#todaysactivityblock');
-                });
+            .fail(function(error) {
+                // console.log(error);
+            }).always(function() {
+                // Hide loader.
+                common.loader.hide('#todaysactivityblock');
+            });
         }
 
         /**

@@ -32,23 +32,12 @@ define([
     var panelBody = cfg.getPanel("#liveusersblock", "body");
     var loader = $(panelBody + " .loader");
     var table = $(panelBody + " .table");
-    var listner = null;
 
     /**
      * Initialize
-     * @param {function} notifyListner Callback function
+     * @param {function} invalidUser Callback function
      */
-    function init(notifyListner) {
-        listner = notifyListner;
-
-        getOnlineUsersData(); // Call first time
-    }
-
-    /**
-     * Get online users data
-     */
-    function getOnlineUsersData() {
-
+    function init(invalidUser) {
         if ($(panel).length) {
             // Show loader.
             common.loader.show("#liveusersblock");
@@ -72,13 +61,11 @@ define([
                 createRealtimeUsersBlock(response.data);
             })
             .fail(function(error) {
-                console.log(error);
+                // console.log(error);
             }).always(function() {
                 // Hide loader.
                 common.loader.hide("#liveusersblock");
             });
-        } else {
-            listner("realTimeUsers");
         }
     }
 
@@ -122,6 +109,9 @@ define([
             bInfo: false,
             lengthChange: false,
             initComplete: function() {
+                if (data == undefined) {
+                    return;
+                }
                 var usersCount = '<small class="ml-auto my-auto font-weight-bold">LoggedIn Users : ' + data.length + '</small>';
                 $(document).find(".rtblock-filter").append(usersCount);
             }

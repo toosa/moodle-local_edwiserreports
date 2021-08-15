@@ -31,9 +31,9 @@ define([
 
     /**
      * Initialize
-     * @param {function} notifyListner Callback function
+     * @param {function} invalidUser Callback function
      */
-    function init(notifyListner) {
+    function init(invalidUser) {
         var cpGraph = null;
         var panel = cfg.getPanel("#courseprogressblock");
         var panelBody = cfg.getPanel("#courseprogressblock", "body");
@@ -44,27 +44,22 @@ define([
         var form = $(panel + ' form.download-links');
 
         /**
-         * On document ready generate course progress block
+         * Generate course progress block
          */
-        $(document).ready(function($) {
-            cpBlockData = cfg.getCourseProgressBlock();
+        cpBlockData = cfg.getCourseProgressBlock();
 
-            // If course progress block is there
-            if (cpBlockData) {
+        // If course progress block is there
+        if (cpBlockData) {
+            getCourseProgressData();
+            $(panelBody + ' .singleselect').select2();
+
+            $(selectedCourse).on("change", function() {
+                $(chart).hide();
+                $(loader).show();
+
                 getCourseProgressData();
-                $(panelBody + ' .singleselect').select2();
-
-                $(selectedCourse).on("change", function() {
-                    $(chart).hide();
-                    $(loader).show();
-
-                    getCourseProgressData();
-                });
-            } else {
-                /* Notify that this event is completed */
-                notifyListner("courseProgress");
-            }
-        });
+            });
+        }
 
         /**
          * Get progress data through ajax
@@ -100,20 +95,17 @@ define([
                 }
                 cpBlockData.graph.data = response.data;
             })
-                .fail(function(error) {
-                    console.log(error);
-                })
-                .always(function() {
-                    cpGraph = generateCourseProgressGraph();
-                    $(loader).hide();
-                    $(chart).fadeIn("slow");
+            .fail(function(error) {
+                // console.log(error);
+            })
+            .always(function() {
+                cpGraph = generateCourseProgressGraph();
+                $(loader).hide();
+                $(chart).fadeIn("slow");
 
-                    /* Notify that this event is completed */
-                    notifyListner("courseProgress");
-
-                    // Hide loader.
-                    common.loader.hide('#courseprogressblock');
-                });
+                // Hide loader.
+                common.loader.hide('#courseprogressblock');
+            });
         }
 
         /**

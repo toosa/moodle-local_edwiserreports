@@ -75,7 +75,7 @@ define([
                     });
             })
             .fail(function(error) {
-                console.log(error);
+                // console.log(error);
 
                 // Hide loader.
                 hideLoader();

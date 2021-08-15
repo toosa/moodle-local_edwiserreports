@@ -50,10 +50,9 @@ define([
 
     /**
      * Initialize
-     * @param {Function} notifyListner Callback function
+     * @param {function} invalidUser Callback function
      */
-    function init(notifyListner) {
-        listner = notifyListner;
+    function init(invalidUser) {
 
         /* Custom Dropdown hide and show */
         $(document).ready(function() {
@@ -66,49 +65,45 @@ define([
                     $(dropdownMenu).addClass("show");
                 });
 
-                /* Added Custom Value in Dropdown */
-                $(dropdownInput).ready(function() {
-                    var placeholder = $(dropdownInput).attr("placeholder");
-                    $(dropdownInput).val(placeholder);
-                });
+            /* Added Custom Value in Dropdown */
+            $(dropdownInput).ready(function() {
+                var placeholder = $(dropdownInput).attr("placeholder");
+                $(dropdownInput).val(placeholder);
+            });
 
-                /* Hide dropdown when click anywhere in the screen */
-                $(document).click(function(e) {
-                    if (!($(e.target).hasClass("dropdown-menu") ||
-                        $(e.target).parents(".dropdown-menu").length)) {
-                        $(dropdownMenu).removeClass('show');
-                    }
-                });
-
-                /* Select filter for active users block */
-                $(dropdownItem + ":not(.custom)").on('click', function() {
-                    filter = $(this).attr('value');
+            /* Hide dropdown when click anywhere in the screen */
+            $(document).click(function(e) {
+                if (!($(e.target).hasClass("dropdown-menu") ||
+                    $(e.target).parents(".dropdown-menu").length)) {
                     $(dropdownMenu).removeClass('show');
-                    $(dropdownButton).html($(this).text());
-                    getActiveUsersBlockData(filter);
-                    $(flatpickrCalender).val("Custom");
-                    $(dropdownInput).val("Custom");
-                });
+                }
+            });
 
-                /* Refresh when click on the refresh button */
-                $(refreshBtn).on('click', function() {
-                    $(this).addClass("refresh-spin");
-                    getActiveUsersBlockData(filter);
-                });
+            /* Select filter for active users block */
+            $(dropdownItem + ":not(.custom)").on('click', function() {
+                filter = $(this).attr('value');
+                $(dropdownMenu).removeClass('show');
+                $(dropdownButton).html($(this).text());
+                getActiveUsersBlockData(filter);
+                $(flatpickrCalender).val("Custom");
+                $(dropdownInput).val("Custom");
+            });
 
-                createDropdownCalendar();
-            } else {
-                /* Notify that this event is completed */
-                listner("activeUsers");
-            }
-        });
+            /* Refresh when click on the refresh button */
+            $(refreshBtn).on('click', function() {
+                $(this).addClass("refresh-spin");
+                getActiveUsersBlockData(filter);
+            });
+
+            createDropdownCalendar();
+            /* Call function to initialize the active users block graph */
+            getActiveUsersBlockData()
+        }
 
         /**
          * Create Calender in dropdown tp select range.
          */
         function createDropdownCalendar() {
-            /* Call function to initialize the active users block graph */
-            activeUsersGraph = getActiveUsersBlockData();
 
             $(flatpickrCalender).flatpickr({
                 mode: 'range',
@@ -179,7 +174,7 @@ define([
                 activeUsersData.graph.data = response.data;
                 activeUsersData.graph.labels = response.labels;
             }).fail(function(error) {
-                console.log(error);
+                Notification.exception(error);
             }).always(function() {
                 activeUsersGraph = generateActiveUsersGraph();
                 // V.changeExportUrl(filter, exportUrlLink, V.filterReplaceFlag);
@@ -191,9 +186,6 @@ define([
                 $(refreshBtn).removeClass('refresh-spin');
                 $(loader).hide();
                 $(chart).fadeIn("slow");
-
-                /* Notify that this event is completed */
-                listner("activeUsers");
 
                 // Hide loader.
                 common.loader.hide('#activeusersblock');

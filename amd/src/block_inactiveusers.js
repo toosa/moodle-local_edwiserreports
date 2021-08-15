@@ -38,9 +38,9 @@ define([
 
     /**
      * Initialize
-     * @param {function} notifyListner Callback function
+     * @param {function} invalidUser Callback function
      */
-    function init(notifyListner) {
+    function init(invalidUser) {
         var activeUsersTable;
         var panel = cfg.getPanel("#inactiveusersblock");
         var panelBody = cfg.getPanel("#inactiveusersblock", "body");
@@ -84,8 +84,6 @@ define([
                 // Get inactive users
                 getInactiveUsersData($(this).data("value"));
             });
-        } else {
-            notifyListner("inActiveUsers");
         }
 
         /**
@@ -116,14 +114,12 @@ define([
                 }
                 createInactiveUsersTable(response.data);
             })
-                .fail(function(error) {
-                    console.log(error);
-                }).always(function() {
-                    notifyListner("inActiveUsers");
-
-                    // Hide loader.
-                    common.loader.hide('#inactiveusersblock');
-                });
+            .fail(function(error) {
+                // console.log(error);
+            }).always(function() {
+                // Hide loader.
+                common.loader.hide('#inactiveusersblock');
+            });
         }
 
         /**

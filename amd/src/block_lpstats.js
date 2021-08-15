@@ -29,9 +29,9 @@ define([
 ], function($, Chart, cfg, V) {
     /**
      * Initialize
-     * @param {function} notifyListner Callback function
+     * @param {function} invalidUser Callback function
      */
-    function init(notifyListner) {
+    function init() {
         var lpChart = null;
         var panel = cfg.getPanel("#lpstatsblock");
         var panelBody = cfg.getPanel("#lpstatsblock", "body");
@@ -57,8 +57,6 @@ define([
                     lpChart.destroy();
                     getLpStatsData(lpId);
                 });
-            } else {
-                notifyListner("lpStatsBlock");
             }
         });
 
@@ -80,17 +78,16 @@ define([
                     })
                 },
             })
-                .done(function(response) {
-                    generateLpChart(response.data);
-                })
-                .fail(function(error) {
-                    console.log(error);
-                })
-                .always(function() {
-                    $(loader).addClass("d-none");
-                    $(chart).removeClass("d-none");
-                    notifyListner("lpStatsBlock");
-                });
+            .done(function(response) {
+                generateLpChart(response.data);
+            })
+            .fail(function(error) {
+                console.log(error);
+            })
+            .always(function() {
+                $(loader).addClass("d-none");
+                $(chart).removeClass("d-none");
+            });
         }
 
         /**

@@ -119,26 +119,26 @@ define([
                         })
                     },
                 })
-                    .done(function(response) {
-                        $("#ed_courses").html('');
-                        var template = "local_edwiserreports/customquery_options";
-                        var context = {courses: response};
-                        Templates.render(template, context).then(function(html, js) {
-                            Templates.replaceNodeContents($("#ed_courses"), html, js);
-                            return;
-                        }).fail(function(ex) {
-                            console.log(ex);
-                        });
-                    })
-                    .fail(function(error) {
-                        console.log(error);
-                    }).always(function() {
-                        $("#ed_courses").select2({
-                            multiple: true,
-                            closeOnSelect: false,
-                            placeholder: "Courses"
-                        });
+                .done(function(response) {
+                    $("#ed_courses").html('');
+                    var template = "local_edwiserreports/customquery_options";
+                    var context = {courses: response};
+                    Templates.render(template, context).then(function(html, js) {
+                        Templates.replaceNodeContents($("#ed_courses"), html, js);
+                        return;
+                    }).fail(function(ex) {
+                        console.log(ex);
                     });
+                })
+                .fail(function(error) {
+                    // console.log(error);
+                }).always(function() {
+                    $("#ed_courses").select2({
+                        multiple: true,
+                        closeOnSelect: false,
+                        placeholder: "Courses"
+                    });
+                });
 
                 // Hide checkboxes of Learning programs if LP is not selected
                 if (!values.length) {
