@@ -229,13 +229,12 @@ class activeusersblock extends block_base {
 
     /**
      * Constructor
-     * @param string $filter Range selector
      */
-    public function generate_labels($filter) {
+    public function generate_labels() {
 
         // Cache key for active users block label.
-        $labelcachekey = "activeusers-labels-" . $filter;
-        $datescachekey = "activeusers-dates-" . $filter;
+        $labelcachekey = "activeusers-labels-" . $this->filter;
+        $datescachekey = "activeusers-dates-" . $this->filter;
 
         // Set current time.
         $this->timenow = time();
@@ -247,7 +246,7 @@ class activeusersblock extends block_base {
             $this->firstsiteaccess = $firstlogs->timecreated;
 
             // Based on the filter select labels.
-            switch ($filter) {
+            switch ($this->filter) {
                 case LOCAL_SITEREPORT_ALL:
                     // Calculate the days for all active users data.
                     $days = floor(($this->timenow - $this->firstsiteaccess) / LOCAL_SITEREPORT_ONEDAY);
@@ -267,7 +266,7 @@ class activeusersblock extends block_base {
                     break;
                 default:
                     // Explode dates from custom date filter.
-                    $dates = explode(" to ", $filter);
+                    $dates = explode(" to ", $this->filter);
                     if (count($dates) == 2) {
                         $startdate = strtotime($dates[0]." 00:00:00");
                         $enddate = strtotime($dates[1]." 23:59:59");
@@ -320,7 +319,7 @@ class activeusersblock extends block_base {
      * @return string            Cache key
      */
     public function generate_cache_key($blockname, $filter, $cohortid = 0) {
-        $cachekey = $blockname . "-" . $filter . "-";
+        $cachekey = $blockname . "-" . $this->filter . "-";
 
         if ($cohortid) {
             $cachekey .= $cohortid;
@@ -340,23 +339,41 @@ class activeusersblock extends block_base {
         ob_start();
 
         // Get data from params.
-        $filter = isset($params->filter) ? $params->filter : false;
-        $cohortid = isset($params->cohortid) ? $params->cohortid : false;
+        $this->filter = isset($params->filter) ? $params->filter : false;
+        $this->cohortid = isset($params->cohortid) ? $params->cohortid : false;
+        $this->precalculated = isset($params->precalculated) ? $params->precalculated : false;
 
         // Generate active users data label.
-        $this->generate_labels($filter);
+        $this->generate_labels();
+
+        // Check pre calculated data.
+        if ($this->precalculated) {
+            $data = get_config('local_edwiserreports', 'activeusersdata');
+            $data = json_decode($data, true);
+            if ($data !== null && isset($data[$this->filter])) {
+                $response = new stdClass();
+                $response->data = new stdClass();
+
+                $response->data->activeUsers = $data[$this->filter]['activeusers'];
+                $response->data->enrolments = $data[$this->filter]['enrolments'];
+                $response->data->completionRate = $data[$this->filter]['completionrate'];
+                $response->labels = $this->labels;
+
+                return $response;
+            }
+        }
 
         // Get cache key.
-        $cachekey = $this->generate_cache_key("activeusers-response", $filter, $cohortid);
+        $cachekey = $this->generate_cache_key("activeusers-response", $this->filter, $this->cohortid);
 
         // If response is in cache then return from cache.
         if (!$response = $this->cache->get($cachekey)) {
             $response = new stdClass();
             $response->data = new stdClass();
 
-            $response->data->activeUsers = $this->get_active_users($filter, $cohortid);
-            $response->data->enrolments = $this->get_enrolments($filter, $cohortid);
-            $response->data->completionRate = $this->get_course_completionrate($filter, $cohortid);
+            $response->data->activeUsers = $this->get_active_users();
+            $response->data->enrolments = $this->get_enrolments();
+            $response->data->completionRate = $this->get_course_completionrate();
             $response->labels = $this->labels;
 
             // Set response in cache.
@@ -451,11 +468,9 @@ class activeusersblock extends block_base {
 
     /**
      * Get all active users
-     * @param string $filter   Duration String
-     * @param int    $cohortid Cohort ID
      * @return array           Array of all active users based
      */
-    public function get_active_users($filter, $cohortid) {
+    public function get_active_users() {
         global $DB;
 
         $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
@@ -466,15 +481,15 @@ class activeusersblock extends block_base {
         );
 
         // Get cache key.
-        $cachekey = $this->generate_cache_key("activeusers-activeusers", $filter, $cohortid);
+        $cachekey = $this->generate_cache_key("activeusers-activeusers", $this->filter, $this->cohortid);
 
         // Query to get activeusers from logs.
         $cohortjoin = "";
         $cohortcondition = "";
-        if ($cohortid) {
+        if ($this->cohortid) {
             $cohortjoin = "JOIN {cohort_members} cm ON l.userid = cm.userid";
             $cohortcondition = "AND cm.cohortid = :cohortid";
-            $params["cohortid"] = $cohortid;
+            $params["cohortid"] = $this->cohortid;
         }
         $sql = "SELECT FLOOR(l.timecreated/86400) as userdate,
                         COUNT( DISTINCT l.userid ) as usercount
@@ -514,11 +529,9 @@ class activeusersblock extends block_base {
 
     /**
      * Get all Enrolments
-     * @param  string $filter   Apply filter duration
-     * @param  int    $cohortid Cohort Id
      * @return array            Array of all active users based
      */
-    public function get_enrolments($filter, $cohortid) {
+    public function get_enrolments() {
         global $DB;
 
         $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
@@ -530,14 +543,14 @@ class activeusersblock extends block_base {
         );
 
         // Cache Key for enrolments.
-        $cachekey = $this->generate_cache_key('activeusers-enrolments', $filter, $cohortid);
+        $cachekey = $this->generate_cache_key('activeusers-enrolments', $this->filter, $this->cohortid);
 
         $cohortjoin = "";
         $cohortcondition = "";
-        if ($cohortid) {
+        if ($this->cohortid) {
             $cohortjoin = "JOIN {cohort_members} cm ON l.relateduserid = cm.userid";
             $cohortcondition = "AND cm.cohortid = :cohortid";
-            $params["cohortid"] = $cohortid;
+            $params["cohortid"] = $this->cohortid;
         }
 
         $sql = "SELECT FLOOR(l.timecreated/86400) as userdate,
@@ -585,11 +598,9 @@ class activeusersblock extends block_base {
 
     /**
      * Get all Enrolments
-     * @param  string $filter   Apply filter duration
-     * @param  int    $cohortid Cohort Id
      * @return array            Array of all active users based
      */
-    public function get_course_completionrate($filter, $cohortid) {
+    public function get_course_completionrate() {
         global $DB;
 
         $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
@@ -599,14 +610,14 @@ class activeusersblock extends block_base {
         );
 
         // Prepare cache key for completion rate.
-        $cachekey = $this->generate_cache_key('activeusers-completionrate', $filter, $cohortid);
+        $cachekey = $this->generate_cache_key('activeusers-completionrate', $this->filter, $this->cohortid);
 
         $cohortjoin = "";
         $cohortcondition = "";
-        if ($cohortid) {
+        if ($this->cohortid) {
             $cohortjoin = "JOIN {cohort_members} cm ON cc.userid = cm.userid";
             $cohortcondition = "AND cm.cohortid = :cohortid";
-            $params["cohortid"] = $cohortid;
+            $params["cohortid"] = $this->cohortid;
         }
 
         $sql = "SELECT FLOOR(cc.completiontime/86400) as userdate,

@@ -23,18 +23,19 @@
 define([
     'jquery',
     'core/chartjs',
-    'local_edwiserreports/defaultconfig',
-    'local_edwiserreports/variables',
+    'core/notification',
+    './defaultconfig',
+    './variables',
     './common',
-    'local_edwiserreports/flatpickr'
-], function($, Chart, defaultConfig, V, common) {
+    './flatpickr'
+], function($, Chart, Notification, cfg, V, common) {
     /* Varible for active users block */
-    var cfg = null;
+    var activeUsersData = null;
     var activeUsersGraph = null;
-    var panel = defaultConfig.getPanel("#activeusersblock");
-    var panelBody = defaultConfig.getPanel("#activeusersblock", "body");
-    var panelTitle = defaultConfig.getPanel("#activeusersblock", "title");
-    var panelFooter = defaultConfig.getPanel("#activeusersblock", "footer");
+    var panel = cfg.getPanel("#activeusersblock");
+    var panelBody = cfg.getPanel("#activeusersblock", "body");
+    var panelTitle = cfg.getPanel("#activeusersblock", "title");
+    var panelFooter = cfg.getPanel("#activeusersblock", "footer");
     var dropdownMenu = panel + " .dropdown-menu[aria-labelledby='filter-dropdown']:not('custom')";
     var dropdownItem = dropdownMenu + " .dropdown-item";
     var dropdownToggle = panel + " #filter-dropdown.dropdown-toggle";
@@ -42,11 +43,10 @@ define([
     var chart = panelBody + " .ct-chart";
     var loader = panelBody + " .loader";
     var dropdownButton = panel + " button#filter-dropdown";
-    var refreshBtn = panelTitle + " .refresh";
+    var refreshBtn = panelBody + " .refresh";
     var exportUrlLink = panel + V.exportUrlLink;
     var filter = null;
-    var dropdownInput = panelTitle + " input.form-control.input";
-    var listner = null;
+    var dropdownInput = panelBody + " input.form-control.input";
 
     /**
      * Initialize
@@ -55,15 +55,14 @@ define([
     function init(invalidUser) {
 
         /* Custom Dropdown hide and show */
-        $(document).ready(function() {
-            cfg = defaultConfig.getActiveUsersBlock();
+        activeUsersData = cfg.getActiveUsersBlock();
 
-            // If course progress block is there
-            if (cfg) {
-                /* Show custom dropdown */
-                $(dropdownToggle).on("click", function() {
-                    $(dropdownMenu).addClass("show");
-                });
+        // If course progress block is there
+        if (activeUsersData) {
+            /* Show custom dropdown */
+            $(dropdownToggle).on("click", function() {
+                $(dropdownMenu).addClass("show");
+            });
 
             /* Added Custom Value in Dropdown */
             $(dropdownInput).ready(function() {
@@ -135,7 +134,7 @@ define([
                 return;
             }
 
-            defaultConfig.changeExportUrl(filter, exportUrlLink, V.filterReplaceFlag);
+            cfg.changeExportUrl(filter, exportUrlLink, V.filterReplaceFlag);
             $(dropdownButton).html(date);
             $(flatpickrCalender).val("");
             getActiveUsersBlockData(filter);
@@ -153,16 +152,17 @@ define([
             if (!filter) {
                 filter = "weekly";
             }
-
             // Show loader.
             common.loader.show('#activeusersblock');
-
             $.ajax({
-                url: defaultConfig.requestUrl,
+                url: cfg.requestUrl,
+                type: cfg.requestType,
+                dataType: cfg.requestDataType,
                 data: {
                     action: 'get_activeusers_graph_data_ajax',
                     secret: M.local_edwiserreports.secret,
                     data: JSON.stringify({
+                        precalculated: ['weekly', 'monthly', 'yearly'].indexOf(filter) !== -1,
                         filter: filter
                     })
                 },
@@ -196,15 +196,15 @@ define([
          * Reset Update time in panel header.
          */
         function resetUpdateTime() {
-            $(panelTitle + " #updated-time > span.minute").html(0);
+            $(panelBody + " #updated-time > span.minute").html(0);
         }
 
         /**
          * Increament update time in panel header.
          */
         function inceamentUpdateTime() {
-            $(panelTitle + " #updated-time > span.minute")
-            .html(parseInt($(panelTitle + " #updated-time > span.minute").text()) + 1);
+            $(panelBody + " #updated-time > span.minute")
+            .html(parseInt($(panelBody + " #updated-time > span.minute").text()) + 1);
         }
 
         /**
@@ -216,12 +216,12 @@ define([
                 activeUsersGraph.destroy();
             }
 
-            Chart.defaults.global.defaultFontFamily = cfg.graph.fontFamily;
-            Chart.defaults.global.defaultFontStyle = cfg.graph.fontStyle;
-            activeUsersGraph = new Chart(cfg.ctx, {
-                type: cfg.graph.type,
+            Chart.defaults.global.defaultFontFamily = activeUsersData.graph.fontFamily;
+            Chart.defaults.global.defaultFontStyle = activeUsersData.graph.fontStyle;
+            activeUsersGraph = new Chart(activeUsersData.ctx, {
+                type: activeUsersData.graph.type,
                 data: getGraphData(),
-                options: cfg.graph.options
+                options: activeUsersData.graph.options
             });
             return activeUsersGraph;
         }
@@ -231,36 +231,40 @@ define([
          * @return {Object}
          */
         function getGraphData() {
-            return {
-                labels: cfg.graph.labels,
-                datasets: [{
-                    label: cfg.graph.labelName.activeUsers,
-                    data: cfg.graph.data.activeUsers,
-                    backgroundColor: cfg.graph.backgroundColor.activeUsers,
-                    borderColor: cfg.graph.borderColor.activeUsers,
-                    pointBorderColor: cfg.graph.borderColor.activeUsers,
-                    pointBackgroundColor: cfg.graph.borderColor.activeUsers,
-                    pointStyle: cfg.graph.pointStyle
-                },
-                {
-                    label: cfg.graph.labelName.enrolments,
-                    data: cfg.graph.data.enrolments,
-                    backgroundColor: cfg.graph.backgroundColor.enrolments,
-                    borderColor: cfg.graph.borderColor.enrolments,
-                    pointBorderColor: cfg.graph.borderColor.enrolments,
-                    pointBackgroundColor: cfg.graph.borderColor.enrolments,
-                    pointStyle: cfg.graph.pointStyle
-                },
-                {
-                    label: cfg.graph.labelName.completionRate,
-                    data: cfg.graph.data.completionRate,
-                    backgroundColor: cfg.graph.backgroundColor.completionRate,
-                    borderColor: cfg.graph.borderColor.completionRate,
-                    pointBorderColor: cfg.graph.borderColor.completionRate,
-                    pointBackgroundColor: cfg.graph.borderColor.completionRate,
-                    pointStyle: cfg.graph.pointStyle
-                }]
-            };
+            try {
+                return {
+                    labels: activeUsersData.graph.labels,
+                    datasets: [{
+                        label: activeUsersData.graph.labelName.activeUsers,
+                        data: activeUsersData.graph.data.activeUsers,
+                        backgroundColor: activeUsersData.graph.backgroundColor.activeUsers,
+                        borderColor: activeUsersData.graph.borderColor.activeUsers,
+                        pointBorderColor: activeUsersData.graph.borderColor.activeUsers,
+                        pointBackgroundColor: activeUsersData.graph.borderColor.activeUsers,
+                        pointStyle: activeUsersData.graph.pointStyle
+                    },
+                    {
+                        label: activeUsersData.graph.labelName.enrolments,
+                        data: activeUsersData.graph.data.enrolments,
+                        backgroundColor: activeUsersData.graph.backgroundColor.enrolments,
+                        borderColor: activeUsersData.graph.borderColor.enrolments,
+                        pointBorderColor: activeUsersData.graph.borderColor.enrolments,
+                        pointBackgroundColor: activeUsersData.graph.borderColor.enrolments,
+                        pointStyle: activeUsersData.graph.pointStyle
+                    },
+                    {
+                        label: activeUsersData.graph.labelName.completionRate,
+                        data: activeUsersData.graph.data.completionRate,
+                        backgroundColor: activeUsersData.graph.backgroundColor.completionRate,
+                        borderColor: activeUsersData.graph.borderColor.completionRate,
+                        pointBorderColor: activeUsersData.graph.borderColor.completionRate,
+                        pointBackgroundColor: activeUsersData.graph.borderColor.completionRate,
+                        pointStyle: activeUsersData.graph.pointStyle
+                    }]
+                };
+            } catch (error) {
+                return {};
+            }
         }
     }
 
