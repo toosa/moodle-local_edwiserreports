@@ -144,6 +144,9 @@ $string['before1month'] = "Before 1 Month";
 $string['before3month'] = "Before 3 Month";
 $string['before6month'] = "Before 6 Month";
 
+/* Active users block */
+$string['activeuserstask'] = 'Calculate active users block data';
+
 /* Active Users Page */
 $string['noofactiveusers'] = "No. of active users";
 $string['noofenrolledusers'] = "No. of enrollments";

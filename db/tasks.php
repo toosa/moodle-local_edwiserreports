@@ -58,5 +58,13 @@ $tasks = [
         'day' => '*',
         'month' => '*',
         'dayofweek' => '*'
+    ], [
+        'classname' => '\local_edwiserreports\task\active_users_data',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '*',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*'
     ]
 ];
