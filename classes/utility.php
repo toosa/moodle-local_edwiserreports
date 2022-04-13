@@ -29,27 +29,24 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . "/completion/classes/progress.php");
 require_once($CFG->dirroot . "/cohort/lib.php");
 require_once($CFG->libdir."/csvlib.class.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/activecoursesblock.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/certificatesblock.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/liveusersblock.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/siteaccessblock.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/todaysactivityblock.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/inactiveusersblock.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/courseengageblock.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/completionblock.php");
-require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/courseanalytics_block.php");
+require_once($CFG->dirroot . '/local/edwiserreports/classes/constants.php');
+
+$files = scandir($CFG->dirroot . "/local/edwiserreports/classes/blocks/");
+unset($files[0]);
+unset($files[1]);
+foreach ($files as $file) {
+    require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/" . $file);
+}
 require_once($CFG->dirroot . "/local/edwiserreports/locallib.php");
 
 use stdClass;
 use completion_info;
 use context_course;
-use MoodleQuickForm;
-use progress;
 use html_writer;
-use csv_export_writer;
-use core_user;
+use xmldb_table;
 use core_course_category;
 use context_system;
+use moodle_url;
 
 /**
  * Utilty class to add all utility function to perform in the eLucid report plugin.
@@ -187,7 +184,7 @@ class utility {
 
     /**
      * Get Course Completion Data
-     * @param  String $data Data to get Course Completion detail
+     * @param  Object $data Data to get Course Completion detail
      * @return Object
      */
     public static function get_completion_data($data) {
@@ -214,6 +211,30 @@ class utility {
         return \local_edwiserreports\courseanalytics_block::get_data($data->courseid, $cohortid);
     }
 
+    /**
+     * Get data for grade graph.
+     *
+     * @param Object $data Data object
+     *
+     * @return Object
+     */
+    public static function get_grade_graph_data($data) {
+        $grade = new \local_edwiserreports\gradeblock();
+        return $grade->get_graph_data($data->filter);
+    }
+
+    /**
+     * Get learner table data.
+     *
+     * @param Object $data Data object
+     *
+     * @return Object
+     */
+    public static function get_grade_table_data($data) {
+        $grade = new \local_edwiserreports\gradeblock();
+        return $grade->get_table_data($data->filter);
+    }
+
     /** Generate Course Filter for course progress block
      * @param  Bool  $all Get course with no enrolment as well
      * @return Array      Array of courses
@@ -234,7 +255,7 @@ class utility {
 
     /**
      * Generate Learning Program Filter for course progress block
-     * @return String HTML form with select and search box
+     * @return array HTML form with select and search box
      */
     public static function get_lps() {
         global $DB;
@@ -301,8 +322,9 @@ class utility {
         global $DB;
 
         // Return course completion from report completion table.
-        $table = "edwreports_course_progress";
-        return $DB->get_records($table, array("courseid" => $courseid), "", "userid, progress as completion");
+        return $DB->get_records_sql("SELECT userid, progress as completion
+                                       FROM {edwreports_course_progress}
+                                      WHERE courseid = :courseid", array('courseid' => $courseid));
     }
 
     /**
@@ -411,7 +433,7 @@ class utility {
         }
 
         // Please note that we must fetch all grade_grades fields if we want to construct grade_grade object from it!
-        $gradesql = "SELECT g.id, g.finalgrade
+        $gradesql = "SELECT g.id, gi.grademax, g.finalgrade
             FROM {grade_items} gi, {grade_grades} g
             WHERE g.itemid = gi.id
             AND gi.courseid = :courseid
@@ -566,7 +588,7 @@ class utility {
      * Get Course visited by a users
      * @param  Integer $courseid Course ID
      * @param  String  $userid   User ID
-     * @return Integer           Count of visits by this users
+     * @return array           Count of visits by this users
      */
     public static function get_visits_by_users($courseid, $userid) {
         global $DB;
@@ -1005,8 +1027,8 @@ class utility {
 
     /**
      * Get all cohort based users
-     * @param  Array $cohortids Cohort Ids
-     * @return Array            Users array
+     * @param  array $cohortids Cohort Ids
+     * @return array            Users array
      */
     public static function get_cohort_users($cohortids) {
         global $DB;
@@ -1199,7 +1221,6 @@ class utility {
         $pref = new stdClass();
         $pref->desktopview = LOCAL_SITEREPORT_BLOCK_LARGE;
         $pref->tabletview = LOCAL_SITEREPORT_BLOCK_LARGE;
-        $pref->mobileview = LOCAL_SITEREPORT_BLOCK_LARGE;
         $pref->position = $DB->count_records('edwreports_blocks') + $crcount;
         $block->blockdata = json_encode($pref);
         $block->classname = 'customreportsblock';
@@ -1209,7 +1230,7 @@ class utility {
 
     /**
      * Get reports blocks detailed by it name
-     * @param String $block Block
+     * @param Object $block Block
      */
     public static function get_reportsblock_preferences($block) {
         $prefname = 'pref_' . $block->classname;
@@ -1225,7 +1246,7 @@ class utility {
         } else {
             $blockdata = json_decode($block->blockdata, true);
             $position = get_config('local_edwiserreports', $block->blockname . 'position');
-            $position = $position ? $position : $blockdata['position'];
+            $position = $position !== false ? $position : $blockdata['position'];
             $desktopview = get_config('local_edwiserreports', $block->blockname . 'desktopsize');
             $desktopview = $desktopview ? $desktopview : $blockdata['desktopview'];
             $tabletview = get_config('local_edwiserreports', $block->blockname . 'tabletsize');
@@ -1393,5 +1414,105 @@ class utility {
         }
 
         return $rolecap;
+    }
+
+    /**
+     * Create temporary table to join ids with table
+     * @param  String $tablename Name of table
+     * @param  Array $ids       Id array
+     */
+    public static function create_temp_table($tablename, $ids) {
+        global $DB;
+
+        $dbman = $DB->get_manager();
+
+        $table = new xmldb_table($tablename);
+        $table->add_field('id', XMLDB_TYPE_INTEGER, 10, null, true, true);
+        $table->add_field('tempid', XMLDB_TYPE_INTEGER, 10, null, true);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+
+        self::drop_temp_table($tablename);
+
+        $dbman->create_temp_table($table);
+        foreach ($ids as $id) {
+            $DB->insert_record($tablename, (object)[
+                'tempid' => $id
+            ]);
+        }
+    }
+
+    /**
+     * Delete temporary created table
+     * @param  String $tablename Table name
+     */
+    public static function drop_temp_table($tablename) {
+        global $DB;
+
+        $dbman = $DB->get_manager();
+
+        $table = new xmldb_table($tablename);
+
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+    }
+
+    /**
+     * Get active theme.
+     *
+     * @return int
+     */
+    public static function get_active_theme() {
+        return 0;
+    }
+
+    /**
+     * Load color themes as variable and css classes on page.
+     *
+     * @return void
+     */
+    public static function load_color_pallets() {
+        global $PAGE;
+        $theme = self::get_active_theme();
+        $PAGE->requires->data_for_js('edwiser_reports_color_themes', LOCAL_EDWISERREPORTS_COLOR_THEMES[$theme]);
+        $PAGE->requires->css(new moodle_url('/local/edwiserreports/styles/color-themes.php', array('theme' => $theme)));
+    }
+
+    /**
+     * Get all exports icons
+     * If options is set then return options with icons.
+     * Else return icons array.
+     *
+     * @param Array $options Array options to add export icons
+     * @return Array
+     */
+    public static function get_export_icons($options = null) {
+        if ($options == null) {
+            $options = [];
+        }
+        $options['pdf'] = self::image_icon('export/pdf');
+        $options['csv'] = self::image_icon('export/csv');
+        $options['xls'] = self::image_icon('export/xls');
+        return $options;
+    }
+
+    /**
+     * Get svg content.
+     *
+     * @return string
+     */
+    public static function image_icon($type) {
+        global $CFG;
+        $image = file_get_contents($CFG->dirroot . '/local/edwiserreports/pix/' . $type . '.svg');
+        return $image;
+    }
+
+    public static function get_default_capabilities() {
+        global $CFG;
+        require_once($CFG->dirroot . '/local/edwiserreports/db/access.php');
+        foreach ($capabilities as $key => $capability) {
+            $capabilities[$key] = $capability['archetypes'];
+        }
+        return $capabilities;
     }
 }

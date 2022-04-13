@@ -112,6 +112,10 @@ class custom_reports_block implements renderable, templatable {
             )
         );
 
+        $export->searchicon = \local_edwiserreports\utility::image_icon('actions/search');
+        $export->placeholder = get_string('searchreports', 'local_edwiserreports');
+        $export->length = [10, 25, 50, 100];
+
         return $export;
     }
 
@@ -205,20 +209,13 @@ class custom_reports_block implements renderable, templatable {
             array(
                 'id' => 'activitiescompleted',
                 'text' => get_string('activitiescompleted', 'local_edwiserreports'),
-                'dbkey' => 'ec.completedmodules',
-                'selected' => in_array('activitiescompleted', $selectedfield),
-                'resultfunc' => function($value) {
-                    $ret = 0;
-                    if ($value) {
-                        $ret = count(explode(',', $value));
-                    }
-                    return $ret;
-                }
+                'dbkey' => 'ec.totalmodules',
+                'selected' => in_array('activitiescompleted', $selectedfield)
             ),
             array(
                 'id' => 'totalactivities',
                 'text' => get_string('totalactivities', 'local_edwiserreports'),
-                'dbkey' => 'ec.totalmodules',
+                'dbkey' => 'ec.completablemods',
                 'selected' => in_array('totalactivities', $selectedfield)
             ),
             array(

@@ -24,6 +24,13 @@ namespace local_edwiserreports\controller;
 
 defined('MOODLE_INTERNAL') || die();
 
+$files = scandir($CFG->dirroot . "/local/edwiserreports/classes/blocks/");
+unset($files[0]);
+unset($files[1]);
+foreach ($files as $file) {
+    require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/" . $file);
+}
+
 /**
  * Handles requests regarding all ajax operations.
  *
@@ -224,5 +231,117 @@ class edwiserReportController extends controllerAbstract {
 
         // Response for ajax action.
         echo json_encode(\local_edwiserreports\utility::toggle_hide_block($data));
+    }
+
+    /**
+     * Get graph data for courseprogress on course graph of learner block.
+     */
+    public function get_learnercourseprogress_graph_data_ajax_action() {
+        $learnercourseprogress = new \local_edwiserreports\learnercourseprogressblock();
+
+        // Response for ajax action.
+        echo json_encode($learnercourseprogress->get_data());
+    }
+
+    /**
+     * Get graph data for courseprogress on course graph of learner block.
+     */
+    public function get_learnertimespentonsite_graph_data_ajax_action() {
+        $learnertimespentonsite = new \local_edwiserreports\learnertimespentonsiteblock();
+
+        // Response for ajax action.
+        echo json_encode($learnertimespentonsite->get_data());
+    }
+
+    /**
+     * Check if plugin is installed.
+     *
+     * @return boolean
+     */
+    public function is_installed_ajax_action() {
+        echo json_encode([
+            'installed' => get_config('local_edwiserreports', 'version') !== false
+        ]);
+    }
+
+    /**
+     * Get data for grade graph
+     *
+     * @return void
+     */
+    public function get_grade_graph_data_ajax_action() {
+        $grade = new \local_edwiserreports\gradeblock();
+        // Response for ajax action.
+        echo json_encode($grade->get_graph_data());
+    }
+
+    /**
+     * Get table data for Visits on Site graph.
+     */
+    public function get_visitsonsite_graph_data_ajax_action() {
+        $visitsonsite = new \local_edwiserreports\visitsonsiteblock();
+
+        // Response for ajax action.
+        echo json_encode($visitsonsite->get_data());
+    }
+
+    /**
+     * Get table data for Timespent on site graph.
+     */
+    public function get_timespentonsite_graph_data_ajax_action() {
+
+        $timespentonsite = new \local_edwiserreports\timespentonsiteblock();
+
+        // Response for ajax action.
+        echo json_encode($timespentonsite->get_data());
+    }
+
+    /**
+     * Get table data for Timespent on Course graph.
+     */
+    public function get_timespentoncourse_graph_data_ajax_action() {
+        $timespentoncourse = new \local_edwiserreports\timespentoncourseblock();
+
+        // Response for ajax action.
+        echo json_encode($timespentoncourse->get_data());
+    }
+
+    /**
+     * Get table data for Course activity status graph.
+     */
+    public function get_courseactivitystatus_graph_data_ajax_action() {
+        $courseactivitystatus = new \local_edwiserreports\courseactivitystatusblock();
+
+        // Response for ajax action.
+        echo json_encode($courseactivitystatus->get_data());
+    }
+
+    /**
+     * Get insight card context to render insight card.
+     */
+    public function get_insight_card_context_ajax_action() {
+        // Get data.
+        $data = json_decode(required_param('data', PARAM_RAW));
+
+        $insight = new \local_edwiserreports\insights\insight();
+
+        // Response for ajax action.
+        echo json_encode($insight->get_card_context($data->id));
+    }
+
+    /**
+     * Get insight card data to render insight.
+     */
+    public function get_insight_card_data_ajax_action() {
+        // Get data.
+        $data = json_decode(required_param('data', PARAM_RAW));
+
+        $insight = new \local_edwiserreports\insights\insight();
+
+        // Response for ajax action.
+        echo json_encode($insight->get_card_data(
+            $data->id,
+            $data->filter
+        ));
     }
 }

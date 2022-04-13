@@ -16,8 +16,9 @@
 /**
  * Edwiser RemUI
  * @package    local_edwiserreports
- * @copyright  (c) 2018 WisdmLabs (https://wisdmlabs.com/)
+ * @copyright  (c) 2021 WisdmLabs (https://wisdmlabs.com/)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author     Yogesh Shirsath
  */
 namespace local_edwiserreports\controller;
 
@@ -48,7 +49,7 @@ class authentication {
         }
 
         // Delete secret key record using userid.
-        return $DB->delete_records('edwreports_authentication', array('user' => $userid));
+        return $DB->delete_records('edwreports_authentication', array('userid' => $userid));
     }
 
     /**
@@ -72,7 +73,7 @@ class authentication {
         // Generate random 10 character string using Moodle core function.
         $secret = random_string(10);
         $auth = new stdClass;
-        $auth->user = $userid;
+        $auth->userid = $userid;
         $auth->secret = $secret;
         $DB->insert_record('edwreports_authentication', $auth);
 
@@ -93,7 +94,7 @@ class authentication {
         }
 
         // If secret key present for user.
-        if ($record = $DB->get_record('edwreports_authentication', array('user' => $userid))) {
+        if ($record = $DB->get_record('edwreports_authentication', array('userid' => $userid))) {
             return $record->secret;
         }
 
@@ -116,10 +117,10 @@ class authentication {
         $sql = "SELECT * FROM {edwreports_authentication}
                 WHERE " . $DB->sql_compare_text('secret') . " = ?";
         if ($record = $DB->get_record_sql($sql, array($secret))) {
-            return $record->user;
+            return $record->userid;
         }
 
         // Return false if secret key does not exists.
-        return null;
+        return false;
     }
 }

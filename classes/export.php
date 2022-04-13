@@ -80,6 +80,37 @@ class export {
     }
 
     /**
+     * Get postfix for filename from block.
+     *
+     * @param string $filter
+     *
+     * @return string
+     */
+    public function data_export_file_postfix($filter) {
+        global $CFG;
+        if ($this->region == 'report') {
+            return '';
+        }
+        // Check if class file exist.
+        if (strpos($this->blockname, 'customreportsblock') !== false) {
+            $params = explode('-', $this->blockname);
+            $classname = isset($params[0]) ? $params[0] : '';
+            $filter = isset($params[1]) ? $params[1] : '';
+        } else {
+            $classname = $this->blockname;
+        }
+        $filepath = $CFG->dirroot . '/local/edwiserreports/classes/blocks/' . $classname . '.php';
+        if (!file_exists($filepath)) {
+            debugging('Class file dosn\'t exist ' . $classname);
+        }
+        require_once($filepath);
+
+        $classname = '\\local_edwiserreports\\' . $classname;
+        $blockbase = new $classname();
+        return $blockbase->get_exportable_data_block_file_postfix($filter);
+    }
+
+    /**
      * Export data
      * @param string $filename File name to export data
      * @param array  $data    Data to be export
@@ -174,9 +205,9 @@ class export {
 
     /**
      * Genereate csv file to export
-     * @param  [string] $filename Filename
-     * @param  [array] $data Data to render
-     * @return [string] File path
+     * @param  string $filename Filename
+     * @param  array $data Data to render
+     * @return string File path
      */
     public function generate_csv_file($filename, $data) {
         global $USER, $CFG;
@@ -251,7 +282,7 @@ class export {
         if (!$subject && $subject == '') {
             $subject = get_string($this->blockname . "exportheader", "local_edwiserreports");
         }
-
+        $status = false;
         // Send emails foreach email ids.
         if ($emailids && $emailids !== '') {
             // Process in background and dont show message in console.
@@ -263,7 +294,7 @@ class export {
                     $recuser->email = trim($emailid);
 
                     // Send email to user.
-                    email_to_user(
+                    $status &= email_to_user(
                         $recuser,
                         $senduser,
                         $subject,
@@ -276,6 +307,8 @@ class export {
             }
             ob_end_clean();
 
+        }
+        if ($status) {
             // If failed then return error.
             $res = new stdClass();
             $res->error = false;
@@ -542,10 +575,8 @@ class export {
     private function exportable_data_report($blockname, $filter) {
         global $CFG;
         $export = null;
-
         switch ($blockname) {
             case "activeusersblock":
-                require_once($CFG->dirroot . '/local/edwiserreports/classes/blocks/activeusersblock.php');
                 $export = activeusersblock::get_exportable_data_report($filter);
                 break;
             case "courseprogressblock":
@@ -562,6 +593,7 @@ class export {
                 break;
             case "courseanalytics":
                 $export = courseanalytics_block::get_exportable_data_report($filter);
+                break;
                 break;
         }
         return $export;
@@ -810,7 +842,7 @@ class export {
      */
     public function create_query_fields($fields) {
         // Get all the fields.
-        $allfields = \local_edwiserreports\output\elucidreport_renderable::get_report_fields();
+        $allfields = \local_edwiserreports\output\edwiserreports_renderable::get_report_fields();
         $allfields = array_values((array) $allfields);
         $allfields = array_reduce($allfields, 'array_merge', array());
         // Sort fields according to selected fields.
@@ -832,7 +864,7 @@ class export {
      * Render csv data
      *
      * @param string $type      CSV report type
-     * @param array  $filters   Filter array
+     * @param string $filters   Filter string
      * @param int    $startdate Data start date
      * @param int    $enddate   Data end date
      */

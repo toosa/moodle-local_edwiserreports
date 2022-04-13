@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . "/local/edwiserreports/classes/constants.php");
 
 use local_edwiserreports\controller\progress;
-use xmldb_table;
+use local_edwiserreports\utility;
 use context_course;
 
 /**
@@ -127,47 +127,6 @@ class active_courses_data extends \core\task\scheduled_task {
     }
 
     /**
-     * Create temporary table to join ids with table
-     * @param  String $tablename Name of table
-     * @param  Array $ids       Id array
-     */
-    public function create_temp_table($tablename, $ids) {
-        global $DB;
-
-        $dbman = $DB->get_manager();
-
-        $table = new xmldb_table($tablename);
-        $table->add_field('id', XMLDB_TYPE_INTEGER, 10, null, true, true);
-        $table->add_field('tempid', XMLDB_TYPE_INTEGER, 10, null, true);
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-
-        $this->drop_table($tablename);
-
-        $dbman->create_temp_table($table);
-        foreach ($ids as $id) {
-            $DB->insert_record($tablename, (object)[
-                'tempid' => $id
-            ]);
-        }
-    }
-
-    /**
-     * Delete temporary created table
-     * @param  String $tablename Table name
-     */
-    public function drop_table($tablename) {
-        global $DB;
-
-        $dbman = $DB->get_manager();
-
-        $table = new xmldb_table($tablename);
-
-        if ($dbman->table_exists($table)) {
-            $dbman->drop_table($table);
-        }
-    }
-
-    /**
      * Get Course View Count by users
      * @param  int   $courseid         Course Id
      * @param  array $studentsids      Array of enrolled uesers id
@@ -180,7 +139,7 @@ class active_courses_data extends \core\task\scheduled_task {
         $userstable = 'tmp_active_course_students';
 
         // Creating temporary table.
-        $this->create_temp_table($userstable, $studentsids);
+        utility::create_temp_table($userstable, $studentsids);
         $params = array();
 
         // Students join.
@@ -197,7 +156,7 @@ class active_courses_data extends \core\task\scheduled_task {
         $views = $DB->get_record_sql($sqlcourseview, $params);
 
         // Drop temporary table.
-        $this->drop_table($userstable);
+        utility::drop_temp_table($userstable);
         return $views->usercount;
     }
 }

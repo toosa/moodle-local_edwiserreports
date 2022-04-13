@@ -32,6 +32,9 @@ global $OUTPUT;
 // Strings for js.
 local_edwiserreports_get_required_strings_for_js();
 
+// Load color themes from constants.
+local_edwiserreports\utility::load_color_pallets();
+
 // Set external page admin.
 $context = context_system::instance();
 $component = "local_edwiserreports";
@@ -58,6 +61,14 @@ if ($reset !== false) {
 // Page URL.
 $pageurl = new moodle_url($CFG->wwwroot."/local/edwiserreports/index.php");
 
+// Load all js files from externaljs folder.
+foreach (scandir($CFG->dirroot . '/local/edwiserreports/externaljs/build/') as $file) {
+    if (pathinfo($file, PATHINFO_EXTENSION) != 'js') {
+        continue;
+    }
+    $PAGE->requires->js(new moodle_url('/local/edwiserreports/externaljs/build/' . $file));
+}
+
 // Require JS for index page.
 $PAGE->requires->js_call_amd('local_edwiserreports/main', 'init');
 
@@ -73,14 +84,15 @@ $PAGE->set_url($pageurl);
 // Set Page layout.
 $PAGE->set_pagelayout('standard');
 
+// Add theme class to body.
 $PAGE->add_body_classes(array('theme_' . $PAGE->theme->name));
 
 // Get renderable.
-$renderable = new \local_edwiserreports\output\elucidreport_renderable();
+$renderable = new \local_edwiserreports\output\edwiserreports_renderable();
 $output = $PAGE->get_renderer($component)->render($renderable);
 
 // Set page heading.
-$PAGE->set_heading(get_string("reportsdashboard", "local_edwiserreports"));
+$PAGE->set_heading('');
 $PAGE->set_title(get_string("reportsdashboard", "local_edwiserreports"));
 
 // Print output in page.

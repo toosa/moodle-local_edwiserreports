@@ -22,16 +22,18 @@
 /* eslint-disable no-console */
 define([
     "jquery",
-    "local_edwiserreports/defaultconfig",
+    "./defaultconfig",
     "./common",
-    "local_edwiserreports/jquery.dataTables",
-    "local_edwiserreports/dataTables.bootstrap4"
-], function($, cfg, common) {
+    "./variables",
+    "./jquery.dataTables",
+    "./dataTables.bootstrap4"
+], function($, cfg, common, V) {
     var liveUsersTable = null;
     var panel = cfg.getPanel("#liveusersblock");
     var panelBody = cfg.getPanel("#liveusersblock", "body");
     var loader = $(panelBody + " .loader");
     var table = $(panelBody + " .table");
+    var searchTable = panel + " .table-search-input input";
 
     /**
      * Initialize
@@ -43,28 +45,33 @@ define([
             common.loader.show("#liveusersblock");
 
             $.ajax({
-                url: cfg.requestUrl,
-                type: cfg.requestType,
-                dataType: cfg.requestDataType,
-                data: {
-                    action: 'get_liveusers_data_ajax',
-                    secret: M.local_edwiserreports.secret
-                },
-            }).done(function(response) {
-                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
-                    invalidUser('liveusersblock', response);
-                    return;
-                }
-                setTimeout(function() {
-                    init(invalidUser);
-                }, 2 * 60 * 1000);
-                createRealtimeUsersBlock(response.data);
-            })
-            .fail(function(error) {
-                // console.log(error);
-            }).always(function() {
-                // Hide loader.
-                common.loader.hide("#liveusersblock");
+                    url: cfg.requestUrl,
+                    type: cfg.requestType,
+                    dataType: cfg.requestDataType,
+                    data: {
+                        action: 'get_liveusers_data_ajax',
+                        secret: M.local_edwiserreports.secret
+                    },
+                }).done(function(response) {
+                    if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                        invalidUser('liveusersblock', response);
+                        return;
+                    }
+                    setTimeout(function() {
+                        init(invalidUser);
+                    }, 2 * 60 * 1000);
+                    createRealtimeUsersBlock(response.data);
+                })
+                .fail(function(error) {
+                    // console.log(error);
+                }).always(function() {
+                    // Hide loader.
+                    common.loader.hide("#liveusersblock");
+                });
+
+            // Search in table.
+            $('body').on('input', searchTable, function() {
+                liveUsersTable.column(0).search(this.value).draw();
             });
         }
     }
@@ -83,12 +90,14 @@ define([
 
         liveUsersTable = table.DataTable({
             data: data,
+            dom: '<"edwiserreports-table"<t><"table-pagination"p>>',
             language: {
                 searchPlaceholder: "Search User"
             },
-            aaSorting: [[1, 'asc']],
-            columnDefs: [
-                {
+            aaSorting: [
+                [1, 'asc']
+            ],
+            columnDefs: [{
                     "targets": 0,
                     "className": "text-left"
                 },
@@ -103,8 +112,7 @@ define([
                 }
             ],
             drawCallback: function() {
-                $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                $('.dataTables_filter').addClass('pagination-sm pull-right');
+                common.stylePaginationButton(this);
             },
             bInfo: false,
             lengthChange: false,

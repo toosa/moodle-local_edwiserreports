@@ -27,12 +27,11 @@ define([
     'core/notification',
     'core/fragment',
     'core/templates',
-    'local_edwiserreports/variables',
+    './variables',
     './common',
-    'local_edwiserreports/jquery.dataTables',
-    'local_edwiserreports/dataTables.bootstrap4',
-    'local_edwiserreports/flatpickr',
-    'local_edwiserreports/common'
+    './jquery.dataTables',
+    './dataTables.bootstrap4',
+    './flatpickr'
 ], function($, ModalFactory, ModalEvents, Notification, Fragment, Templates, V, common) {
     /**
      * Initialize
@@ -46,19 +45,29 @@ define([
         var dropdownToggle = "#filter-dropdown.dropdown-toggle";
         var dropdownMenu = ".dropdown-menu[aria-labelledby='filter-dropdown']";
         var dropdownItem = dropdownMenu + " .dropdown-item";
-        var flatpickrCalender = "#flatpickrCalender";
+        var flatpickrCalender = "#flatpickrCalender-activeusers";
         var dropdownButton = "button#filter-dropdown";
+        var cohortFilter = '.cohort-select';
         var filter = 'weekly';
         var cohortId = 0;
-        var dropdownInput = "#wdm-userfilter input.form-control.input";
+        var dropdownInput = "#userfilter input.form-control.input";
         var sesskey = null;
         var DataTable = null;
+        var modalTable = null;
+        var searchTable = PageId + " .table-search-input input";
+        var lengthSelect = PageId + " .table-length-input select";
 
-        // Varibales for cohort filter
-        var cohortFilterBtn = "#cohortfilter";
-        var cohortFilterItem = cohortFilterBtn + " ~ .dropdown-menu .dropdown-item";
+        // Initialize select2.
+        $(PageId).find('.singleselect').select2();
+
+        $(PageId).find('.download-links input[name="cohortid"]').val(cohortId);
+        $(PageId).find('.download-links input[name="filter"]').val(filter);
+
         // Var tableDom = '<"row"f><"row"t><"row"<"d-none"i><p>>';
         $(document).ready(function() {
+
+            common.handleSearchInput();
+
             /* Show custom dropdown */
             $(dropdownToggle).on("click", function() {
                 $(dropdownMenu).addClass("show");
@@ -73,17 +82,9 @@ define([
             /* Hide dropdown when click anywhere in the screen */
             $(document).click(function(e) {
                 if (!($(e.target).hasClass("dropdown-menu") ||
-                    $(e.target).parents(".dropdown-menu").length)) {
+                        $(e.target).parents(".dropdown-menu").length)) {
                     $(dropdownMenu).removeClass('show');
                 }
-            });
-
-            /* Select cohort filter for active users block */
-            $(cohortFilterItem).on('click', function() {
-                cohortId = $(this).data('cohortid');
-                $(cohortFilterBtn).html($(this).text());
-                $(PageId).find('.download-links input[name="cohortid"]').val(cohortId);
-                createActiveUsersTable(filter, cohortId);
             });
 
             /* Select filter for active users block */
@@ -97,7 +98,14 @@ define([
                 $(dropdownInput).val("Custom");
             });
 
-            createActiveUsersTable();
+            // Cohort filter.w
+            $(PageId + " " + cohortFilter).on('change', function() {
+                cohortId = $(this).val();
+                $(PageId).find('.download-links input[name="cohortid"]').val(cohortId);
+                createActiveUsersTable(filter, cohortId);
+            })
+
+            createActiveUsersTable(filter, cohortId);
             createModalOfUsersList();
             createDropdownCalendar();
         });
@@ -113,7 +121,7 @@ define([
                 var ModalRoot = null;
 
                 // eslint-disable-next-line no-eval
-                var titleDate = V.formatDate(new Date(eval(filter * 1000)), "d MMM yyyy");
+                var titleDate = V.formatDate(new Date(eval(filter * 86400 * 1000)), "d MMM yyyy");
 
                 if (action == "activeusers") {
                     title = M.util.get_string('activeusersmodaltitle', V.component, {
@@ -133,8 +141,7 @@ define([
                     body: Fragment.loadFragment(
                         'local_edwiserreports',
                         'userslist',
-                        CONTEXTID,
-                        {
+                        CONTEXTID, {
                             page: 'activeusers',
                             filter: filter,
                             cohortid: cohortId,
@@ -159,19 +166,18 @@ define([
                         }
 
                         // Create dataTable for userslist
-                        ModalRoot.find(".modal-table").DataTable({
+                        modalTable = ModalRoot.find(".modal-table").DataTable({
+                            dom: '<"edwiserreports-table"<"p-2"i><t><"table-pagination"p>>',
                             language: {
-                                searchPlaceholder: "Search User",
                                 emptyTable: "There are no users"
                             },
                             drawCallback: function() {
-                                $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                                $('.dataTables_filter').addClass('pagination-sm pull-right');
-                            },
-                            // ScrollY : "350px",
-                            // scrollX : true,
-                            // paging: false,
-                            bInfo: false
+                                common.stylePaginationButton(this);
+                            }
+                        });
+
+                        ModalRoot.find('.table-search-input input').on('input', function() {
+                            modalTable.search(this.value).draw();
                         });
                     });
                     return;
@@ -189,7 +195,7 @@ define([
                 altFormat: "d/m/Y",
                 dateFormat: "Y-m-d",
                 maxDate: "today",
-                appendTo: document.getElementById("activeUser-calendar"),
+                appendTo: $(dropdownButton).next().find('.dropdown-calendar').get(0),
                 onOpen: function() {
                     $(dropdownMenu).addClass('withcalendar');
                 },
@@ -254,7 +260,7 @@ define([
                 $.each(response.labels, function(idx, val) {
                     ActiveUsers[idx] = {
                         date: val,
-                        filter: parseInt((new Date(val).getTime() / 1000)),
+                        filter: response.dates[idx],
                         activeusers: response.data.activeUsers[idx],
                         courseenrolment: response.data.enrolments[idx],
                         coursecompletion: response.data.completionRate[idx]
@@ -268,51 +274,56 @@ define([
 
                 // eslint-disable-next-line promise/catch-or-return
                 Templates.render('local_edwiserreports/activeuserstable', context)
-                .then(function(html, js) {
-                    Templates.replaceNode(ActiveUsersTable, html, js);
-                    return;
-                }).fail(function(ex) {
-                    console.log(ex);
-                }).always(function() {
-                    DataTable = $(ActiveUsersTable).DataTable({
-                        responsive: true,
-                        // Dom : '<"pull-left"f><t><p>',
-                        order: [[0, 'desc']],
-                        language: {
-                            searchPlaceholder: "Search Date",
-                            emptyTable: "There are no active users"
-                        },
-                        columnDefs: [
-                            {
-                                "targets": 0,
-                                "className": "text-left"
+                    .then(function(html, js) {
+                        Templates.replaceNode(ActiveUsersTable, html, js);
+                        return;
+                    }).fail(function(ex) {
+                        console.log(ex);
+                    }).always(function() {
+                        DataTable = $(ActiveUsersTable).DataTable({
+                            responsive: true,
+                            dom: '<"edwiserreports-table"<"p-2"i><t><"table-pagination"p>>',
+                            order: [
+                                [0, 'desc']
+                            ],
+                            language: {
+                                searchPlaceholder: "Search Date",
+                                emptyTable: "There are no active users"
                             },
-                            {
-                                "targets": "_all",
-                                "className": "text-center",
+                            columnDefs: [{
+                                    "targets": 0,
+                                    "className": "text-left"
+                                },
+                                {
+                                    "targets": "_all",
+                                    "className": "text-center",
+                                }
+                            ],
+                            drawCallback: function() {
+                                common.stylePaginationButton(this);
                             }
-                        ],
-                        info: false,
-                        drawCallback: function() {
-                            $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                            $('.dataTables_filter').addClass('pagination-sm pull-right');
-                        }
-                        // ScrollY : 350,
-                        // scrollX : true,
-                        // paginate : false
-                    });
-                    $(ActiveUsersTable).show();
-                    $(loader).hide();
+                        });
+                        $(ActiveUsersTable).show();
+                        $(loader).hide();
 
-                    // Hide loader.
-                    common.loader.hide("#wdm-activeusers-individual");
-                });
+                        // Hide loader.
+                        common.loader.hide("#wdm-activeusers-individual");
+                    });
             }).fail(function(error) {
                 console.log(error);
                 // Hide loader.
                 common.loader.hide("#wdm-activeusers-individual");
             });
         }
+        // Observer length change.
+        $(lengthSelect).on('change', function() {
+            DataTable.page.len(this.value).draw();
+        });
+
+        // Search in table.
+        $(searchTable).on('input', function() {
+            DataTable.column(0).search(this.value).draw();
+        });
     }
     return {
         init: init

@@ -47,7 +47,6 @@ function xmldb_local_edwiserreports_install() {
         $blockdata->blockdata = json_encode((object) array(
             LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => $block[LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW],
             LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => $block[LOCAL_SITEREPORT_BLOCK_TABLET_VIEW],
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => $block[LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW],
             'position' => $block['position']
         ));
         $blockdata->timecreated = time();

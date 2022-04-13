@@ -92,6 +92,12 @@ class report_blocks {
                 $layout->hiddenblock = true;
             }
 
+            if ((isset($layout->downloadlinks) && !empty($layout->downloadlinks)) ||
+                (isset($layout->morelink) && !empty($layout->morelink))
+            ) {
+                $layout->hasmenu = true;
+            }
+
             $blockbase->set_block_size($block);
 
             $this->reportsblock[] = $layout;

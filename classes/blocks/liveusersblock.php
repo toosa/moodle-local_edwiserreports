@@ -45,6 +45,7 @@ class liveusersblock extends block_base {
         $this->layout->id = 'liveusersblock';
         $this->layout->name = get_string('realtimeusers', 'local_edwiserreports');
         $this->layout->info = get_string('realtimeusersblockhelp', 'local_edwiserreports');
+        $this->layout->filters = $this->get_filters();
 
         // Add block view in layout.
         $this->layout->blockview = $this->render_block('liveusersblock', $this->block);
@@ -53,6 +54,18 @@ class liveusersblock extends block_base {
 
         // Return blocks layout.
         return $this->layout;
+    }
+
+    /**
+     * Prepare Inactive users filter
+     * @return string Filter HTML content
+     */
+    public function get_filters() {
+        global $OUTPUT;
+        return $OUTPUT->render_from_template('local_edwiserreports/common-table-search-filter', [
+            'searchicon' => $this->image_icon('actions/search'),
+            'placeholder' => get_string('searchuser', 'local_edwiserreports')
+        ]);
     }
 
     /**
@@ -92,8 +105,15 @@ class liveusersblock extends block_base {
         }
         $params = array();
 
-        $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
-        $userfields = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
+        if (class_exists('\core_user\fields')) {
+            $userfieldsapi = \core_user\fields::for_userpic()->including('username', 'deleted');
+            $userfields = $userfieldsapi->get_sql('u', false, '', '', false)->selects;
+        } else {
+            $extrafields = get_extra_user_fields(\context_system::instance());
+            $extrafields[] = 'username';
+            $extrafields[] = 'deleted';
+            $userfields = \user_picture::fields('u', $extrafields);
+        }
 
         $params['now'] = $now;
         $params['timefrom'] = $timefrom;
@@ -140,10 +160,10 @@ class liveusersblock extends block_base {
             }
 
             if (array_key_exists($inactiveuser->id, $activeusers)) {
-                $user["status"] = html_writer::tag("span", "active", array("class" => "badge badge-success"));
+                $user["status"] = html_writer::tag("span", get_string('active'), array("class" => "text-success"));
             } else {
-                $user["status"] = html_writer::tag("span", "inactive", array(
-                        "class" => "badge badge-danger"
+                $user["status"] = html_writer::tag("span", get_string('inactive'), array(
+                        "class" => "text-danger"
                     )
                 );
             }

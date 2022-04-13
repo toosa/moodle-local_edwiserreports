@@ -42,6 +42,7 @@ class progress {
     private $precision;
 
     public function __construct($task = null, $precision = 2) {
+        ob_implicit_flush();
         $this->task = $task;
         $this->precision = $precision;
     }
@@ -56,9 +57,11 @@ class progress {
         }
         echo "<div class='text-center col-4 mb-25 mx-auto'>
         <div class='progress my-25'>
-            <div id='" . $this->task . "' class='progress-bar' role='progressbar' style='width: 0%;' aria-valuenow='0'
+            <div id='" . $this->task . "' class='progress-bar text-dark' role='progressbar' style='width: 0%;' aria-valuenow='0'
             aria-valuemin='0' aria-valuemax='100'>0%</div>
         </div>";
+        flush();
+        ob_flush();
     }
 
     /**
@@ -92,6 +95,8 @@ class progress {
             document.getElementById('" . $this->task . "').style.width = '" . $progress . "%';
             document.getElementById('" . $this->task . "').innerText = '" . $progress . "%';
         </script>";
+        flush();
+        ob_flush();
     }
 
     /**
@@ -99,8 +104,8 @@ class progress {
      * @param float  progress Task Progress
      * @param string task     Task id
      */
-    public function update_progress($progress) {
-        $progress = round($progress, $this->precision);
+    public function update_progress($progress, $precision = null) {
+        $progress = round($progress, $precision == null ? $this->precision : $precision);
         if (!defined('EDWISER_REPORTS_WEB_SCRIPT')) {
             $this->update_progress_cli($progress);
             return;

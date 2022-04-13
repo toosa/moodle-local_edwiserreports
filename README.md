@@ -6,6 +6,9 @@ This is the birth version of Edwiser Reports.
 
 # #Features
 =============
+
+  ### User time tracking.
+
   #### #1. Active Users, Course Enrolment and Course Completion Rate Block.
   - This block will show active users, course enrolment and course completion over the period.
   - More (Details) Page : On this page we can see date wise detailed list of users.
@@ -14,9 +17,6 @@ This is the birth version of Edwiser Reports.
   - This block will show Pie chart of the course with percentage.
 
   #### #3. Popular Courses Block
-  - This block will show the most active courses based on the enrolments, visits and completions.
- 
-  #### #4. Popular Courses Block
   - This block will show the most active courses based on the enrolments, visits and completions.
   - Course Progress Report
     -- This report will show the course progress of a particular course by the users.
@@ -29,7 +29,7 @@ This is the birth version of Edwiser Reports.
 
   #### #5. Live Users Block
   - This block will show all current logged in users in the site.
-  
+
   #### #6. Site Access Information Block
   - This block will show average hourly usage of the site in a week.
 
@@ -42,6 +42,14 @@ This is the birth version of Edwiser Reports.
   #### #9. Course Completion Reports on Each Course.
   - This page will show a user wise course completion report.
 
+  #### #10. Student Engagment Block.
+  - Specially created for Teacher role.
+  - Student engagement reports displays timespent by students on sites, courses and the total visits on the course.
+
+  #### #11. Learner Block.
+  - Specially created for Student role.
+  - Track your course progress and timespent on site.
+
 # #Original Author
 ===============
 Author: WisdmLabs
@@ -53,7 +61,7 @@ Software: Edwiser Reports is GPL compliant. https://edwiser.org/
 You can download the plugin from edwiser website.
 Setup system cron inorder to get the correct reporting results
 
-###### Ensure you have the version of Moodle as stated above in 'Required version of Moodle'.  
+###### Ensure you have the version of Moodle as stated above in 'Required version of Moodle'.
  1. This is essential as the
     theme relies on underlying core code that is out of my control.
  2. Login as an administrator and put Moodle in 'Maintenance Mode' so that there are no users using it bar you as the

@@ -22,13 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_edwiserreports;
-
-use context_system;
-use context_course;
-use moodle_url;
-use moodle_exception;
-
 require_once(__DIR__ . '/../../config.php');
 require_once('classes/output/renderable.php');
 
@@ -44,6 +37,9 @@ $course = get_course($courseid);
 require_login(get_course($courseid));
 
 local_edwiserreports_get_required_strings_for_js();
+
+// Load color themes from constants.
+local_edwiserreports\utility::load_color_pallets();
 
 // Get course context.
 $coursecontext = context_course::instance($courseid);
@@ -64,6 +60,9 @@ $PAGE->set_context($coursecontext);
 
 // Set page layout.
 $PAGE->set_pagelayout('standard');
+
+// Add theme class to body.
+$PAGE->add_body_classes(array('theme_' . $PAGE->theme->name));
 
 // Set page URL.
 $PAGE->set_url($pageurl);

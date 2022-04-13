@@ -22,10 +22,10 @@
 /* eslint-disable no-console */
 define([
     'jquery',
-    'core/chartjs',
+    'local_edwiserreports/chart/apexcharts',
     'local_edwiserreports/defaultconfig',
     './common'
-], function($, Chart, cfg, common) {
+], function($, ApexCharts, CFG, common) {
     /**
      * Initialize
      * @param {function} invalidUser Callback function
@@ -33,18 +33,18 @@ define([
     function init(invalidUser) {
         // Global data got todays activity block
         var todaysVisits;
-        var panel = cfg.getPanel("#todaysactivityblock");
-        var panelBody = cfg.getPanel("#todaysactivityblock", "body");
+        var panel = CFG.getPanel("#todaysactivityblock");
+        var panelBody = CFG.getPanel("#todaysactivityblock", "body");
         var flatpickrCalender = panel + " #flatpickrCalender-todaysactivity";
 
         /**
          * On document ready do the bellow stuff
          */
         $(document).ready(function() {
-            cfg.todaysActivityBlock = cfg.getTodaysActivityBlock();
+            CFG.todaysActivityBlock = CFG.getTodaysActivityBlock();
 
             // If course progress block is there
-            if (cfg.todaysActivityBlock) {
+            if (CFG.todaysActivityBlock) {
                 getTodaysActivity();
                 /**
                  * Generate flatpicker for
@@ -74,39 +74,39 @@ define([
 
             // Send Ajax call to get todays activity information
             $.ajax({
-                url: cfg.requestUrl,
-                type: cfg.requestType,
-                dataType: cfg.requestDataType,
-                data: {
-                    action: 'get_todaysactivity_data_ajax',
-                    secret: M.local_edwiserreports.secret,
-                    data: JSON.stringify({
-                        date: date
-                    })
-                }
-            }).done(function(response) {
-                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
-                    invalidUser('todaysactivityblock', response);
-                    return;
-                }
-                /**
-                 * After getting todays activity information
-                 * update the value in todays activity block
-                 */
-                $.each(response.data, function(indx, el) {
-                    var section = $(panelBody + " #todays-" + indx);
-                    section.find(".data").html(el);
-                });
+                    url: CFG.requestUrl,
+                    type: CFG.requestType,
+                    dataType: CFG.requestDataType,
+                    data: {
+                        action: 'get_todaysactivity_data_ajax',
+                        secret: M.local_edwiserreports.secret,
+                        data: JSON.stringify({
+                            date: date
+                        })
+                    }
+                }).done(function(response) {
+                    if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                        invalidUser('todaysactivityblock', response);
+                        return;
+                    }
+                    /**
+                     * After getting todays activity information
+                     * update the value in todays activity block
+                     */
+                    $.each(response.data, function(indx, el) {
+                        var section = $(panelBody + " #todays-" + indx);
+                        section.find(".data").html(el);
+                    });
 
-                /* Generate Todays Activity Graph */
-                generateTodaysVisitsGraph(response.data.visitshour);
-            })
-            .fail(function(error) {
-                // console.log(error);
-            }).always(function() {
-                // Hide loader.
-                common.loader.hide('#todaysactivityblock');
-            });
+                    /* Generate Todays Activity Graph */
+                    generateTodaysVisitsGraph(response.data.visitshour);
+                })
+                .fail(function(error) {
+                    // console.log(error);
+                }).always(function() {
+                    // Hide loader.
+                    common.loader.hide('#todaysactivityblock');
+                });
         }
 
         /**
@@ -115,14 +115,62 @@ define([
          */
         function generateTodaysVisitsGraph(data) {
             // Prepare data for generating graph
-            cfg.todaysActivityBlock.graph.data = data;
+            CFG.todaysActivityBlock.graph.data = data;
             data = {
-                labels: cfg.todaysActivityBlock.graph.labels,
+                labels: CFG.todaysActivityBlock.graph.labels,
                 datasets: [{
-                    label: cfg.todaysActivityBlock.graph.labelName,
-                    data: cfg.todaysActivityBlock.graph.data,
-                    backgroundColor: cfg.todaysActivityBlock.graph.backgroundColor
+                    label: CFG.todaysActivityBlock.graph.labelName,
+                    data: CFG.todaysActivityBlock.graph.data,
+                    backgroundColor: CFG.todaysActivityBlock.graph.backgroundColor
                 }]
+            };
+
+            var options = {
+                series: [{
+                    data: CFG.todaysActivityBlock.graph.data
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 150,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: false,
+                        colors: {
+                            ranges: [{
+                                from: 0,
+                                to: 100
+                            }]
+                        }
+                    }
+                },
+                grid: {
+                    show: false
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                yaxis: {
+                    show: false
+                },
+                tooltip: {
+                    theme: 'dark',
+                    custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                        return '<div class="text-center p-1">' +
+                            w.config.xaxis.categories[dataPointIndex] +
+                            '<br>' +
+                            series[seriesIndex][dataPointIndex] +
+                            '</div>';
+                    }
+                },
+                xaxis: {
+                    categories: CFG.todaysActivityBlock.graph.labels,
+                },
+                colors: [CFG.getColorTheme()[2]]
             };
 
             /**
@@ -134,11 +182,8 @@ define([
             }
 
             // Generate Todays Activity Graph
-            todaysVisits = new Chart(cfg.todaysActivityBlock.ctx, {
-                type: cfg.todaysActivityBlock.graph.type,
-                options: cfg.todaysActivityBlock.graph.options,
-                data: data
-            });
+            todaysVisits = new ApexCharts($('#apex-chart-todays-activity').get(0), options);
+            todaysVisits.render();
         }
     }
 

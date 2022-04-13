@@ -28,8 +28,18 @@
     {
     }
 }}
-<div id="wdm-courseprogress-individual" class="table-responsive mt-1" data-sesskey="{{sesskey}}">
-    <table class="table admintable" style="display: none;">
+<div id="wdm-courseprogress-individual" class="table-responsive" data-sesskey="{{sesskey}}">
+    <div id="userfilter">
+        <div class="row mt-2">
+            <div class="filter-selector col-12 col-md-3 mb-1">
+                {{> local_edwiserreports/datatable/search }}
+            </div>
+            <div class="filter-selector col-12 col-md-3 mb-1 ml-auto">
+                {{> local_edwiserreports/datatable/length }}
+            </div>
+        </div>
+    </div>
+    <table class="table admintable w-100" style="display: none;">
         <thead>
             <tr>
                 <th class="text-nowrap bg-image-none no-sorting-arrow">
@@ -42,19 +52,19 @@
                     {{#str}} completed, local_edwiserreports {{/str}}
                 </th>
                 <th class="text-nowrap bg-image-none no-sorting-arrow">
-                    {{#str}} per100-80, local_edwiserreports {{/str}}
+                    81% - 100%
                 </th>
                 <th class="text-nowrap bg-image-none no-sorting-arrow">
-                    {{#str}} per80-60, local_edwiserreports {{/str}}
+                    61% - 80%
                 </th>
                 <th class="text-nowrap bg-image-none no-sorting-arrow">
-                    {{#str}} per60-40, local_edwiserreports {{/str}}
+                    41% - 60%
                 </th>
                 <th class="text-nowrap bg-image-none no-sorting-arrow">
-                    {{#str}} per40-20, local_edwiserreports {{/str}}
+                    21% - 40%
                 </th>
                 <th class="text-nowrap bg-image-none no-sorting-arrow">
-                    {{#str}} per20-0, local_edwiserreports {{/str}}
+                    0% - 20%
                 </th>
             </tr>
         </thead>

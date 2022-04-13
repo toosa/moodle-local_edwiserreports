@@ -197,5 +197,233 @@ $capabilities = array(
             'coursecreator' => CAP_ALLOW,
             'manager' => CAP_ALLOW
         ),
+    ),
+    'report/edwiserreports_learnercourseprogressblock:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'student' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_learnercourseprogressblock:editadvance' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_learnertimespentonsiteblock:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'student' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_learnertimespentonsiteblock:editadvance' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_gradeblock:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_gradeblock:editadvance' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_visitsonsiteblock:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_visitsonsiteblock:editadvance' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_timespentonsiteblock:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_timespentonsiteblock:editadvance' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_timespentoncourseblock:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_timespentoncourseblock:editadvance' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_courseactivitystatusblock:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_courseactivitystatusblock:editadvance' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insightnewregistrations:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insightcourseenrolments:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insightcoursecompletions:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insightactiveusers:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'coursecreator' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insightactivitycompletions:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insighttimespentoncourses:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insighttotalcoursesenrolled:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'student' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insightcoursecompleted:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'student' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insightactivitiescompleted:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'student' => CAP_ALLOW
+        ),
+    ),
+    'report/edwiserreports_insighttimespentonsite:view' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'student' => CAP_ALLOW
+        ),
     )
 );

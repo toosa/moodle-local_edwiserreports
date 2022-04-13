@@ -1,4 +1,184 @@
 /* stylelint-disable */
+#wdm-edwiserreports #activeusersblock .dropdown-menu .dropdown-item.custom {
+    background: #fff;
+}
+
+#wdm-edwiserreports #activeusersblock .refresh {
+    cursor: pointer;
+}
+
+#wdm-edwiserreports #activeusersblock .refresh.refresh-spin {
+    cursor: pointer;
+    -webkit-animation: rotating 2s linear infinite;
+    -moz-animation: rotating 2s linear infinite;
+    -ms-animation: rotating 2s linear infinite;
+    -o-animation: rotating 2s linear infinite;
+    animation: rotating 2s linear infinite;
+}
+
+#wdm-activeusers-individual .dropdown-menu.withcalendar {
+    width: 310px;
+    display: flex;
+    right: 0;
+    left: auto;
+}
+
+#wdm-activeusers-individual .dropdown-menu.withcalendar .dropdown-body {
+    display: none;
+}
+
+#wdm-activeusers-individual .dropdown-menu.withcalendar .dropdown-calendar {
+    height: 300px;
+    width: 308px;
+    float: left;
+    position: relative;
+}
+
+#wdm-activeusers-individual .dropdown-menu.withcalendar .dropdown-calendar .flatpickr-calendar {
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    position: unset;
+}
+
+#wdm-activeusers-individual .filter-wrapper {
+    width: fit-content;
+}
+
+#wdm-activeusers-individual input.dropdown-item {
+    background-color: transparent;
+    color: inherit;
+}
+
+#wdm-activeusers-individual input.dropdown-item:hover {
+    cursor: pointer;
+    background-color: #f8f9fa;
+}
+
+#wdm-activeusers-individual input.dropdown-item.custom:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+#wdm-activeusers-individual .dataTable .sorting_asc,
+#wdm-activeusers-individual .dataTable .sorting_desc,
+#wdm-activeusers-individual .dataTable .sorting {
+    background-image: none !important;
+}
+
+#wdm-edwiserreports #certificatestatsblock .panel-body {
+    min-height: 250px;
+}
+
+#wdm-certificates-individual .table .pie-progress {
+    width: 40px;
+    margin: auto;
+}
+
+.filter-selector .dropdown-menu .dropdown-item input {
+    height: auto;
+}
+
+.filter-selector .dropdown-menu .dropdown-item.active, .filter-selector .dropdown-menu .dropdown-item:not(.custom):hover {
+    text-decoration: underline;
+}
+
+.filter-selector .dropdown-menu .dropdown-item.active,
+.filter-selector .dropdown-menu .dropdown-item.active input, .filter-selector .dropdown-menu .dropdown-item:hover {
+    background: white !important;
+}
+
+.filter-selector .dropdown-menu .custom input::-webkit-input-placeholder {
+    color: inherit;
+}
+
+.filter-selector .dropdown-menu .custom input:-moz-placeholder {
+    color: inherit;
+}
+
+.filter-selector .dropdown-menu .custom input::-moz-placeholder {
+    color: inherit;
+}
+
+.filter-selector .dropdown-menu .custom input:-ms-input-placeholder {
+    color: inherit;
+}
+
+.filter-selector .dropdown-menu .custom input::-ms-input-placeholder {
+    color: inherit;
+}
+
+.filter-selector .dropdown-menu .custom input::placeholder {
+    color: inherit;
+}
+
+.filter-selector .dropdown-menu .custom:hover input::-webkit-input-placeholder {
+    background: white !important;
+    text-decoration: underline;
+}
+
+.filter-selector .dropdown-menu .custom:hover input:-moz-placeholder {
+    background: white !important;
+    text-decoration: underline;
+}
+
+.filter-selector .dropdown-menu .custom:hover input::-moz-placeholder {
+    background: white !important;
+    text-decoration: underline;
+}
+
+.filter-selector .dropdown-menu .custom:hover input:-ms-input-placeholder {
+    background: white !important;
+    text-decoration: underline;
+}
+
+.filter-selector .dropdown-menu .custom:hover input::-ms-input-placeholder {
+    background: white !important;
+    text-decoration: underline;
+}
+
+.filter-selector .dropdown-menu .custom:hover input::placeholder {
+    background: white !important;
+    text-decoration: underline;
+}
+
+.panel-header .dropdown-menu .dropdown-item:not(.disabled):hover {
+    background: white !important;
+    text-decoration: underline;
+}
+
+.block-filters .dropdown-menu .dropdown-item:hover {
+    background: white !important;
+    text-decoration: underline;
+}
+
+.filters .dropdown-menu .dropdown-item:hover {
+    background: white !important;
+    text-decoration: underline;
+}
+
+#scheduletab .date-filters .dropdown .dropdown-item:hover {
+    background: white;
+    text-decoration: underline;
+}
+
+.select2-results__option--highlighted,
+.select2-results__option[aria-selected='true'] {
+    background-color: white !important;
+    text-decoration: underline;
+}
+
+.edwiserreports-table .dataTables_length select option {
+    background: white;
+    color: inherit;
+}
+
+.edwiserreports-table .dataTables_length select option:hover {
+    background: white !important;
+}
+
 @-webkit-keyframes rotating {
     from {
         -webkit-transform: rotate(0deg);
@@ -27,109 +207,6 @@
         -o-transform: rotate(360deg);
         transform: rotate(360deg);
     }
-}
-
-#wdm-edwiserreports #activeusersblock .dropdown-menu .dropdown-body {
-    width: 215px;
-    float: left;
-}
-
-#wdm-edwiserreports #activeusersblock .dropdown-menu .dropdown-item.custom {
-    background: #fff;
-}
-
-#wdm-edwiserreports #activeusersblock .dropdown-menu.withcalendar {
-    width: 540px;
-    display: flex;
-}
-
-#wdm-edwiserreports #activeusersblock .dropdown-menu.withcalendar .dropdown-calendar {
-    height: 300px;
-    width: 308px;
-    float: left;
-    position: relative;
-}
-
-#wdm-edwiserreports #activeusersblock .dropdown-menu.withcalendar .dropdown-calendar .flatpickr-calendar {
-    top: 0 !important;
-    left: 0 !important;
-    right: auto !important;
-    box-shadow: none !important;
-    border: 0 !important;
-    position: unset;
-}
-
-#wdm-edwiserreports #activeusersblock .refresh {
-    cursor: pointer;
-}
-
-#wdm-edwiserreports #activeusersblock .refresh.refresh-spin {
-    cursor: pointer;
-    -webkit-animation: rotating 2s linear infinite;
-    -moz-animation: rotating 2s linear infinite;
-    -ms-animation: rotating 2s linear infinite;
-    -o-animation: rotating 2s linear infinite;
-    animation: rotating 2s linear infinite;
-}
-
-#wdm-activeusers-individual input.dropdown-item {
-    background-color: transparent;
-    color: inherit;
-}
-
-#wdm-activeusers-individual input.dropdown-item:hover {
-    cursor: pointer;
-    background-color: #f8f9fa;
-}
-
-#wdm-activeusers-individual input.dropdown-item.custom:focus {
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-#wdm-activeusers-individual .dropdown-menu[aria-labelledby="cohortfilter"] {
-    max-height: 400px;
-}
-
-#wdm-activeusers-individual .dropdown-menu[aria-labelledby="filter-dropdown"] {
-    right: 0;
-    left: auto;
-}
-
-#wdm-activeusers-individual .dropdown-menu.withcalendar {
-    width: 540px;
-    display: flex;
-}
-
-#wdm-activeusers-individual .dropdown-menu.withcalendar .dropdown-calendar {
-    height: 300px;
-    width: 308px;
-    float: left;
-    position: relative;
-}
-
-#wdm-activeusers-individual .dropdown-menu.withcalendar .dropdown-calendar .flatpickr-calendar {
-    top: 0 !important;
-    left: 0 !important;
-    right: auto !important;
-    box-shadow: none !important;
-    border: 0 !important;
-    position: unset;
-}
-
-#wdm-activeusers-individual .dataTable .sorting_asc,
-#wdm-activeusers-individual .dataTable .sorting_desc,
-#wdm-activeusers-individual .dataTable .sorting {
-    background-image: none !important;
-}
-
-#wdm-edwiserreports #certificatestatsblock .panel-body {
-    min-height: 250px;
-}
-
-#wdm-certificates-individual .table .pie-progress {
-    width: 40px;
-    margin: auto;
 }
 
 @-webkit-keyframes spin {
@@ -223,6 +300,101 @@ tr[aria-expanded="true"] .accordion-arrow.icon {
     display: none;
 }
 
+.export-notice-modal {
+    max-width: 700px;
+}
+
+.export-notice-modal .modal-body {
+    padding: 3rem 1rem;
+}
+
+.export-notice-modal .pro-feature-warning {
+    width: 85%;
+}
+
+.export-notice-modal .export-notice div {
+    display: inline-block;
+}
+
+.export-notice-modal .export-notice .notice-text {
+    font-weight: 500;
+    vertical-align: sub;
+}
+
+.pro-feature-warning {
+    padding: 1rem;
+    border-radius: 5px;
+    background: #FFD21E33;
+    border: 1px solid #FFD21E;
+    margin: 0 auto 1.5rem auto;
+    width: 80%;
+}
+
+.pro-feature-warning .warning-container {
+    display: flex;
+    align-items: center;
+}
+
+#page-local-edwiserreports-index .comparisontable {
+    width: 100%;
+}
+
+#page-local-edwiserreports-index .edwiserreports-header .filter-selector {
+    position: relative;
+}
+
+#page-local-edwiserreports-index .edwiserreports-header .filter-selector .dropdown-menu {
+    right: 0 !important;
+    left: auto !important;
+    transform: none !important;
+    top: 100% !important;
+}
+
+#page-local-edwiserreports-index .dropdown-menu.withcalendar {
+    width: 310px;
+    display: flex;
+}
+
+#page-local-edwiserreports-index .dropdown-menu.withcalendar .dropdown-body {
+    display: none;
+}
+
+#page-local-edwiserreports-index .dropdown-menu.withcalendar .dropdown-calendar {
+    height: 300px;
+    width: 308px;
+    float: left;
+    position: relative;
+}
+
+#page-local-edwiserreports-index .dropdown-menu.withcalendar .dropdown-calendar .flatpickr-calendar {
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    position: unset;
+}
+
+#page-local-edwiserreports-index .selected-period {
+    padding: 0.1rem 0.8rem;
+    border-radius: 1rem;
+    font-weight: 500;
+}
+
+#page-local-edwiserreports-index .filter-wrapper {
+    width: fit-content;
+    z-index: 1;
+}
+
+#wdm-edwiserreports .blocksetting {
+    z-index: 2;
+}
+
+#wdm-edwiserreports .apexcharts-toolbar {
+    transform: translateY(-1.7rem);
+    z-index: 1 !important;
+}
+
 #wdm-edwiserreports .panel {
     box-shadow: unset;
 }
@@ -290,11 +462,53 @@ tr[aria-expanded="true"] .accordion-arrow.icon {
     background-image: none !important;
 }
 
+#wdm-edwiserreports .edwiserReport-block #gradeblock .graph-label,
+#wdm-edwiserreports .edwiserReport-block #courseprogressblock .graph-label,
+#wdm-edwiserreports .edwiserReport-block #learnertimespentonsiteblock [data-charttype="donut"] .graph-label,
+#wdm-edwiserreports .edwiserReport-block #learnercourseprogressblock [data-charttype="donut"] .graph-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+#wdm-edwiserreports .edwiserReport-block #gradeblock .apexcharts-tooltip,
+#wdm-edwiserreports .edwiserReport-block #courseprogressblock .apexcharts-tooltip,
+#wdm-edwiserreports .edwiserReport-block #learnertimespentonsiteblock [data-charttype="donut"] .apexcharts-tooltip,
+#wdm-edwiserreports .edwiserReport-block #learnercourseprogressblock [data-charttype="donut"] .apexcharts-tooltip {
+    overflow: visible !important;
+    background: transparent;
+}
+
+#wdm-edwiserreports .edwiserReport-block .custom-donut-tooltip {
+    padding: 1rem 1rem;
+    background: white;
+    color: orange;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+    box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+#wdm-edwiserreports .edwiserReport-block .custom-donut-tooltip::after, #wdm-edwiserreports .edwiserReport-block .custom-donut-tooltip::before {
+    content: " ";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 95%;
+    border-top: 0.8rem solid white;
+    border-right: 0.8rem solid transparent;
+    border-left: 0.8rem solid transparent;
+}
+
+#wdm-edwiserreports .edwiserReport-block .custom-donut-tooltip::before {
+    border-top: 0.9rem solid #e5e5e5;
+    border-right: 0.9rem solid transparent;
+    border-left: 0.9rem solid transparent;
+}
+
 #wdm-edwiserreports .edwiserReport-block > div {
     position: relative;
     height: 100%;
     background: white;
-    box-shadow: 0 0 0.875rem 0 rgba(41, 48, 66, 0.05);
+    box-shadow: 0 7px 14px 0 rgba(59, 65, 94, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
     border-radius: .25rem;
 }
 
@@ -302,12 +516,94 @@ tr[aria-expanded="true"] .accordion-arrow.icon {
     height: 100%;
 }
 
-#wdm-edwiserreports .edwiserReport-block > div .panel .panel-body {
-    overflow: auto;
+#wdm-edwiserreports .edwiserReport-block > div .panel:not(:hover) > .upgrade-to-pro {
+    display: none;
 }
 
-#wdm-edwiserreports .edwiserReport-block > div .panel .panel-footer {
-    padding: 1rem 0 0 0;
+#wdm-edwiserreports .edwiserReport-block > div .panel .upgrade-to-pro {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header {
+    position: relative;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions .dropdown-menu {
+    overflow: visible !important;
+    min-width: 10rem;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions .dropdown-menu::after, #wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions .dropdown-menu::before {
+    content: " ";
+    position: absolute;
+    right: 0.5rem;
+    top: -0.8rem;
+    border-bottom: 0.8rem solid white;
+    border-right: 0.6rem solid transparent;
+    border-left: 0.6rem solid transparent;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions .dropdown-menu::before {
+    transform: translate(0.1rem, -0.2rem);
+    border-bottom: 1rem solid #e5e5e5;
+    border-right: 0.7rem solid transparent;
+    border-left: 0.7rem solid transparent;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions .dropdown-menu .dropdown-item.disabled {
+    color: #444444;
+    opacity: 0.5;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions .dropdown-menu .dropdown-item.disabled.pro-highlight {
+    color: white;
+    font-weight: 600;
+    opacity: 1;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions .dropdown-menu .dropdown-item.disabled.pro-highlight span {
+    border-radius: 5px;
+    position: relative;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions .dropdown-menu .dropdown-item.disabled.pro-highlight span::after {
+    content: " ";
+    position: absolute;
+    left: 40%;
+    transform: translateX(-50%);
+    top: 100%;
+    border-top: 0.5rem solid;
+    border-right: 0.5rem solid transparent;
+    border-left: 0.5rem solid transparent;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .dropdown.blockoptions.show button {
+    background: #E5E5E5;
+    border-radius: 5px;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .panel-background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-header .panel-title {
+    z-index: 1;
+}
+
+#wdm-edwiserreports .edwiserReport-block > div .panel .panel-help {
+    color: rgba(82, 96, 105, 0.5) !important;
 }
 
 .pie-placeholder {
@@ -398,6 +694,33 @@ tr[aria-expanded="true"] .accordion-arrow.icon {
     white-space: nowrap;
 }
 
+#scheduletab input {
+    height: 2.7rem;
+}
+
+#scheduletab input,
+#scheduletab textarea,
+#scheduletab .dropdown button {
+    background: #FFFFFF;
+    box-sizing: border-box;
+    border-radius: 0.285rem;
+    box-shadow: 0px 0.142rem 0.142rem rgba(0, 0, 0, 0.3);
+}
+
+#scheduletab .date-filters.disabled .dropdown,
+#scheduletab .date-filters.disabled .esr-switch {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+#listemailstab .esr-switch[data-value="0"] .show-svg {
+    display: none;
+}
+
+#listemailstab .esr-switch[data-value="on"] .hide-svg, #listemailstab .esr-switch[data-value="1"] .hide-svg {
+    display: none;
+}
+
 #listemailstab tbody.empty {
     display: none;
 }
@@ -406,22 +729,30 @@ tr[aria-expanded="true"] .accordion-arrow.icon {
     border-bottom: none;
 }
 
+#listemailstab .fa-edit,
+#listemailstab .fa-trash {
+    font-size: 1.429rem;
+}
+
+#listemailstab .fa-edit::before,
+#listemailstab .fa-trash::before {
+    position: relative;
+}
+
+#listemailstab .fa-trash::before {
+    top: 0.19rem;
+}
+
+#listemailstab .fa-edit::before {
+    top: 0.214rem;
+}
+
 .font-size-14 {
     font-size: 14px;
 }
 
 #mostactivecourses input[type="search"] {
     margin: 0;
-}
-
-div[id^="wdm-"][id*="-individual"] {
-    padding: 10px;
-    background: #fff;
-    min-height: 600px;
-}
-
-div[id^="wdm-"][id*="-individual"] table.table {
-    min-width: 100%;
 }
 
 .modal-dialog .table {
@@ -505,6 +836,14 @@ div[id^="wdm-"][id*="-individual"] table.table {
     cursor: pointer;
 }
 
+#page-local-edwiserreports-index .insight-danger {
+    color: #DC0000;
+}
+
+#page-local-edwiserreports-index .insight-success {
+    color: #1AB900;
+}
+
 #page-local-edwiserreports-index #page-header #editing-btn {
     vertical-align: middle;
     right: 1.25rem;
@@ -532,14 +871,54 @@ div[id^="wdm-"][id*="-individual"] table.table {
     right: 0;
     bottom: 0;
     background: rgba(255, 255, 255, 0.7);
+    z-index: 1201;
 }
 
-.edwiserreports-loader i {
-    font-size: 2rem;
+.edwiserreports-loader .animation-wrapper {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    color: #667984;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.edwiserreports-loader .animation-wrapper .fa-animation {
+    height: 55px;
+    width: 70px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.edwiserreports-loader .animation-wrapper .fa-animation .fa {
+    position: absolute;
+}
+
+.edwiserreports-loader .animation-wrapper .fa-animation .fa.spin-reverse {
+    -webkit-animation-direction: reverse;
+    -moz-animation-direction: reverse;
+    animation-direction: reverse;
+}
+
+.edwiserreports-loader .animation-wrapper .fa-animation .fa-lg {
+    font-size: 45px;
+    top: 8px;
+    left: 0px;
+}
+
+.edwiserreports-loader .animation-wrapper .fa-animation .fa-md {
+    font-size: 30px;
+    top: 0px;
+    left: 40px;
+}
+
+.edwiserreports-loader .animation-wrapper .fa-animation .fa-sm {
+    font-size: 24px;
+    top: 30px;
+    left: 35px;
 }
 
 @media (max-width: 1024px) and (min-width: 769px) {
@@ -560,9 +939,214 @@ div[id^="wdm-"][id*="-individual"] table.table {
     }
 }
 
-#wdm-userfilter .dropdown-menu {
-    max-height: 400px;
+#gradeblock .empty-donut .apexcharts-legend,
+#courseprogressblock .empty-donut .apexcharts-legend,
+#learnercourseprogressblock [data-charttype="donut"] .empty-donut .apexcharts-legend {
+    display: none;
+}
+
+#gradeblock .apexcharts-legend,
+#courseprogressblock .apexcharts-legend,
+#learnercourseprogressblock [data-charttype="donut"] .apexcharts-legend {
+    bottom: auto;
+    border-radius: 4px;
+    padding: 1.2rem;
+    margin-bottom: 0.3rem;
+}
+
+#gradeblock .apexcharts-legend.position-right,
+#courseprogressblock .apexcharts-legend.position-right,
+#learnercourseprogressblock [data-charttype="donut"] .apexcharts-legend.position-right {
+    border: 1px solid #E5E5E5;
+}
+
+#gradeblock .apexcharts-legend .apexcharts-legend-series,
+#courseprogressblock .apexcharts-legend .apexcharts-legend-series,
+#learnercourseprogressblock [data-charttype="donut"] .apexcharts-legend .apexcharts-legend-series {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 5px 0 !important;
+}
+
+#gradeblock .apexcharts-legend .apexcharts-legend-series:first-child,
+#courseprogressblock .apexcharts-legend .apexcharts-legend-series:first-child,
+#learnercourseprogressblock [data-charttype="donut"] .apexcharts-legend .apexcharts-legend-series:first-child {
+    margin-top: 0 !important;
+}
+
+#gradeblock .apexcharts-legend .apexcharts-legend-series:last-child,
+#courseprogressblock .apexcharts-legend .apexcharts-legend-series:last-child,
+#learnercourseprogressblock [data-charttype="donut"] .apexcharts-legend .apexcharts-legend-series:last-child {
+    margin-bottom: 0 !important;
+}
+
+.report-header {
+    padding: 2rem 0;
+}
+
+#studentengagement,
+#learner,
+#grade,
+#coursereport,
+#wdm-activeusers-individual,
+#wdm-certificates-individual,
+#learner {
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 7px 14px 0 rgba(59, 65, 94, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
+    min-height: 350px;
+}
+
+#studentengagement table th:nth-child(n+2),
+#studentengagement table td:nth-child(n+2),
+#learner table th:nth-child(n+2),
+#learner table td:nth-child(n+2),
+#grade table th:nth-child(n+2),
+#grade table td:nth-child(n+2),
+#coursereport table th:nth-child(n+2),
+#coursereport table td:nth-child(n+2),
+#wdm-activeusers-individual table th:nth-child(n+2),
+#wdm-activeusers-individual table td:nth-child(n+2),
+#wdm-certificates-individual table th:nth-child(n+2),
+#wdm-certificates-individual table td:nth-child(n+2),
+#learner table th:nth-child(n+2),
+#learner table td:nth-child(n+2) {
+    text-align: center;
+}
+
+#wdm-courseprogress-individual,
+#wdm-courseengage-individual,
+#wdm-completion-individual {
+    overflow: hidden;
+}
+
+#page-local-edwiserreports-old_logs .progress {
+    height: 1.3rem !important;
+    font-size: 0.8rem;
+}
+
+#page-local-edwiserreports-old_logs .progress .progress-bar {
+    text-align: left;
+    padding-left: 0.3rem;
+}
+
+.filters .dropdown-menu[aria-labelledby="cohortfilter"] {
+    max-height: 300px;
     overflow: auto;
+}
+
+.graph .apexcharts-canvas .fa-refresh {
+    font-size: 1.2rem;
+    margin-top: 3px;
+}
+
+.insight-card:not(:hover) > .upgrade-to-pro {
+    display: none;
+}
+
+.insight-card .upgrade-notice {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+}
+
+.insight-card .pro-lock {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+.download-links .download-label {
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: auto;
+}
+
+.checkbox-edwiserreports {
+    display: block;
+    position: relative;
+    padding: 0.892rem;
+    margin-bottom: 0;
+    user-select: none;
+}
+
+.checkbox-edwiserreports input {
+    display: none !important;
+}
+
+.checkbox-edwiserreports input:disabled + .checkmark {
+    opacity: 0.5;
+}
+
+.checkbox-edwiserreports input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+.checkbox-edwiserreports input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-edwiserreports input + .checkmark {
+    user-select: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    height: 1.785rem;
+    width: 1.785rem;
+    border: 1px solid #E5E5E5;
+    border-radius: 5px;
+}
+
+.checkbox-edwiserreports input + .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 0.6rem;
+    top: 0.214rem;
+    width: 0.428rem;
+    height: 1rem;
+    border: solid white;
+    border-width: 0 0.2rem 0.2rem 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.table-search-input {
+    position: relative;
+}
+
+.table-search-input button {
+    transition: opacity 300ms ease-in-out;
+}
+
+.table-search-input input {
+    padding-right: 3.5rem;
+}
+
+.table-search-input input.empty ~ .search-button {
+    opacity: 0.2;
+}
+
+.table-search-input .search-button {
+    position: absolute;
+    pointer-events: none;
+    right: 0;
+    top: 0;
+    width: 3.5rem;
+    height: 100%;
+}
+
+.table-length-input .length-label {
+    display: flex;
+    align-items: end;
+    justify-content: right;
+    padding-right: 0;
 }
 
 #wdm-edwiserreports #courseprogressblock .col-md-3 {
@@ -596,16 +1180,9 @@ div[id^="wdm-"][id*="-individual"] table.table {
     white-space: unset;
 }
 
-.reports-preview-body .empty,
-.reports-list-body .empty {
+.reports-preview-body table.empty,
+.reports-list-body table.empty {
     height: 300px;
-}
-
-.reports-preview-body .reports-preview-content,
-.reports-preview-body .reports-list-content,
-.reports-list-body .reports-preview-content,
-.reports-list-body .reports-list-content {
-    min-height: 300px;
 }
 
 .reports-preview-body .reports-preview-content.loader .icon,
@@ -617,12 +1194,39 @@ div[id^="wdm-"][id*="-individual"] table.table {
     font-size: 36px;
 }
 
-.reports-filter-body {
-    min-height: 340px;
+.reports-list-content [data-action="hide"][data-value="0"] .show-svg {
+    display: none;
+}
+
+.reports-list-content [data-action="hide"][data-value="1"] .hide-svg {
+    display: none;
+}
+
+.reports-filter-body .select2-selection--single {
+    height: 100% !important;
+}
+
+.reports-filter-body .select2-selection__rendered {
+    word-wrap: break-word !important;
+    text-overflow: inherit !important;
+    white-space: normal !important;
+}
+
+.reports-filter-body .checkbox-edwiserreports {
+    padding: 0.2rem 2.5rem;
 }
 
 .reports-filter-body .field-group {
     cursor: pointer;
+}
+
+.reports-filter-body .field-group + .field {
+    position: absolute;
+    z-index: 1;
+    background: white;
+    left: 0;
+    right: 0;
+    box-shadow: 0 7px 14px 0 rgba(59, 65, 94, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
 }
 
 .field-group.open i {
@@ -643,11 +1247,14 @@ div[id^="wdm-"][id*="-individual"] table.table {
     min-width: 100%;
 }
 
+#cr-list-table th:last-child,
+#cr-list-table td:last-child {
+    text-align: center;
+}
+
 #wdm-customreports-edit .customreports-block-section > div {
     position: relative;
     height: 100%;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -657,7 +1264,6 @@ div[id^="wdm-"][id*="-individual"] table.table {
     background-image: none !important;
 }
 
-@charset "UTF-8";
 table.dataTable {
     border-bottom: 0 !important;
 }
@@ -668,7 +1274,6 @@ table.dataTable thead .sorting_desc:before,
 table.dataTable thead .sorting_asc_disabled:before,
 table.dataTable thead .sorting_desc_disabled:before {
     margin-top: -5px;
-    content: "";
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     -o-transform: translateY(-50%);
@@ -686,7 +1291,6 @@ table.dataTable thead .sorting_desc:after,
 table.dataTable thead .sorting_asc_disabled:after,
 table.dataTable thead .sorting_desc_disabled:after {
     margin-top: 5px;
-    content: "";
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     -o-transform: translateY(-50%);
@@ -743,12 +1347,47 @@ table.dataTable td.dataTables_empty {
     background-color: #fff !important;
 }
 
+.edwiserreports-table .table-filter [type="search"] {
+    margin-left: 0;
+}
+
+.edwiserreports-table .table-filter .dataTables_length {
+    margin-left: auto;
+}
+
+.edwiserreports-table .dataTables_info {
+    padding: 0;
+    float: none;
+}
+
+.edwiserreports-table .table-pagination {
+    display: flex;
+}
+
+.edwiserreports-table .table-pagination .dataTables_paginate {
+    margin: 0 auto;
+}
+
+.edwiserreports-table .table-pagination .dataTables_paginate .paginate_button.disabled.previous, .edwiserreports-table .table-pagination .dataTables_paginate .paginate_button.disabled.next {
+    opacity: 0.3;
+}
+
+.edwiserreports-table .table-pagination .dataTables_paginate .paginate_button:hover {
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+.edwiserreports-table .table-pagination .dataTables_paginate .paginate_button:hover a {
+    outline: 0 !important;
+    background: transparent !important;
+}
+
 .fi {
     width: 20px;
     height: 24px;
     padding: 10px 0 0;
     position: relative;
-    margin: 0 .25rem;
+    margin: 0 .35rem;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
     box-sizing: border-box;
@@ -891,6 +1530,278 @@ table.dataTable td.dataTables_empty {
     right: 0;
 }
 
+.top-insights {
+    width: 99%;
+}
+
+.top-insights .row {
+    margin: 0 -2.2rem;
+}
+
+.top-insights.editing .insight .card-editing .fa {
+    transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 767px) {
+    .top-insights.editing .insight .card-editing .fa.fa-arrow-right {
+        transform: rotate(90deg);
+    }
+    .top-insights.editing .insight .card-editing .fa.fa-arrow-left {
+        transform: rotate(90deg);
+    }
+}
+
+.top-insights.editing .insight:first-child .card-editing .move-left {
+    display: none;
+}
+
+.top-insights.editing .insight:nth-last-child(2) .card-editing .move-right {
+    display: none;
+}
+
+.top-insights.editing .insight:nth-child(n+5) {
+    display: none;
+}
+
+.top-insights .insight {
+    padding: 2.5rem;
+}
+
+.top-insights .insight:first-child {
+    margin-left: auto;
+}
+
+.top-insights .insight:last-child {
+    margin-right: auto;
+}
+
+.top-insights .insight.add-insight .insight-wrapper {
+    height: 100%;
+    background: transparent;
+    box-shadow: none;
+    border: 1px dashed rgba(0, 0, 0, 0.5);
+}
+
+.top-insights .insight.add-insight .insight-wrapper .dropdown {
+    height: 100%;
+}
+
+.top-insights .insight.add-insight .insight-wrapper .dropdown .dropdown-toggle {
+    height: 100%;
+    width: 100%;
+}
+
+.top-insights .insight.add-insight .insight-wrapper .dropdown .dropdown-toggle:after {
+    display: none;
+}
+
+.top-insights .insight.add-insight .insight-wrapper .dropdown .dropdown-toggle .fa {
+    font-size: 2rem;
+}
+
+.top-insights .insight-wrapper {
+    min-height: 10rem;
+    box-shadow: 0 7px 14px 0 rgba(59, 65, 94, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
+    background: white;
+    height: 100%;
+    position: relative;
+}
+
+.top-insights .insight-wrapper:not(:hover) > .upgrade-to-pro {
+    display: none;
+}
+
+.top-insights .insight-wrapper .upgrade-to-pro {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-insights .insight-wrapper .pro-lock {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+.top-insights .insight-wrapper .insight-image .icon {
+    width: 3rem;
+    height: 3rem;
+}
+
+.top-insights .insight-wrapper .insight-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.142rem;
+    color: #999999;
+    text-transform: uppercase;
+}
+
+.top-insights .insight-wrapper .card-editing {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translateY(-100%);
+    z-index: 0;
+}
+
+.insight-wrap .insight-value {
+    font-size: 2rem;
+    margin-top: 0.2rem;
+    font-weight: 600;
+    line-height: 2.2rem;
+}
+
+.insight-wrap .insight-direction {
+    margin-top: 0.2rem;
+    font-size: 1.7rem;
+    vertical-align: bottom;
+}
+
+.insight-wrap .insight-direction .value {
+    display: flex;
+    position: relative;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: 1px solid #E5E5E5;
+    border-radius: 2rem;
+    padding: 0rem 0.5rem 0 2.2rem;
+}
+
+.insight-wrap .insight-direction .value .fa {
+    position: absolute;
+    left: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.2rem;
+}
+
+.insight-card {
+    position: relative;
+    display: flex;
+    box-shadow: 0 10px 15px 0 rgba(59, 65, 94, 0.1), 0 0 30px 0 rgba(0, 0, 0, 0.07);
+}
+
+.insight-card .insight-body {
+    display: flex;
+    align-items: center;
+}
+
+.insight-card .insight-title {
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.insight-card .insight-details {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.insight-card .insight-details::before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 15%;
+    bottom: 15%;
+    width: 1px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#wdm-edwiserreports[data-editing="1"] #learnerblock .graph-header-background {
+    display: none;
+}
+
+#wdm-edwiserreports[data-editing="0"] #learnerblock {
+    background: white;
+    border-radius: 0.25rem;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+#wdm-edwiserreports[data-editing="0"] #learnerblock .panel-header {
+    display: none !important;
+}
+
+#wdm-edwiserreports[data-editing="0"] #learnerblock .panel {
+    background: transparent;
+    padding: 0 !important;
+}
+
+#wdm-edwiserreports[data-editing="0"] #learnerblock .learner-graphs .graph-container {
+    box-shadow: 0 7px 14px 0 rgba(59, 65, 94, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
+    background: white;
+    border-radius: .25rem;
+    height: 100%;
+}
+
+#wdm-edwiserreports[data-editing="0"] #learnerblock .learner-graphs > div {
+    margin-bottom: 2rem;
+}
+
+#wdm-edwiserreports[data-editing="0"] [data-block="learnerblock"] {
+    padding: 0 !important;
+    margin: -1.5rem 0 0 0 !important;
+}
+
+@media (min-width: 992px) {
+    #wdm-edwiserreports .col-lg-4 #learnerblock [class*="-graphs"] .col-md-6,
+    #wdm-edwiserreports .col-lg-6 #learnerblock [class*="-graphs"] .col-md-6 {
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    #wdm-edwiserreports #learnerblock [class*="-graphs"] .col-md-6 {
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+#wdm-edwiserreports #learnerblock .graph-header {
+    position: relative;
+}
+
+#wdm-edwiserreports #learnerblock .graph-header .graph-header-background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.15;
+}
+
+#wdm-edwiserreports #learnerblock .timespentonlms .apexcharts-tooltip,
+#wdm-edwiserreports #learnerblock .courseprogress .apexcharts-tooltip {
+    max-width: 300px;
+    white-space: normal;
+}
+
+#wdm-edwiserreports #learnerblock .learner-graphs .graph {
+    min-height: 370px;
+}
+
+#wdm-edwiserreports #learnerblock #learner-calendar {
+    color: #76838f;
+}
+
+#wdm-edwiserreports #learnerblock #learner-calendar::after {
+    color: #76838f;
+}
+
 #page-local-edwiserreports-index .modal-dialog {
     min-height: auto;
 }
@@ -990,86 +1901,123 @@ table.dataTable td.dataTables_empty {
     background: #555;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr {
-    background-color: #e0e0e0;
+#wdm-edwiserreports #siteaccessblock .apexcharts-heatmap-series rect {
+    stroke: black;
+    stroke-width: 1px;
+    stroke-opacity: 0.2;
+    rx: 0;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr td {
-    border-width: 3px;
-    width: 12.5%;
-    padding: 0;
+#wdm-edwiserreports #siteaccessblock .siteaccess-values-shade {
+    position: relative;
+    height: 2.5rem;
+    margin: 0 3.5rem 3rem 5rem;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr td.empty-label {
-    background-color: #fff;
+#wdm-edwiserreports #siteaccessblock .siteaccess-values-shade .siteaccess-quiest,
+#wdm-edwiserreports #siteaccessblock .siteaccess-values-shade .siteaccess-busiest {
+    position: absolute;
+    bottom: 0;
+    transform: translateY(150%);
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr td.empty-label.siteacess-time {
-    min-width: 60px;
+#wdm-edwiserreports #siteaccessblock .siteaccess-values-shade .siteaccess-quiest {
+    left: 0;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr td.color-label-20 {
-    background-color: rgba(52, 137, 223, 0.2);
+#wdm-edwiserreports #siteaccessblock .siteaccess-values-shade .siteaccess-busiest {
+    right: 0;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr td.color-label-40 {
-    background-color: rgba(52, 137, 223, 0.4);
+#wdm-edwiserreports[data-editing="1"] #studentengagementblock .graph-header-background {
+    display: none;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr td.color-label-60 {
-    background-color: rgba(52, 137, 223, 0.6);
+#wdm-edwiserreports[data-editing="0"] #studentengagementblock {
+    background: white;
+    border-radius: 0.25rem;
+    background: transparent;
+    box-shadow: none;
+    border: none;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr td.color-label-80 {
-    background-color: rgba(52, 137, 223, 0.8);
+#wdm-edwiserreports[data-editing="0"] #studentengagementblock .panel-header {
+    display: none !important;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfotable tr td.color-label-100 {
-    background-color: #3489df;
+#wdm-edwiserreports[data-editing="0"] #studentengagementblock .panel {
+    background: transparent;
+    padding: 0 !important;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr {
-    background-color: #e0e0e0;
+#wdm-edwiserreports[data-editing="0"] #studentengagementblock .studentengagement-graphs .graph-container {
+    box-shadow: 0 7px 14px 0 rgba(59, 65, 94, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
+    background: white;
+    border-radius: .25rem;
+    height: 100%;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td {
-    width: 16.67%;
+#wdm-edwiserreports[data-editing="0"] #studentengagementblock .studentengagement-graphs > div {
+    margin-bottom: 2rem;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td.empty-label {
-    background-color: #fff;
+#wdm-edwiserreports[data-editing="0"] [data-block="studentengagementblock"] {
+    padding: 0 !important;
+    margin: -1.5rem 0 0 0 !important;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td.empty-label p {
-    left: -0.2rem;
+@media (min-width: 992px) {
+    #wdm-edwiserreports .col-lg-4 #studentengagementblock [class*="-graphs"] .col-md-6,
+    #wdm-edwiserreports .col-lg-6 #studentengagementblock [class*="-graphs"] .col-md-6 {
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td.empty-label.color-label {
-    min-width: 60px;
+@media (max-width: 992px) {
+    #wdm-edwiserreports #studentengagementblock [class*="-graphs"] .col-md-6 {
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td.color-label-20 {
-    background-color: rgba(52, 137, 223, 0.2);
+#wdm-edwiserreports #studentengagementblock .graph-header {
+    position: relative;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td.color-label-40 {
-    background-color: rgba(52, 137, 223, 0.4);
+#wdm-edwiserreports #studentengagementblock .graph-header .graph-header-background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.15;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td.color-label-60 {
-    background-color: rgba(52, 137, 223, 0.6);
+#wdm-edwiserreports #studentengagementblock .timespentoncourse .apexcharts-tooltip,
+#wdm-edwiserreports #studentengagementblock .timespentonlms .apexcharts-tooltip {
+    max-width: 300px;
+    white-space: normal;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td.color-label-80 {
-    background-color: rgba(52, 137, 223, 0.8);
+#wdm-edwiserreports #studentengagementblock .studentengagement-graphs .graph {
+    min-height: 370px;
 }
 
-#wdm-edwiserreports #siteaccessblock #accessinfodesctable tbody tr td.color-label-100 {
-    background-color: #3489df;
+#wdm-edwiserreports #studentengagementblock .studentengagement-graphs .timespentoncourse .export-urls {
+    position: absolute;
+    right: 0;
+    z-index: 1;
 }
 
-#wdm-edwiserreports #siteaccessblock tr.siteaccess-tablerow {
-    background-color: #e0e0e0;
+#wdm-edwiserreports #studentengagementblock #studentengagement-calendar {
+    color: #76838f;
+}
+
+#wdm-edwiserreports #studentengagementblock #studentengagement-calendar::after {
+    color: #76838f;
 }
 
 #page-local-edwiserreports-index.theme_remui #page #region-main > .card {
@@ -1083,6 +2031,586 @@ table.dataTable td.dataTables_empty {
 
 #page-local-edwiserreports-index.theme_remui #page #region-main {
     padding: 0;
+}
+
+#page-local-edwiserreports-index.theme_moove .card {
+    background: transparent;
+    border: none;
+}
+
+#page-local-edwiserreports-index.theme_adaptable .insight-wrap .insight-value, #page-local-edwiserreports-index.theme_fordson .insight-wrap .insight-value, #page-local-edwiserreports-index.theme_boost .insight-wrap .insight-value {
+    margin: 0 !important;
+}
+
+#page-local-edwiserreports-index.theme_adaptable .insight-wrap .insight-direction, #page-local-edwiserreports-index.theme_fordson .insight-wrap .insight-direction, #page-local-edwiserreports-index.theme_boost .insight-wrap .insight-direction {
+    margin-top: 0.3rem !important;
+}
+
+#page-local-edwiserreports-index.theme_adaptable .blockoptions button {
+    border: 0;
+}
+
+#page-local-edwiserreports-index.theme_adaptable .panel-body {
+    overflow: visible !important;
+}
+
+#page-local-edwiserreports-index.theme_adaptable #liveusersblock .text-success,
+#page-local-edwiserreports-index.theme_adaptable #liveusersblock .text-dander {
+    font-size: 1rem !important;
+}
+
+#page-local-edwiserreports-index #todaysactivityblock input.input-group-addon {
+    width: 150px;
+}
+
+#page-local-edwiserreports-studentengagement.theme_remui .card-body,
+#page-local-edwiserreports-grade.theme_remui .card-body,
+#page-local-edwiserreports-certificates.theme_remui .card-body,
+#page-local-edwiserreports-coursereport.theme_remui .card-body,
+#page-local-edwiserreports-activeusers.theme_remui .card-body,
+#page-local-edwiserreports-learner.theme_remui .card-body {
+    background: transparent;
+    padding: 0;
+}
+
+#page-local-edwiserreports-studentengagement.theme_moove #page-header,
+#page-local-edwiserreports-grade.theme_moove #page-header,
+#page-local-edwiserreports-certificates.theme_moove #page-header,
+#page-local-edwiserreports-coursereport.theme_moove #page-header,
+#page-local-edwiserreports-activeusers.theme_moove #page-header,
+#page-local-edwiserreports-learner.theme_moove #page-header {
+    display: none;
+}
+
+#page-local-edwiserreports-studentengagement.theme_moove .card,
+#page-local-edwiserreports-grade.theme_moove .card,
+#page-local-edwiserreports-certificates.theme_moove .card,
+#page-local-edwiserreports-coursereport.theme_moove .card,
+#page-local-edwiserreports-activeusers.theme_moove .card,
+#page-local-edwiserreports-learner.theme_moove .card {
+    background: transparent;
+    border: none;
+}
+
+#page-local-edwiserreports-studentengagement.theme_boost #page-header,
+#page-local-edwiserreports-grade.theme_boost #page-header,
+#page-local-edwiserreports-certificates.theme_boost #page-header,
+#page-local-edwiserreports-coursereport.theme_boost #page-header,
+#page-local-edwiserreports-activeusers.theme_boost #page-header,
+#page-local-edwiserreports-learner.theme_boost #page-header {
+    display: none;
+}
+
+#page-local-edwiserreports-studentengagement.theme_boost #region-main,
+#page-local-edwiserreports-grade.theme_boost #region-main,
+#page-local-edwiserreports-certificates.theme_boost #region-main,
+#page-local-edwiserreports-coursereport.theme_boost #region-main,
+#page-local-edwiserreports-activeusers.theme_boost #region-main,
+#page-local-edwiserreports-learner.theme_boost #region-main {
+    border: none;
+}
+
+#page-local-edwiserreports-index.theme_adaptable .block-cap-form .col-form-label, #page-local-edwiserreports-index.theme_fordson .block-cap-form .col-form-label, #page-local-edwiserreports-index.theme_moove .block-cap-form .col-form-label, #page-local-edwiserreports-index.theme_boost .block-cap-form .col-form-label,
+#page-local-edwiserreports-studentengagement.theme_adaptable .block-cap-form .col-form-label,
+#page-local-edwiserreports-studentengagement.theme_fordson .block-cap-form .col-form-label,
+#page-local-edwiserreports-studentengagement.theme_moove .block-cap-form .col-form-label,
+#page-local-edwiserreports-studentengagement.theme_boost .block-cap-form .col-form-label,
+#page-local-edwiserreports-grade.theme_adaptable .block-cap-form .col-form-label,
+#page-local-edwiserreports-grade.theme_fordson .block-cap-form .col-form-label,
+#page-local-edwiserreports-grade.theme_moove .block-cap-form .col-form-label,
+#page-local-edwiserreports-grade.theme_boost .block-cap-form .col-form-label,
+#page-local-edwiserreports-certificates.theme_adaptable .block-cap-form .col-form-label,
+#page-local-edwiserreports-certificates.theme_fordson .block-cap-form .col-form-label,
+#page-local-edwiserreports-certificates.theme_moove .block-cap-form .col-form-label,
+#page-local-edwiserreports-certificates.theme_boost .block-cap-form .col-form-label,
+#page-local-edwiserreports-coursereport.theme_adaptable .block-cap-form .col-form-label,
+#page-local-edwiserreports-coursereport.theme_fordson .block-cap-form .col-form-label,
+#page-local-edwiserreports-coursereport.theme_moove .block-cap-form .col-form-label,
+#page-local-edwiserreports-coursereport.theme_boost .block-cap-form .col-form-label,
+#page-local-edwiserreports-activeusers.theme_adaptable .block-cap-form .col-form-label,
+#page-local-edwiserreports-activeusers.theme_fordson .block-cap-form .col-form-label,
+#page-local-edwiserreports-activeusers.theme_moove .block-cap-form .col-form-label,
+#page-local-edwiserreports-activeusers.theme_boost .block-cap-form .col-form-label,
+#page-local-edwiserreports-learner.theme_adaptable .block-cap-form .col-form-label,
+#page-local-edwiserreports-learner.theme_fordson .block-cap-form .col-form-label,
+#page-local-edwiserreports-learner.theme_moove .block-cap-form .col-form-label,
+#page-local-edwiserreports-learner.theme_boost .block-cap-form .col-form-label {
+    font-size: 1.286rem !important;
+    font-weight: 400 !important;
+}
+
+#page-local-edwiserreports-index.theme_adaptable .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-index.theme_adaptable .filter-selector button.dropdown-toggle, #page-local-edwiserreports-index.theme_fordson .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-index.theme_fordson .filter-selector button.dropdown-toggle, #page-local-edwiserreports-index.theme_moove .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-index.theme_moove .filter-selector button.dropdown-toggle, #page-local-edwiserreports-index.theme_boost .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-index.theme_boost .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_adaptable .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_adaptable .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_fordson .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_fordson .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_moove .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_moove .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_boost .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_boost .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_adaptable .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_adaptable .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_fordson .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_fordson .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_moove .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_moove .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_boost .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_boost .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_adaptable .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_adaptable .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_fordson .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_fordson .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_moove .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_moove .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_boost .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_boost .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_adaptable .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_adaptable .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_fordson .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_fordson .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_moove .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_moove .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_boost .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_boost .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_adaptable .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_adaptable .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_fordson .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_fordson .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_moove .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_moove .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_boost .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_boost .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_adaptable .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_adaptable .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_fordson .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_fordson .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_moove .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_moove .filter-selector button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_boost .panel-header button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_boost .filter-selector button.dropdown-toggle {
+    background: #fff;
+    border: 1px solid #e4eaec;
+    padding: .4rem .75rem;
+    border-radius: .215rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .row,
+#page-local-edwiserreports-studentengagement.theme_fordson .row,
+#page-local-edwiserreports-grade.theme_fordson .row,
+#page-local-edwiserreports-certificates.theme_fordson .row,
+#page-local-edwiserreports-coursereport.theme_fordson .row,
+#page-local-edwiserreports-activeusers.theme_fordson .row,
+#page-local-edwiserreports-learner.theme_fordson .row {
+    margin-right: -1.0715rem;
+    margin-left: -1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-1,
+#page-local-edwiserreports-index.theme_fordson .col-sm-1,
+#page-local-edwiserreports-index.theme_fordson .col-md-1,
+#page-local-edwiserreports-index.theme_fordson .col-lg-1,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-1,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-1,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-1,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-1,
+#page-local-edwiserreports-grade.theme_fordson .col-1,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-1,
+#page-local-edwiserreports-grade.theme_fordson .col-md-1,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-1,
+#page-local-edwiserreports-certificates.theme_fordson .col-1,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-1,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-1,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-1,
+#page-local-edwiserreports-coursereport.theme_fordson .col-1,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-1,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-1,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-1,
+#page-local-edwiserreports-activeusers.theme_fordson .col-1,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-1,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-1,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-1,
+#page-local-edwiserreports-learner.theme_fordson .col-1,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-1,
+#page-local-edwiserreports-learner.theme_fordson .col-md-1,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-1 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-2,
+#page-local-edwiserreports-index.theme_fordson .col-sm-2,
+#page-local-edwiserreports-index.theme_fordson .col-md-2,
+#page-local-edwiserreports-index.theme_fordson .col-lg-2,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-2,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-2,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-2,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-2,
+#page-local-edwiserreports-grade.theme_fordson .col-2,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-2,
+#page-local-edwiserreports-grade.theme_fordson .col-md-2,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-2,
+#page-local-edwiserreports-certificates.theme_fordson .col-2,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-2,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-2,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-2,
+#page-local-edwiserreports-coursereport.theme_fordson .col-2,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-2,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-2,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-2,
+#page-local-edwiserreports-activeusers.theme_fordson .col-2,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-2,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-2,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-2,
+#page-local-edwiserreports-learner.theme_fordson .col-2,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-2,
+#page-local-edwiserreports-learner.theme_fordson .col-md-2,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-2 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-3,
+#page-local-edwiserreports-index.theme_fordson .col-sm-3,
+#page-local-edwiserreports-index.theme_fordson .col-md-3,
+#page-local-edwiserreports-index.theme_fordson .col-lg-3,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-3,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-3,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-3,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-3,
+#page-local-edwiserreports-grade.theme_fordson .col-3,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-3,
+#page-local-edwiserreports-grade.theme_fordson .col-md-3,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-3,
+#page-local-edwiserreports-certificates.theme_fordson .col-3,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-3,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-3,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-3,
+#page-local-edwiserreports-coursereport.theme_fordson .col-3,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-3,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-3,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-3,
+#page-local-edwiserreports-activeusers.theme_fordson .col-3,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-3,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-3,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-3,
+#page-local-edwiserreports-learner.theme_fordson .col-3,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-3,
+#page-local-edwiserreports-learner.theme_fordson .col-md-3,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-3 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-4,
+#page-local-edwiserreports-index.theme_fordson .col-sm-4,
+#page-local-edwiserreports-index.theme_fordson .col-md-4,
+#page-local-edwiserreports-index.theme_fordson .col-lg-4,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-4,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-4,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-4,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-4,
+#page-local-edwiserreports-grade.theme_fordson .col-4,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-4,
+#page-local-edwiserreports-grade.theme_fordson .col-md-4,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-4,
+#page-local-edwiserreports-certificates.theme_fordson .col-4,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-4,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-4,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-4,
+#page-local-edwiserreports-coursereport.theme_fordson .col-4,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-4,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-4,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-4,
+#page-local-edwiserreports-activeusers.theme_fordson .col-4,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-4,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-4,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-4,
+#page-local-edwiserreports-learner.theme_fordson .col-4,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-4,
+#page-local-edwiserreports-learner.theme_fordson .col-md-4,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-4 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-5,
+#page-local-edwiserreports-index.theme_fordson .col-sm-5,
+#page-local-edwiserreports-index.theme_fordson .col-md-5,
+#page-local-edwiserreports-index.theme_fordson .col-lg-5,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-5,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-5,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-5,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-5,
+#page-local-edwiserreports-grade.theme_fordson .col-5,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-5,
+#page-local-edwiserreports-grade.theme_fordson .col-md-5,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-5,
+#page-local-edwiserreports-certificates.theme_fordson .col-5,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-5,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-5,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-5,
+#page-local-edwiserreports-coursereport.theme_fordson .col-5,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-5,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-5,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-5,
+#page-local-edwiserreports-activeusers.theme_fordson .col-5,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-5,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-5,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-5,
+#page-local-edwiserreports-learner.theme_fordson .col-5,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-5,
+#page-local-edwiserreports-learner.theme_fordson .col-md-5,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-5 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-6,
+#page-local-edwiserreports-index.theme_fordson .col-sm-6,
+#page-local-edwiserreports-index.theme_fordson .col-md-6,
+#page-local-edwiserreports-index.theme_fordson .col-lg-6,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-6,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-6,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-6,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-6,
+#page-local-edwiserreports-grade.theme_fordson .col-6,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-6,
+#page-local-edwiserreports-grade.theme_fordson .col-md-6,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-6,
+#page-local-edwiserreports-certificates.theme_fordson .col-6,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-6,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-6,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-6,
+#page-local-edwiserreports-coursereport.theme_fordson .col-6,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-6,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-6,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-6,
+#page-local-edwiserreports-activeusers.theme_fordson .col-6,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-6,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-6,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-6,
+#page-local-edwiserreports-learner.theme_fordson .col-6,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-6,
+#page-local-edwiserreports-learner.theme_fordson .col-md-6,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-6 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-7,
+#page-local-edwiserreports-index.theme_fordson .col-sm-7,
+#page-local-edwiserreports-index.theme_fordson .col-md-7,
+#page-local-edwiserreports-index.theme_fordson .col-lg-7,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-7,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-7,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-7,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-7,
+#page-local-edwiserreports-grade.theme_fordson .col-7,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-7,
+#page-local-edwiserreports-grade.theme_fordson .col-md-7,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-7,
+#page-local-edwiserreports-certificates.theme_fordson .col-7,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-7,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-7,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-7,
+#page-local-edwiserreports-coursereport.theme_fordson .col-7,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-7,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-7,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-7,
+#page-local-edwiserreports-activeusers.theme_fordson .col-7,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-7,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-7,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-7,
+#page-local-edwiserreports-learner.theme_fordson .col-7,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-7,
+#page-local-edwiserreports-learner.theme_fordson .col-md-7,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-7 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-8,
+#page-local-edwiserreports-index.theme_fordson .col-sm-8,
+#page-local-edwiserreports-index.theme_fordson .col-md-8,
+#page-local-edwiserreports-index.theme_fordson .col-lg-8,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-8,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-8,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-8,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-8,
+#page-local-edwiserreports-grade.theme_fordson .col-8,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-8,
+#page-local-edwiserreports-grade.theme_fordson .col-md-8,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-8,
+#page-local-edwiserreports-certificates.theme_fordson .col-8,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-8,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-8,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-8,
+#page-local-edwiserreports-coursereport.theme_fordson .col-8,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-8,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-8,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-8,
+#page-local-edwiserreports-activeusers.theme_fordson .col-8,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-8,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-8,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-8,
+#page-local-edwiserreports-learner.theme_fordson .col-8,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-8,
+#page-local-edwiserreports-learner.theme_fordson .col-md-8,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-8 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-9,
+#page-local-edwiserreports-index.theme_fordson .col-sm-9,
+#page-local-edwiserreports-index.theme_fordson .col-md-9,
+#page-local-edwiserreports-index.theme_fordson .col-lg-9,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-9,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-9,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-9,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-9,
+#page-local-edwiserreports-grade.theme_fordson .col-9,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-9,
+#page-local-edwiserreports-grade.theme_fordson .col-md-9,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-9,
+#page-local-edwiserreports-certificates.theme_fordson .col-9,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-9,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-9,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-9,
+#page-local-edwiserreports-coursereport.theme_fordson .col-9,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-9,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-9,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-9,
+#page-local-edwiserreports-activeusers.theme_fordson .col-9,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-9,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-9,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-9,
+#page-local-edwiserreports-learner.theme_fordson .col-9,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-9,
+#page-local-edwiserreports-learner.theme_fordson .col-md-9,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-9 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-10,
+#page-local-edwiserreports-index.theme_fordson .col-sm-10,
+#page-local-edwiserreports-index.theme_fordson .col-md-10,
+#page-local-edwiserreports-index.theme_fordson .col-lg-10,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-10,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-10,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-10,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-10,
+#page-local-edwiserreports-grade.theme_fordson .col-10,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-10,
+#page-local-edwiserreports-grade.theme_fordson .col-md-10,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-10,
+#page-local-edwiserreports-certificates.theme_fordson .col-10,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-10,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-10,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-10,
+#page-local-edwiserreports-coursereport.theme_fordson .col-10,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-10,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-10,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-10,
+#page-local-edwiserreports-activeusers.theme_fordson .col-10,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-10,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-10,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-10,
+#page-local-edwiserreports-learner.theme_fordson .col-10,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-10,
+#page-local-edwiserreports-learner.theme_fordson .col-md-10,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-10 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-11,
+#page-local-edwiserreports-index.theme_fordson .col-sm-11,
+#page-local-edwiserreports-index.theme_fordson .col-md-11,
+#page-local-edwiserreports-index.theme_fordson .col-lg-11,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-11,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-11,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-11,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-11,
+#page-local-edwiserreports-grade.theme_fordson .col-11,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-11,
+#page-local-edwiserreports-grade.theme_fordson .col-md-11,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-11,
+#page-local-edwiserreports-certificates.theme_fordson .col-11,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-11,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-11,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-11,
+#page-local-edwiserreports-coursereport.theme_fordson .col-11,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-11,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-11,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-11,
+#page-local-edwiserreports-activeusers.theme_fordson .col-11,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-11,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-11,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-11,
+#page-local-edwiserreports-learner.theme_fordson .col-11,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-11,
+#page-local-edwiserreports-learner.theme_fordson .col-md-11,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-11 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_fordson .col-12,
+#page-local-edwiserreports-index.theme_fordson .col-sm-12,
+#page-local-edwiserreports-index.theme_fordson .col-md-12,
+#page-local-edwiserreports-index.theme_fordson .col-lg-12,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-12,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-sm-12,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-md-12,
+#page-local-edwiserreports-studentengagement.theme_fordson .col-lg-12,
+#page-local-edwiserreports-grade.theme_fordson .col-12,
+#page-local-edwiserreports-grade.theme_fordson .col-sm-12,
+#page-local-edwiserreports-grade.theme_fordson .col-md-12,
+#page-local-edwiserreports-grade.theme_fordson .col-lg-12,
+#page-local-edwiserreports-certificates.theme_fordson .col-12,
+#page-local-edwiserreports-certificates.theme_fordson .col-sm-12,
+#page-local-edwiserreports-certificates.theme_fordson .col-md-12,
+#page-local-edwiserreports-certificates.theme_fordson .col-lg-12,
+#page-local-edwiserreports-coursereport.theme_fordson .col-12,
+#page-local-edwiserreports-coursereport.theme_fordson .col-sm-12,
+#page-local-edwiserreports-coursereport.theme_fordson .col-md-12,
+#page-local-edwiserreports-coursereport.theme_fordson .col-lg-12,
+#page-local-edwiserreports-activeusers.theme_fordson .col-12,
+#page-local-edwiserreports-activeusers.theme_fordson .col-sm-12,
+#page-local-edwiserreports-activeusers.theme_fordson .col-md-12,
+#page-local-edwiserreports-activeusers.theme_fordson .col-lg-12,
+#page-local-edwiserreports-learner.theme_fordson .col-12,
+#page-local-edwiserreports-learner.theme_fordson .col-sm-12,
+#page-local-edwiserreports-learner.theme_fordson .col-md-12,
+#page-local-edwiserreports-learner.theme_fordson .col-lg-12 {
+    padding-right: 1.0715rem;
+    padding-left: 1.0715rem;
+}
+
+#page-local-edwiserreports-index.theme_adaptable #scheduletab button.dropdown-toggle,
+#page-local-edwiserreports-studentengagement.theme_adaptable #scheduletab button.dropdown-toggle,
+#page-local-edwiserreports-grade.theme_adaptable #scheduletab button.dropdown-toggle,
+#page-local-edwiserreports-certificates.theme_adaptable #scheduletab button.dropdown-toggle,
+#page-local-edwiserreports-coursereport.theme_adaptable #scheduletab button.dropdown-toggle,
+#page-local-edwiserreports-activeusers.theme_adaptable #scheduletab button.dropdown-toggle,
+#page-local-edwiserreports-learner.theme_adaptable #scheduletab button.dropdown-toggle {
+    color: #333 !important;
+}
+
+#page-local-edwiserreports-index .select2-container--default,
+#page-local-edwiserreports-studentengagement .select2-container--default,
+#page-local-edwiserreports-grade .select2-container--default,
+#page-local-edwiserreports-certificates .select2-container--default,
+#page-local-edwiserreports-coursereport .select2-container--default,
+#page-local-edwiserreports-activeusers .select2-container--default,
+#page-local-edwiserreports-learner .select2-container--default {
+    max-width: 100%;
 }
 
 #wdm-edwiserreports #todaysactivityblock input.input-group-addon {
@@ -1101,6 +2629,7 @@ table.dataTable td.dataTables_empty {
     filter: contrast(1.3);
     padding: 20px;
     margin-bottom: 5px;
+    background-color: #54b2a9;
 }
 
 #wdm-edwiserreports #todaysactivityblock .card {
@@ -1164,199 +2693,6 @@ table.dataTable td.dataTables_empty {
     }
 }
 
-
-table.dataTable {
-    clear: both;
-    margin-top: 6px !important;
-    margin-bottom: 6px !important;
-    max-width: none !important;
-    border-collapse: separate !important;
-}
-
-table.dataTable td,
-table.dataTable th {
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
-}
-
-table.dataTable td.dataTables_empty,
-table.dataTable th.dataTables_empty {
-    text-align: center;
-}
-
-table.dataTable.nowrap th,
-table.dataTable.nowrap td {
-    white-space: nowrap;
-}
-
-div.dataTables_wrapper div.dataTables_length label {
-    font-weight: normal;
-    text-align: left;
-    white-space: nowrap;
-}
-
-div.dataTables_wrapper div.dataTables_length select {
-    width: 75px;
-    display: inline-block;
-}
-
-div.dataTables_wrapper div.dataTables_filter {
-    text-align: right;
-}
-
-div.dataTables_wrapper div.dataTables_filter label {
-    font-weight: normal;
-    white-space: nowrap;
-    text-align: left;
-}
-
-div.dataTables_wrapper div.dataTables_filter input {
-    margin-left: 0.5em;
-    display: inline-block;
-    width: auto;
-}
-
-div.dataTables_wrapper div.dataTables_info {
-    padding-top: 8px;
-    white-space: nowrap;
-}
-
-div.dataTables_wrapper div.dataTables_paginate {
-    margin: 0;
-    white-space: nowrap;
-    text-align: right;
-}
-
-div.dataTables_wrapper div.dataTables_paginate ul.pagination {
-    margin: 2px 0;
-    white-space: nowrap;
-}
-
-div.dataTables_wrapper div.dataTables_processing {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200px;
-    margin-left: -100px;
-    margin-top: -26px;
-    text-align: center;
-    padding: 1em 0;
-}
-
-table.dataTable thead > tr > th.sorting_asc,
-table.dataTable thead > tr > th.sorting_desc,
-table.dataTable thead > tr > th.sorting,
-table.dataTable thead > tr > td.sorting_asc,
-table.dataTable thead > tr > td.sorting_desc,
-table.dataTable thead > tr > td.sorting {
-    padding-right: 30px;
-}
-
-table.dataTable thead > tr > th:active,
-table.dataTable thead > tr > td:active {
-    outline: none;
-}
-
-table.dataTable thead .sorting,
-table.dataTable thead .sorting_asc,
-table.dataTable thead .sorting_desc,
-table.dataTable thead .sorting_asc_disabled,
-table.dataTable thead .sorting_desc_disabled {
-    cursor: pointer;
-    position: relative;
-}
-
-table.dataTable thead .sorting_asc_disabled:after,
-table.dataTable thead .sorting_desc_disabled:after {
-    color: #eee;
-}
-
-div.dataTables_scrollHead table.dataTable {
-    margin-bottom: 0 !important;
-}
-
-div.dataTables_scrollBody > table {
-    border-top: none;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-div.dataTables_scrollBody > table > thead .sorting:after,
-div.dataTables_scrollBody > table > thead .sorting_asc:after,
-div.dataTables_scrollBody > table > thead .sorting_desc:after {
-    display: none;
-}
-
-div.dataTables_scrollBody > table > tbody > tr:first-child > th,
-div.dataTables_scrollBody > table > tbody > tr:first-child > td {
-    border-top: none;
-}
-
-div.dataTables_scrollFoot > .dataTables_scrollFootInner {
-    box-sizing: content-box;
-}
-
-div.dataTables_scrollFoot > .dataTables_scrollFootInner > table {
-    margin-top: 0 !important;
-    border-top: none;
-}
-
-@media screen and (max-width: 767px) {
-    div.dataTables_wrapper div.dataTables_length,
-    div.dataTables_wrapper div.dataTables_filter,
-    div.dataTables_wrapper div.dataTables_info,
-    div.dataTables_wrapper div.dataTables_paginate {
-        text-align: center;
-    }
-}
-
-table.dataTable.table-condensed > thead > tr > th {
-    padding-right: 20px;
-}
-
-table.dataTable.table-condensed .sorting:after,
-table.dataTable.table-condensed .sorting_asc:after,
-table.dataTable.table-condensed .sorting_desc:after {
-    top: 6px;
-    right: 6px;
-}
-
-table.table-bordered.dataTable {
-    border-right-width: 0;
-}
-
-table.table-bordered.dataTable th,
-table.table-bordered.dataTable td {
-    border-left-width: 0;
-}
-
-table.table-bordered.dataTable th:last-child,
-table.table-bordered.dataTable th:last-child,
-table.table-bordered.dataTable td:last-child,
-table.table-bordered.dataTable td:last-child {
-    border-right-width: 1px;
-}
-
-table.table-bordered.dataTable tbody th,
-table.table-bordered.dataTable tbody td {
-    border-bottom-width: 0;
-}
-
-div.dataTables_scrollHead table.table-bordered {
-    border-bottom-width: 0;
-}
-
-div.table-responsive > div.dataTables_wrapper > div.row {
-    margin: 0;
-}
-
-div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:first-child {
-    padding-left: 0;
-}
-
-div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:last-child {
-    padding-right: 0;
-}
 
 .flatpickr-calendar {
     background: transparent;

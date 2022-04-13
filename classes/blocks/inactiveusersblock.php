@@ -44,11 +44,10 @@ class inactiveusersblock extends block_base {
         $this->layout->id = 'inactiveusersblock';
         $this->layout->name = get_string('inactiveusers', 'local_edwiserreports');
         $this->layout->info = get_string('inactiveusersblockhelp', 'local_edwiserreports');
-        $this->layout->hasdownloadlink = true;
-        $this->layout->filters = $this->get_inactiveusers_filter();
+        $this->layout->downloadlinks = $this->get_block_download_links();
+        $this->layout->filters = $this->get_filters();
 
         // Block related data.
-        $this->block = new stdClass();
         $this->block->displaytype = 'line-chart';
 
         // Add block view in layout.
@@ -64,24 +63,12 @@ class inactiveusersblock extends block_base {
      * Prepare Inactive users filter
      * @return string Filter HTML content
      */
-    public function get_inactiveusers_filter() {
-        $html = '<button type="button" class="btn btn-sm dropdown-toggle mt-3" data-toggle="dropdown"
-                 aria-expanded="true">Never</button>
-                <div class="dropdown-menu dropdown-sm" role="menu" x-placement="top-start">
-                <a class="active dropdown-item" href="javascript:void(0)" data-value="never" role="menuitem">
-                    Never
-                </a>
-                <a class="dropdown-item" href="javascript:void(0)" data-value="1month" role="menuitem">
-                    Before 1 Month
-                </a>
-                <a class="dropdown-item" href="javascript:void(0)" data-value="3month" role="menuitem">
-                    Before 3 Month
-                </a>
-                <a class="dropdown-item" href="javascript:void(0)" data-value="6month" role="menuitem">
-                    Before 6 Month
-                </a>
-                </div>';
-        return $html;
+    public function get_filters() {
+        global $OUTPUT;
+        return $OUTPUT->render_from_template('local_edwiserreports/inactiveusersblockfilters', [
+            'searchicon' => $this->image_icon('actions/search'),
+            'placeholder' => get_string('searchuser', 'local_edwiserreports')
+        ]);
     }
 
     /**

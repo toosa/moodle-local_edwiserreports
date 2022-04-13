@@ -28,6 +28,16 @@
     {
     }
 }}
+<div class="pro-feature-warning">
+        <div class="warning-container">
+            <div class="pr-4">
+                {{{warningicon}}}
+            </div>
+            <div class="text-left">
+                {{#str}} emailprowarning, local_edwiserreports {{/str}}
+            </div>
+        </div>
+    </div>
 <div class="nav-tabs-horizontal" data-plugin="tabs">
     <ul class="nav nav-tabs nav-tabs-line" role="tablist">
         <li class="nav-item" role="presentation">
@@ -44,55 +54,37 @@
     <div class="tab-content">
         <div class="tab-pane active show" id="scheduletab" role="tabpanel">
             <form action="#">
-                <div id="region-main" class="col-12 border-0">
-                    <div class="py-2 w-full">
+                <div id="region-main" class="col-9 border-0 m-auto">
+                    <div class="pt-4 w-full">
                         {{! Name field }}
                         <div class="form-group row fitem">
                             <div class="col-12">
-                                <label class="col-form-label d-inline">
-                                    <i class="fa fa-calendar-o my-auto" aria-hidden="true"></i>
-                                    {{# str }} name, local_edwiserreports {{/ str }}
-                                </label>
-                            </div>
-                            <div class="col-12">
-                                <input type="text" value="" name="esrname" class="form-control">
+                                <input type="text" value="" name="esrname" class="form-control" required
+                                placeholder="{{# str }} name, local_edwiserreports {{/ str }}">
                             </div>
                         </div>
 
                         {{! Recepient field }}
                         <div class="form-group row fitem">
                             <div class="col-12">
-                                <label class="col-form-label d-inline">
-                                    <i class="fa fa-user my-auto" aria-hidden="true"></i>
-                                    {{# str }} recipient, local_edwiserreports {{/ str }}
-                                </label>
-                            </div>
-                            <div class="col-12">
-                                <input type="text" value="" name="esrrecepient" class="form-control">
+                                <input type="text" value="" name="esrrecepient" class="form-control" required
+                                placeholder="{{# str }} recipient, local_edwiserreports {{/ str }}">
                             </div>
                         </div>
-                        
+
                         {{! Subject fields }}
                         <div class="form-group row fitem">
                             <div class="col-12">
-                                <label class="col-form-label d-inline">
-                                    {{# str }} subject, local_edwiserreports {{/ str }}
-                                </label>
-                            </div>
-                            <div class="col-12">
-                                <input type="text" value="" name="esrsubject" class="form-control">
+                                <input type="text" value="" name="esrsubject" class="form-control" required
+                                placeholder="{{# str }} subject, local_edwiserreports {{/ str }}">
                             </div>
                         </div>
 
                         {{! Message Fields }}
                         <div class="form-group row fitem">
                             <div class="col-12">
-                                <label class="col-form-label d-inline">
-                                    {{# str }} message, local_edwiserreports {{/ str }}
-                                </label>
-                            </div>
-                            <div class="col-12">
-                                <textarea value="" name="esrmessage" class="form-control w-full mb-10" rows="4"></textarea>
+                                <textarea value="" name="esrmessage" class="form-control w-full mb-10" rows="4"
+                                placeholder="{{# str }} message, local_edwiserreports {{/ str }}"></textarea>
                             </div>
                         </div>
 
@@ -104,15 +96,14 @@
                         <input value="{{ region }}" type="text" id="esr-region" name="region" class="d-none">
                         <input value="{{ sesskey }}" type="text" id="esr-sesskey" name="sesskey" class="d-none">
                     </div>
-                    <div class="form-group row fitem px-3">
-                        <i class="fa fa-calendar my-auto" aria-hidden="true"></i>
+                    <div class="form-group row fitem date-filters disabled px-3">
                         <span class="my-auto mx-1">
                             {{#str}} emailthisreport, local_edwiserreports {{/str}}
                         </span>
                         <div class="duration-dropdown dropdown">
                             <button data-value="0"
                                 type="button"
-                                class="btn btn-default btn-sm dropdown-toggle"
+                                class="btn btn-default btn-sm dropdown-toggle mx-2"
                                 id="durationcount"
                                 data-toggle="dropdown"
                                 aria-expanded="false">
@@ -145,7 +136,7 @@
                         <div class="weekly-dropdown dropdown">
                             <button data-value="0"
                                 type="button"
-                                class="btn btn-default btn-sm dropdown-toggle mx-1"
+                                class="btn btn-default btn-sm dropdown-toggle mx-2"
                                 id="weeksdropdown"
                                 data-toggle="dropdown"
                                 data-managedby="1"
@@ -203,7 +194,7 @@
                         <div class="daily-dropdown dropdown">
                             <button data-value="0"
                                 type="button"
-                                class="btn btn-default btn-sm dropdown-toggle mx-1"
+                                class="btn btn-default btn-sm dropdown-toggle mx-2"
                                 id="timesdropdown"
                                 data-toggle="dropdown"
                                 data-managedby="0"
@@ -227,7 +218,7 @@
                         <div class="monthly-dropdown dropdown">
                             <button data-value="1"
                                 type="button"
-                                class="btn btn-default btn-sm dropdown-toggle mx-1"
+                                class="btn btn-default btn-sm dropdown-toggle mx-2"
                                 id="monthlydropdown"
                                 data-toggle="dropdown"
                                 data-managedby="2"
@@ -252,8 +243,8 @@
                             <label class="esr-switch" title="Enable/Disable email" for="esr-toggle-">
                                 <input id="esr-toggle-" type="checkbox" name="esremailenable" checked="checked">
                                 <div class="switch-container esr-enable-disable-form">
-                                    <div class="switch-background bg-primary"></div>
-                                    <div class="switch-lever bg-primary"></div>
+                                    <div class="switch-background theme-primary-bg"></div>
+                                    <div class="switch-lever theme-primary-bg"></div>
                                 </div>
                             </label>
                         </div>
@@ -262,12 +253,12 @@
                     {{! Error Box }}
                     <div class="esr-form-error" style="display: none;"></div>
                 </div>
-                <div class="modal-footer" data-region="footer">
-                    <button class="btn btn-primary" type="button" data-action="send" data-toggle="tooltip" title="{{#str}} send, local_edwiserreports {{/str}}">
-                        {{#str}} send, local_edwiserreports {{/str}}
-                    </button>
-                    <button class="btn btn-primary" type="button" data-action="save" data-toggle="tooltip" title="{{#str}} schedule, local_edwiserreports {{/str}}">
+                <div class="modal-footer schedule-email col-9 m-auto border-0 px-5" data-region="footer">
+                    <button class="btn theme-primary-text theme-primary-border mr-auto" disabled type="button" data-action="save" data-toggle="tooltip" title="{{#str}} schedule, local_edwiserreports {{/str}}">
                         {{#str}} schedule, local_edwiserreports {{/str}}
+                    </button>
+                    <button class="btn theme-primary-bg text-white" disabled type="button" data-action="send" data-toggle="tooltip" title="{{#str}} send, local_edwiserreports {{/str}}">
+                        {{#str}} send, local_edwiserreports {{/str}}
                     </button>
                     <button class="btn btn-secondary" type="button" data-action="cancel" data-toggle="tooltip" title="{{#str}} reset, local_edwiserreports {{/str}}">
                         {{#str}} reset, local_edwiserreports {{/str}}
@@ -276,14 +267,19 @@
             </form>
         </div>
         <div class="tab-pane" id="listemailstab" role="tabpanel">
+            <div class="row mt-3">
+                <div class="filter-selector col-12 col-md-4 mb-1">
+                    {{> local_edwiserreports/datatable/search }}
+                </div>
+            </div>
             <div class="table-responsive border-0 my-1" id="region-main">
                 <table id="esr-shceduled-emails" class="table" data-role="content" data-plugin="selectable" data-row-selectable="true">
                     <thead>
                         <tr>
-                            <th>{{#str}} name, local_edwiserreports {{/str}}</th>
-                            <th>{{#str}} nextrun, local_edwiserreports {{/str}}</th>
-                            <th>{{#str}} frequency, local_edwiserreports {{/str}}</th>
-                            <th class="text-center">{{#str}} manage, local_edwiserreports {{/str}}</th>
+                            <th class="theme-3-bg text-white">{{#str}} name, local_edwiserreports {{/str}}</th>
+                            <th class="theme-3-bg text-white">{{#str}} nextrun, local_edwiserreports {{/str}}</th>
+                            <th class="theme-3-bg text-white">{{#str}} frequency, local_edwiserreports {{/str}}</th>
+                            <th class="text-center theme-3-bg text-white">{{#str}} manage, local_edwiserreports {{/str}}</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

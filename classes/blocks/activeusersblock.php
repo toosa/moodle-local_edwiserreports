@@ -81,6 +81,17 @@ class activeusersblock extends block_base {
     public $dates = [];
 
     /**
+     * Instantiate object
+     *
+     * @param int $blockid Block id
+     */
+    public function __construct($blockid = false) {
+        parent::__construct($blockid);
+        // Set cache for active users block.
+        $this->cache = cache::make('local_edwiserreports', 'activeusers');
+    }
+
+    /**
      * Preapre layout for each block
      * @return object Layout
      */
@@ -92,7 +103,7 @@ class activeusersblock extends block_base {
         $this->layout->name = get_string('activeusersheader', 'local_edwiserreports');
         $this->layout->info = get_string('activeusersblocktitlehelp', 'local_edwiserreports');
         $this->layout->morelink = new moodle_url($CFG->wwwroot . "/local/edwiserreports/activeusers.php");
-        $this->layout->hasdownloadlink = true;
+        $this->layout->downloadlinks = $this->get_block_download_links();
         $this->layout->filters = $this->get_activeusers_filter();
 
         // Selected default filters.
@@ -100,7 +111,6 @@ class activeusersblock extends block_base {
         $this->layout->cohortid = '0';
 
         // Block related data.
-        $this->block = new stdClass();
         $this->block->displaytype = 'line-chart';
 
         // Add block view in layout.
@@ -123,85 +133,16 @@ class activeusersblock extends block_base {
             'class' => 'font-size-12'
         ));
         $lastupdatetext .= get_string('lastupdate', 'local_edwiserreports');
-        $lastupdatetext .= html_writer::tag('i', '', array(
-            'class' => 'refresh fa fa-refresh px-1',
+        $lastupdatetext .= html_writer::tag('label', $this->image_icon('refresh'), array(
+            'class' => 'refresh',
             'data-toggle' => 'tooltip',
-            'title' => get_string('refresh', 'local_edwiserreports')
+            'title' => get_string('refresh', 'local_edwiserreports'),
         ));
         $lastupdatetext .= html_writer::end_tag('small');
-
-        // Prepare filter HTML for active users block.
-        $filterhtml = html_writer::start_tag('form', array("action" => "javascript:void(0)"));
-        $filterhtml .= html_writer::start_tag('div', array('class' => 'd-flex mt-1'));
-        $filterhtml .= html_writer::tag('button', get_string('lastweek', 'local_edwiserreports'), array(
-            'type' => 'button',
-            'class' => 'btn btn-sm dropdown-toggle',
-            'data-toggle' => 'dropdown',
-            'id' => 'filter-dropdown',
-            'aria-expanded' => 'false'
-        ));
-        $filterhtml .= html_writer::start_tag('div', array(
-            'class' => 'dropdown-menu',
-            'aria-labelledby' => 'filter-dropdown',
-            'role' => 'menu'
-        ));
-        $filterhtml .= html_writer::tag('div', '', array(
-            'id' => 'activeUser-calendar',
-            'class' => 'dropdown-calendar'
-        ));
-        $filterhtml .= html_writer::start_tag('div', array('class' => 'dropdown-body'));
-
-        // Prepare filter link.
-        $datefilter = html_writer::empty_tag('input', array(
-            'class' => 'dropdown-item border-0 custom p-0',
-            'id' => 'flatpickrCalender',
-            'placeholder' => get_string('custom', 'local_edwiserreports'),
-            'data-input'
-        ));
-        $filteropt = array(
-            'weekly' => array(
-                'name' => get_string('lastweek', 'local_edwiserreports'),
-                'value' => 'weekly',
-                'classes' => ''
-            ),
-            'monthly' => array(
-                'name' => get_string('lastmonth', 'local_edwiserreports'),
-                'value' => 'monthly',
-                'classes' => ''
-            ),
-            'yearly' => array(
-                'name' => get_string('lastyear', 'local_edwiserreports'),
-                'value' => 'yearly',
-                'classes' => ''
-            ),
-            'custom' => array(
-                'name' => $datefilter,
-                'value' => 'custom',
-                'classes' => 'custom'
-            )
-        );
-
-        // Prepare dropdown items for active users filter.
-        foreach ($filteropt as $value) {
-            $filterhtml .= html_writer::link('javascript:void(0)', $value['name'], array(
-                'class' => 'dropdown-item ' . $value['classes'],
-                'role' => 'menuitem',
-                'value' => $value['value']
-            ));
-        }
-
-        // End tags.
-        $filterhtml .= html_writer::end_tag('div');
-        $filterhtml .= html_writer::end_tag('div');
-        $filterhtml .= html_writer::end_tag('div');
-        $filterhtml .= html_writer::end_tag('form');
 
         // Create filter for active users block.
         $filters = html_writer::start_tag('div');
         $filters .= html_writer::tag('div', $lastupdatetext);
-        $filters .= html_writer::start_tag('div');
-        $filters .= $filterhtml;
-        $filters .= html_writer::end_tag('div');
         $filters .= html_writer::end_tag('div');
 
         return $filters;
@@ -228,87 +169,66 @@ class activeusersblock extends block_base {
     }
 
     /**
-     * Constructor
+     * Generate labels for active users block.
      */
-    public function generate_labels() {
+    public function generate_labels($timeperiod) {
 
-        // Cache key for active users block label.
-        $labelcachekey = "activeusers-labels-" . $this->filter;
-        $datescachekey = "activeusers-dates-" . $this->filter;
-
-        // Set current time.
-        $this->timenow = time();
-        // Set cache for active users block.
-        $this->cache = cache::make('local_edwiserreports', 'activeusers');
-
-        if ($firstlogs = $this->get_first_log()) {
-            // Getting first access of the site.
-            $this->firstsiteaccess = $firstlogs->timecreated;
-
-            // Based on the filter select labels.
-            switch ($this->filter) {
-                case LOCAL_SITEREPORT_ALL:
-                    // Calculate the days for all active users data.
-                    $days = floor(($this->timenow - $this->firstsiteaccess) / LOCAL_SITEREPORT_ONEDAY);
+        $this->dates = [];
+        $this->labels = [];
+        if ($this->graphajax == 'graph') {
+            $this->enddate = floor(time() / 86400 + 1) * 86400 - 1;
+        } else {
+            $this->enddate = time();
+        }
+        switch ($timeperiod) {
+            case 'weekly':
+                // Monthly days.
+                $this->xlabelcount = LOCAL_SITEREPORT_WEEKLY_DAYS;
+                break;
+            case 'monthly':
+                // Yearly days.
+                $this->xlabelcount = LOCAL_SITEREPORT_MONTHLY_DAYS;
+                break;
+            case 'yearly':
+                // Weekly days.
+                $this->xlabelcount = LOCAL_SITEREPORT_YEARLY_DAYS;
+                break;
+            default:
+                // Explode dates from custom date filter.
+                $dates = explode(" to ", $timeperiod);
+                if (count($dates) == 2) {
+                    $startdate = strtotime($dates[0]." 00:00:00");
+                    $enddate = strtotime($dates[1]." 23:59:59");
+                }
+                // If it has correct startdat and end date then count xlabel.
+                if (isset($startdate) && isset($enddate)) {
+                    $days = round(($enddate - $startdate) / LOCAL_SITEREPORT_ONEDAY);
                     $this->xlabelcount = $days;
-                    break;
-                case LOCAL_SITEREPORT_MONTHLY:
-                    // Monthly days.
-                    $this->xlabelcount = LOCAL_SITEREPORT_MONTHLY_DAYS;
-                    break;
-                case LOCAL_SITEREPORT_YEARLY:
-                    // Yearly days.
-                    $this->xlabelcount = LOCAL_SITEREPORT_YEARLY_DAYS;
-                    break;
-                case LOCAL_SITEREPORT_WEEKLY:
-                    // Weekly days.
-                    $this->xlabelcount = LOCAL_SITEREPORT_WEEKLY_DAYS;
-                    break;
-                default:
-                    // Explode dates from custom date filter.
-                    $dates = explode(" to ", $this->filter);
-                    if (count($dates) == 2) {
-                        $startdate = strtotime($dates[0]." 00:00:00");
-                        $enddate = strtotime($dates[1]." 23:59:59");
-                    }
-
-                    // If it has correct startdat and end date then count xlabel.
-                    if (isset($startdate) && isset($enddate)) {
-                        $days = floor($enddate - $startdate) / LOCAL_SITEREPORT_ONEDAY;
-                        $this->xlabelcount = $days;
-                        $this->timenow = $enddate;
-                    } else {
-                        $this->xlabelcount = LOCAL_SITEREPORT_WEEKLY_DAYS; // Default one week.
-                    }
-            }
-        } else {
-            // If no record fonud then current time is first access time.
-            $this->firstsiteaccess = $this->timenow;
+                    $this->enddate = $enddate;
+                } else {
+                    $this->xlabelcount = LOCAL_SITEREPORT_WEEKLY_DAYS; // Default one week.
+                }
+                break;
         }
 
-        // Get labels from cache if exist.
-        if ($this->cache->get($labelcachekey) && $this->cache->get($datescachekey)) {
-            $this->labels = $this->cache->get($labelcachekey);
-            $this->dates = $this->cache->get($datescachekey);
-        } else {
-            // Get all lables.
-            for ($i = 0; $i < $this->xlabelcount; $i++) {
-                $time = $this->timenow - $i * LOCAL_SITEREPORT_ONEDAY;
-                $this->dates[floor($time / LOCAL_SITEREPORT_ONEDAY)] = 0;
-                $this->labels[] = date("d M y", $time);
-            }
+        $this->startdate = (round($this->enddate / 86400) - $this->xlabelcount) * 86400;
 
-            // If cache is not set then set cache for labels.
-            if (isset($labelcachekey)) {
-                $this->cache->set($labelcachekey, $this->labels);
-            }
-            if (isset($datescachekey)) {
-                $this->cache->set($datescachekey, $this->dates);
-            }
+        // Generate date label.
+        $labelcallback = function($value) {
+            return date('d M y', $value);
+        };
+        if ($this->graphajax == 'graph') {
+            $labelcallback = function($value) {
+                return $value * 1000;
+            };
         }
 
-        // Reverse the labels to show in graph from right to left.
-        $this->labels = array_reverse($this->labels);
+        // Get all lables.
+        for ($i = $this->xlabelcount - 1; $i >= 0; $i--) {
+            $time = $this->enddate - $i * LOCAL_SITEREPORT_ONEDAY;
+            $this->dates[floor($time / LOCAL_SITEREPORT_ONEDAY)] = 0;
+            $this->labels[] = $labelcallback($time);
+        }
     }
 
     /**
@@ -331,6 +251,39 @@ class activeusersblock extends block_base {
     }
 
     /**
+     * Calculate insight data for active users block.
+     *
+     * @return object
+     */
+    public function calculate_insight() {
+        $upgradelink = '';
+        if (is_siteadmin($this->get_current_user())) {
+            $upgradelink = UPGRADE_URL;
+        }
+        $insight = [
+            'upgradelink' => $upgradelink,
+            'insight' => [
+                'title' => get_string('averageactiveusers', 'local_edwiserreports'),
+                'value' => '??'
+            ],
+            'details' => [
+                'data' => [[
+                    'title' => get_string('totalactiveusers', 'local_edwiserreports'),
+                    'value' => '??'
+                ], [
+                    'title' => get_string('totalcourseenrolments', 'local_edwiserreports'),
+                    'value' => '??'
+                ], [
+                    'title' => get_string('totalcoursecompletions', 'local_edwiserreports'),
+                    'value' => '??'
+                ]]
+            ],
+            'pro' => $this->image_icon('lock')
+        ];
+        return $insight;
+    }
+
+    /**
      * Get active user, enrolment, completion
      * @param  object $params date filter to get data
      * @return object         Active users graph data
@@ -341,30 +294,13 @@ class activeusersblock extends block_base {
         // Get data from params.
         $this->filter = isset($params->filter) ? $params->filter : false;
         $this->cohortid = isset($params->cohortid) ? $params->cohortid : false;
-        $this->precalculated = isset($params->precalculated) ? $params->precalculated : false;
+        $this->graphajax = isset($params->graphajax) && $params->graphajax == true ? 'graph' : 'table';
 
         // Generate active users data label.
-        $this->generate_labels();
-
-        // Check pre calculated data.
-        if ($this->precalculated) {
-            $data = get_config('local_edwiserreports', 'activeusersdata');
-            $data = json_decode($data, true);
-            if ($data !== null && isset($data[$this->filter])) {
-                $response = new stdClass();
-                $response->data = new stdClass();
-
-                $response->data->activeUsers = $data[$this->filter]['activeusers'];
-                $response->data->enrolments = $data[$this->filter]['enrolments'];
-                $response->data->completionRate = $data[$this->filter]['completionrate'];
-                $response->labels = $this->labels;
-
-                return $response;
-            }
-        }
+        $this->generate_labels($this->filter);
 
         // Get cache key.
-        $cachekey = $this->generate_cache_key("activeusers-response", $this->filter, $this->cohortid);
+        $cachekey = $this->generate_cache_key("activeusers-response", $this->filter . '-' . $this->graphajax, $this->cohortid);
 
         // If response is in cache then return from cache.
         if (!$response = $this->cache->get($cachekey)) {
@@ -374,11 +310,13 @@ class activeusersblock extends block_base {
             $response->data->activeUsers = $this->get_active_users();
             $response->data->enrolments = $this->get_enrolments();
             $response->data->completionRate = $this->get_course_completionrate();
-            $response->labels = $this->labels;
-
+            $response->dates = array_keys($this->dates);
             // Set response in cache.
             $this->cache->set($cachekey, $response);
         }
+
+        $response->insight = $this->calculate_insight($response);
+        $response->labels = $this->labels;
 
         ob_clean();
         return $response;
@@ -406,7 +344,7 @@ class activeusersblock extends block_base {
         // Based on action prepare query.
         switch($action) {
             case "activeusers":
-                $sql = "SELECT DISTINCT l.userid as relateduserid
+                $sql = "SELECT DISTINCT l.userid as userid
                    FROM {logstore_standard_log} l $sqlcohort
                    WHERE l.timecreated >= :starttime
                    AND l.timecreated < :endtime
@@ -416,7 +354,7 @@ class activeusersblock extends block_base {
                 break;
             case "enrolments":
                 $sql = "SELECT DISTINCT(CONCAT(CONCAT(l.courseid, '-'), l.relateduserid )) as id,
-                                l.relateduserid,
+                                l.relateduserid as userid,
                                 l.courseid
                         FROM {logstore_standard_log} l $sqlcohort
                         WHERE l.timecreated >= :starttime
@@ -433,7 +371,7 @@ class activeusersblock extends block_base {
                     $params["cohortid"] = $cohortid;
                 }
                 $sql = "SELECT CONCAT(CONCAT(l.userid, '-'), l.courseid) as id,
-                             l.userid as relateduserid,
+                             l.userid as userid,
                              l.courseid as courseid
                         FROM {edwreports_course_progress} l $sqlcohort
                         WHERE l.completiontime IS NOT NULL
@@ -441,13 +379,13 @@ class activeusersblock extends block_base {
                         AND l.completiontime < :endtime $cohortcondition";
         }
 
-        $params["starttime"] = $filter;
-        $params["endtime"] = $filter + LOCAL_SITEREPORT_ONEDAY;
+        $params["starttime"] = $filter * LOCAL_SITEREPORT_ONEDAY;
+        $params["endtime"] = $params["starttime"] + LOCAL_SITEREPORT_ONEDAY - 1;
         $data = array();
         $records = $DB->get_records_sql($sql, $params);
         if (!empty($records)) {
             foreach ($records as $record) {
-                $user = core_user::get_user($record->relateduserid);
+                $user = core_user::get_user($record->userid);
                 $userdata = new stdClass();
                 $userdata->username = fullname($user);
                 $userdata->useremail = $user->email;
@@ -462,7 +400,6 @@ class activeusersblock extends block_base {
                 $data[] = array_values((array)$userdata);
             }
         }
-
         return $data;
     }
 
@@ -473,15 +410,14 @@ class activeusersblock extends block_base {
     public function get_active_users() {
         global $DB;
 
-        $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
         $params = array(
-            "starttime" => $starttime,
-            "endtime" => $this->timenow,
+            "starttime" => $this->startdate,
+            "endtime" => $this->enddate,
             "action" => "viewed"
         );
 
-        // Get cache key.
-        $cachekey = $this->generate_cache_key("activeusers-activeusers", $this->filter, $this->cohortid);
+        // Get Logs to generate active users data.
+        $activeusers = $this->dates;
 
         // Query to get activeusers from logs.
         $cohortjoin = "";
@@ -492,39 +428,29 @@ class activeusersblock extends block_base {
             $params["cohortid"] = $this->cohortid;
         }
         $sql = "SELECT FLOOR(l.timecreated/86400) as userdate,
-                        COUNT( DISTINCT l.userid ) as usercount
-                FROM {logstore_standard_log} l
+                    COUNT( DISTINCT l.userid ) as usercount
+                    FROM {logstore_standard_log} l
                     $cohortjoin
                 WHERE l.action = :action
                     $cohortcondition
                     AND l.timecreated >= :starttime
                     AND l.timecreated < :endtime
                     AND l.userid > 1
-                    GROUP BY FLOOR(l.timecreated/86400)";
+                GROUP BY FLOOR(l.timecreated/86400)";
 
-        // Get active users data from cache.
-        if (!$activeusers = $this->cache->get($cachekey)) {
-            // Get Logs to generate active users data.
-            $activeusers = $this->dates;
+        $logs = $DB->get_records_sql($sql, $params);
 
-            $logs = $DB->get_records_sql($sql, $params);
-            // Get active users for every day.
-            foreach (array_keys($activeusers) as $key) {
-                if (!isset($logs[$key])) {
-                    continue;
-                }
-                $activeusers[$key] = $logs[$key]->usercount;
+        // Get active users for every day.
+        foreach (array_keys($activeusers) as $key) {
+            if (!isset($logs[$key])) {
+                continue;
             }
-
-            $activeusers = array_values($activeusers);
-
-            // If not set the set cache.
-            $this->cache->set($cachekey, $activeusers);
+            $activeusers[$key] = $logs[$key]->usercount;
         }
 
-        /* Reverse the array because the graph take
-        value from left to right */
-        return array_reverse($activeusers);
+        $activeusers = array_values($activeusers);
+
+        return $activeusers;
     }
 
     /**
@@ -534,16 +460,12 @@ class activeusersblock extends block_base {
     public function get_enrolments() {
         global $DB;
 
-        $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
         $params = array(
-            "starttime" => $starttime,
-            "endtime" => $this->timenow,
+            "starttime" => $this->startdate,
+            "endtime" => $this->enddate,
             "eventname" => '\core\event\user_enrolment_created',
             "actionname" => "created"
         );
-
-        // Cache Key for enrolments.
-        $cachekey = $this->generate_cache_key('activeusers-enrolments', $this->filter, $this->cohortid);
 
         $cohortjoin = "";
         $cohortcondition = "";
@@ -572,28 +494,21 @@ class activeusersblock extends block_base {
                 AND l.timecreated < :endtime
                 GROUP BY FLOOR(l.timecreated/86400)";
 
-        // Get data from cache if exist.
-        if (!$enrolments = $this->cache->get($cachekey)) {
-            // Get enrolments log.
-            $logs = $DB->get_records_sql($sql, $params);
-            $enrolments = $this->dates;
+        // Get enrolments log.
+        $logs = $DB->get_records_sql($sql, $params);
+        $enrolments = $this->dates;
 
-            // Get enrolments from every day.
-            foreach (array_keys($enrolments) as $key) {
-                if (!isset($logs[$key])) {
-                    continue;
-                }
-                $enrolments[$key] = $logs[$key]->usercount;
+        // Get enrolments from every day.
+        foreach (array_keys($enrolments) as $key) {
+            if (!isset($logs[$key])) {
+                continue;
             }
-
-            $enrolments = array_values($enrolments);
-
-            // Set cache ifnot exist.
-            $this->cache->set($cachekey, $enrolments);
+            $enrolments[$key] = $logs[$key]->usercount;
         }
-        /* Reverse the array because the graph take
-        value from left to right */
-        return array_reverse($enrolments);
+
+        $enrolments = array_values($enrolments);
+
+        return $enrolments;
     }
 
     /**
@@ -603,14 +518,10 @@ class activeusersblock extends block_base {
     public function get_course_completionrate() {
         global $DB;
 
-        $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
         $params = array(
-            "starttime" => $starttime,
-            "endtime" => $this->timenow
+            "starttime" => $this->startdate,
+            "endtime" => $this->enddate,
         );
-
-        // Prepare cache key for completion rate.
-        $cachekey = $this->generate_cache_key('activeusers-completionrate', $this->filter, $this->cohortid);
 
         $cohortjoin = "";
         $cohortcondition = "";
@@ -621,12 +532,7 @@ class activeusersblock extends block_base {
         }
 
         $sql = "SELECT FLOOR(cc.completiontime/86400) as userdate,
-                       COUNT(
-                           CONCAT(
-                               CONCAT(cc.courseid, '-'),
-                               cc.userid
-                           )
-                       ) as usercount
+                       COUNT(cc.completiontime) as usercount
                   FROM {edwreports_course_progress} cc
                        $cohortjoin
                  WHERE cc.completiontime IS NOT NULL
@@ -634,28 +540,20 @@ class activeusersblock extends block_base {
                     AND cc.completiontime < :endtime
                        $cohortcondition
                  GROUP BY FLOOR(cc.completiontime/86400)";
-        // Get data from cache if exist.
-        if (!$completionrate = $this->cache->get($cachekey)) {
-            $completionrate = $this->dates;
-            $logs = $DB->get_records_sql($sql, $params);
 
-            // Get completion for each day.
-            foreach (array_keys($completionrate) as $key) {
-                if (!isset($logs[$key])) {
-                    continue;
-                }
-                $completionrate[$key] = $logs[$key]->usercount;
+        $completionrate = $this->dates;
+        $logs = $DB->get_records_sql($sql, $params);
+        // Get completion for each day.
+        foreach (array_keys($completionrate) as $key) {
+            if (!isset($logs[$key])) {
+                continue;
             }
-
-            $completionrate = array_values($completionrate);
-
-            // Set cache if data not exist.
-            $this->cache->set($cachekey, $completionrate);
+            $completionrate[$key] = $logs[$key]->usercount;
         }
 
-        /* Reverse the array because the graph take
-        value from left to right */
-        return array_reverse($completionrate);
+        $completionrate = array_values($completionrate);
+
+        return $completionrate;
     }
 
 
@@ -666,31 +564,21 @@ class activeusersblock extends block_base {
      */
     public function get_exportable_data_block($filter) {
 
-        // Make cache.
-        $cache = cache::make('local_edwiserreports', 'activeusers');
-        $cachekey = "exportabledatablock-" . $filter;
+        // Get exportable data for active users block.
+        $export = array();
 
-        // If exportable data is set in cache then get it from there.
-        if (!$export = $cache->get($cachekey)) {
-            // Get exportable data for active users block.
-            $export = array();
+        $obj = new self();
+        $export[] = self::get_header();
+        $activeusersdata = $obj->get_data((object) array("filter" => $filter));
 
-            $obj = new self();
-            $export[] = self::get_header();
-            $activeusersdata = $obj->get_data((object) array("filter" => $filter));
-
-            // Generate active users data.
-            foreach ($activeusersdata->labels as $key => $lable) {
-                $export[] = array(
-                    $lable,
-                    $activeusersdata->data->activeUsers[$key],
-                    $activeusersdata->data->enrolments[$key],
-                    $activeusersdata->data->completionRate[$key],
-                );
-            }
-
-            // Set cache for exportable data.
-            $cache->set($cachekey, $export);
+        // Generate active users data.
+        foreach ($activeusersdata->labels as $key => $label) {
+            $export[] = array(
+                $label,
+                $activeusersdata->data->activeUsers[$key],
+                $activeusersdata->data->enrolments[$key],
+                $activeusersdata->data->completionRate[$key],
+            );
         }
 
         return $export;
@@ -702,29 +590,22 @@ class activeusersblock extends block_base {
      * @return array          Array of exportable data
      */
     public static function get_exportable_data_report($filter) {
-        // Make cache.
-        $cache = cache::make('local_edwiserreports', 'activeusers');
 
-        if (!$export = $cache->get("exportabledatareport")) {
-            $export = array();
+        $export = array();
 
-            $blockobj = new self();
-            $export[] = self::get_header_report();
-            $cohortid = optional_param('cohortid', 0, PARAM_INT);
-            $activeusersdata = $blockobj->get_data((object) array(
-                "filter" => $filter,
-                'cohortid' => $cohortid
-            ));
-            foreach ($activeusersdata->labels as $lable) {
-                $export = array_merge($export,
-                    self::get_usersdata($lable, "activeusers", $cohortid),
-                    self::get_usersdata($lable, "enrolments", $cohortid),
-                    self::get_usersdata($lable, "completions", $cohortid)
-                );
-            }
-
-            // Set cache for exportable data.
-            $cache->set("exportabledatablock", $export);
+        $blockobj = new self();
+        $export[] = self::get_header_report();
+        $cohortid = optional_param('cohortid', 0, PARAM_INT);
+        $activeusersdata = $blockobj->get_data((object) array(
+            "filter" => $filter,
+            'cohortid' => $cohortid
+        ));
+        foreach ($activeusersdata->dates as $key => $date) {
+            $export = array_merge($export,
+                self::get_usersdata($activeusersdata->labels[$key], $date, "activeusers", $cohortid),
+                self::get_usersdata($activeusersdata->labels[$key], $date, "enrolments", $cohortid),
+                self::get_usersdata($activeusersdata->labels[$key], $date, "completions", $cohortid)
+            );
         }
 
         return $export;
@@ -732,18 +613,18 @@ class activeusersblock extends block_base {
 
     /**
      * Get User Data for Active Users Block
-     * @param  string $lable    Date for lable
+     * @param  string $date    Date for lable
      * @param  string $action   Action for getting data
      * @param  string $cohortid Cohortid
      * @return array            User data
      */
-    public static function get_usersdata($lable, $action, $cohortid) {
+    public static function get_usersdata($label, $date, $action, $cohortid) {
         $usersdata = array();
-        $users = self::get_userslist(strtotime($lable), $action, $cohortid);
+        $users = self::get_userslist($date, $action, $cohortid);
 
         foreach ($users as $user) {
             $user = array_merge(
-               array($lable),
+               [$label],
                $user
             );
 
@@ -833,34 +714,50 @@ class activeusersblock extends block_base {
      * @return array            Array of users data fields (Full Name, Email)
      */
     public static function get_userslist_table($filter, $action, $cohortid) {
+        global $OUTPUT;
         // Make cache.
         $cache = cache::make('local_edwiserreports', 'activeusers');
         // Get values from cache if it is set.
         $cachekey = "userslist-" . $filter . "-" . $action . "-" . "-" . $cohortid;
         if (!$table = $cache->get($cachekey)) {
-            $table = new html_table();
+            $context = new stdClass();
+            $context->searchicon = \local_edwiserreports\utility::image_icon('actions/search');
+            $context->placeholder = get_string('searchuser', 'local_edwiserreports');
+            $context->length = [10, 25, 50, 100];
+            $table = $OUTPUT->render_from_template('local_edwiserreports/common-table-search-filter', $context);
 
-            // Get table header.
-            $table->head = self::get_modal_table_header($action);
-
-            // Set table attributes.
-            $table->attributes = array (
+            $table .= html_writer::start_tag('table', array(
                 "class" => "modal-table table",
                 "style" => "min-width: 100%;"
-            );
+            ));
 
+            $table .= html_writer::start_tag('thead');
+            $table .= html_writer::start_tag('tr');
+            // Get table header.
+            foreach (self::get_modal_table_header($action) as $header) {
+                $table .= html_writer::tag('th', $header, array('class' => 'theme-3-bg text-white'));
+            }
+            $table .= html_writer::end_tag('tr');
+            $table .= html_writer::end_tag('thead');
+
+            $table .= html_writer::start_tag('tbody');
             // Get Users data.
             $data = self::get_userslist($filter, $action, $cohortid);
-
-            // Set table cell.
-            if (!empty($data)) {
-                $table->data = $data;
+            foreach ($data as $user) {
+                $table .= html_writer::start_tag('tr');
+                foreach ($user as $value) {
+                    $table .= html_writer::tag('td', $value);
+                }
+                $table .= html_writer::end_tag('tr');
             }
+            $table .= html_writer::end_tag('tbody');
+
+            $table .= html_writer::end_tag('table');
 
             // Set cache for users list.
             $cache->set($cachekey, $table);
         }
 
-        return html_writer::table($table);
+        return $table;
     }
 }

@@ -18,15 +18,22 @@
  * @package     local_edwiserreports
  * @copyright   2021 wisdmlabs <support@wisdmlabs.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *//* eslint-disable no-console */
+ */
+/* eslint-disable no-console */
 define([
     'jquery',
-    'core/chartjs',
-    'local_edwiserreports/defaultconfig',
+    './defaultconfig',
+    './variables',
     './common',
-    'local_edwiserreports/jquery.dataTables',
-    'local_edwiserreports/dataTables.bootstrap4'
-], function($, Chart, cfg, common) {
+    './jquery.dataTables',
+    './dataTables.bootstrap4'
+], function(
+    $,
+    cfg,
+    V,
+    common
+) {
+
     /**
      * Initialize
      * @param {function} invalidUser Callback function
@@ -38,6 +45,7 @@ define([
         var panelBody = cfg.getPanel("#activecoursesblock", "body");
         var loader = panelBody + " .loader";
         var table = panelBody + " .table";
+        var searchTable = panel + ' .table-search-input input';
 
         if ($(panel).length) {
             // Show loader.
@@ -45,43 +53,44 @@ define([
 
             /* Ajax request to get data for active courses table */
             $.ajax({
-                url: cfg.requestUrl,
-                type: cfg.requestType,
-                dataType: cfg.requestDataType,
-                data: {
-                    action: 'get_activecourses_data_ajax',
-                    secret: M.local_edwiserreports.secret
-                },
-            }).done(function(response) {
-                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
-                    invalidUser('activecoursesblock', response);
-                    return;
-                }
-                /* Create active course table */
-                createActiveCourseTable(response.data);
-                /* Added fixed column rank in datatable */
-                activeCourseTable.on('order.dt search.dt', function() {
-                    activeCourseTable.column(0, {search: 'applied', order: 'applied'}).nodes().each(function(cell, i) {
-                        if (i == 0) {
-                            cell.innerHTML = "<i class='fa fa-trophy text-gold'></i>";
-                        } else if (i == 1) {
-                            cell.innerHTML = "<i class='fa fa-trophy text-silver'></i>";
-                        } else if (i == 2) {
-                            cell.innerHTML = "<i class='fa fa-trophy text-bronze'></i>";
-                        } else {
-                            cell.innerHTML = i + 1;
-                        }
+                    url: cfg.requestUrl,
+                    type: cfg.requestType,
+                    dataType: cfg.requestDataType,
+                    data: {
+                        action: 'get_activecourses_data_ajax',
+                        secret: M.local_edwiserreports.secret
+                    },
+                }).done(function(response) {
+                    if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                        invalidUser('activecoursesblock', response);
+                        return;
+                    }
+                    /* Create active course table */
+                    createActiveCourseTable(response.data);
+                    /* Added fixed column rank in datatable */
+                    activeCourseTable.on('order.dt', function() {
+                        activeCourseTable.column(0, { order: 'applied' }).nodes().each(function(cell, i) {
+                            let img = '';
+                            if (i >= 0 && i <= 2) {
+                                img = "<img class='ml-1' src='" + M.util.image_url('trophy/' + ['gold', 'silver', 'bronze'][i], 'local_edwiserreports') + "'></img>";
+                            }
+                            cell.innerHTML = (i + 1) + img;
+                        });
+                        $(table + " td:not(.bg-secondary)").addClass("bg-white");
+                    }).draw();
+
+                    // Search in table.
+                    $('body').on('input', searchTable, function() {
+                        activeCourseTable.column(1).search(this.value).draw();
                     });
-                    $(table + " td:not(.bg-secondary)").addClass("bg-white");
-                }).draw();
-            })
-            .fail(function(error) {
-                // console.log(error);
-            })
-            .always(function() {
-                // Hide loader.
-                common.loader.hide('#activecoursesblock');
-            });
+                })
+                .fail(function(error) {
+                    // console.log(error);
+                })
+                .always(function() {
+                    // Hide loader.
+                    common.loader.hide('#activecoursesblock');
+                });
         }
 
         /**
@@ -98,13 +107,16 @@ define([
             activeCourseTable = $(table).DataTable({
                 responsive: true,
                 data: data,
-                aaSorting: [[2, 'desc']],
+                dom: '<"edwiserreports-table"<t><"table-pagination"p>>',
+                aaSorting: [
+                    [2, 'desc']
+                ],
                 aoColumns: [
                     null,
                     null,
-                    {"orderSequence": ["desc"]},
-                    {"orderSequence": ["desc"]},
-                    {"orderSequence": ["desc"]}
+                    { "orderSequence": ["desc"] },
+                    { "orderSequence": ["desc"] },
+                    { "orderSequence": ["desc"] }
                 ],
                 language: {
                     searchPlaceholder: "Search Course"
@@ -115,13 +127,11 @@ define([
                     $(table).fadeIn("slow");
                 },
                 drawCallback: function() {
-                    $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                    $('.dataTables_filter').addClass('pagination-sm pull-right');
+                    common.stylePaginationButton(this);
                 },
-                columnDefs: [
-                    {
+                columnDefs: [{
                         "targets": 0,
-                        "className": "text-center",
+                        "className": "text-left pl-5",
                         "orderable": false
                     },
                     {

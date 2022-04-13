@@ -44,7 +44,8 @@ trait set_plugin_config {
         return new external_function_parameters(
             array (
                 'pluginname' => new external_value(PARAM_RAW, 'Plugin Name', 'local_edwiserreports', 0),
-                'configname' => new external_value(PARAM_RAW, 'Config Name', '', 0)
+                'configname' => new external_value(PARAM_RAW, 'Config Name', '', 0),
+                'value' => new external_value(PARAM_RAW, 'Value of config', VALUE_DEFAULT, true)
             )
         );
     }
@@ -56,10 +57,10 @@ trait set_plugin_config {
      * @param  string $configname Configuration name
      * @return object             COnfiguration
      */
-    public static function set_plugin_config($pluginname, $configname) {
+    public static function set_plugin_config($pluginname, $configname, $value) {
         // Get Plugin config.
         $res = new stdClass();
-        $res->success = set_config($configname, true, $pluginname);
+        $res->success = set_config($configname, $value, $pluginname);
 
         return $res;
     }

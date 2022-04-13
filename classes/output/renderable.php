@@ -34,6 +34,13 @@ use templatable;
 use context_system;
 use local_edwiserreports\controller\authentication;
 
+$files = scandir($CFG->dirroot . "/local/edwiserreports/classes/blocks/");
+unset($files[0]);
+unset($files[1]);
+foreach ($files as $file) {
+    require_once($CFG->dirroot . "/local/edwiserreports/classes/blocks/" . $file);
+}
+
 require_once($CFG->dirroot."/local/edwiserreports/lib.php");
 require_once($CFG->dirroot."/local/edwiserreports/classes/report_blocks.php");
 require_once($CFG->dirroot."/local/edwiserreports/locallib.php");
@@ -41,7 +48,7 @@ require_once($CFG->dirroot."/local/edwiserreports/locallib.php");
 /**
  * Elucid report renderable.
  */
-class elucidreport_renderable implements renderable, templatable {
+class edwiserreports_renderable implements renderable, templatable {
     /**
      * Function to export the renderer data in a format that is suitable for a
      * edit mustache template.
@@ -51,6 +58,8 @@ class elucidreport_renderable implements renderable, templatable {
      */
     public function export_for_template(renderer_base $output) {
         global $CFG, $PAGE, $USER;
+
+        user_preference_allow_ajax_update('local_edwiserreports_insights_order', PARAM_TEXT);
 
         $output = null;
         $export = new stdClass();
@@ -81,6 +90,10 @@ class elucidreport_renderable implements renderable, templatable {
         $export->editing = isset($USER->editing) ? $USER->editing : 0;
         $export->canmanagecustomreports = has_capability('report/edwiserreports_customreports:manage', $context);
         $export->customreportseditlink = new moodle_url($CFG->wwwroot."/local/edwiserreports/customreportedit.php");
+
+        // Top insights.
+        $insights = new \local_edwiserreports\insights\insight();
+        $export->topinsights = $insights->get_insights();
 
         return $export;
     }
@@ -259,6 +272,8 @@ class activeusers_renderable implements renderable, templatable {
 
         $output->backurl = $CFG->wwwroot."/local/edwiserreports/index.php";
 
+        $output->pageheader = get_string("activeusersheader", "local_edwiserreports");
+
         if ($cohortfilter = local_edwiserreports_get_cohort_filter()) {
             $output->cohortfilters = $cohortfilter;
         }
@@ -268,6 +283,14 @@ class activeusers_renderable implements renderable, templatable {
             "region" => "report",
             "downloadurl" => $CFG->wwwroot . "/local/edwiserreports/download.php"
         );
+
+        // Add export icons to export array.
+        $output->export = \local_edwiserreports\utility::get_export_icons($output->export);
+
+        $output->searchicon = \local_edwiserreports\utility::image_icon('actions/search');
+        $output->placeholder = get_string('searchdate', 'local_edwiserreports');
+        $output->length = [10, 25, 50, 100];
+
         return $output;
     }
 }
@@ -294,17 +317,30 @@ class coursereport_renderable implements renderable, templatable {
             "downloadurl" => $CFG->wwwroot . "/local/edwiserreports/download.php"
         );
 
+        // Add export icons to export array.
+        $output->courseprogressexport = \local_edwiserreports\utility::get_export_icons($output->courseprogressexport);
+
         $output->courseengageexport = array(
             "id" => "courseengageblock",
             "region" => "report",
             "downloadurl" => $CFG->wwwroot . "/local/edwiserreports/download.php"
         );
 
+        // Add export icons to export array.
+        $output->courseengageexport = \local_edwiserreports\utility::get_export_icons($output->courseengageexport);
+
+        $output->pageheader = get_string("coursereportsheader", "local_edwiserreports");
+
         $output->backurl = $CFG->wwwroot."/local/edwiserreports/index.php";
 
         if ($cohortfilter = local_edwiserreports_get_cohort_filter()) {
             $output->cohortfilters = $cohortfilter;
         }
+
+        $output->searchicon = \local_edwiserreports\utility::image_icon('actions/search');
+        $output->placeholder = get_string('searchcourse', 'local_edwiserreports');
+        $output->length = [10, 25, 50, 100];
+        $output->warningicon = \local_edwiserreports\utility::image_icon('warning');
 
         return $output;
     }
@@ -327,6 +363,9 @@ class certificates_renderable implements renderable, templatable {
         $output = new stdClass();
         $output->sesskey = sesskey();
         $customcerts = $DB->get_records("customcert", array());
+
+        $output->pageheader = get_string("certificatestats", "local_edwiserreports");
+
         $output->backurl = $CFG->wwwroot."/local/edwiserreports/index.php";
 
         if (!empty($customcerts)) {
@@ -346,6 +385,13 @@ class certificates_renderable implements renderable, templatable {
                 "downloadurl" => $CFG->wwwroot . "/local/edwiserreports/download.php",
                 "filter" => $firstcertid
             );
+
+            // Add export icons to export array.
+            $output->certexport = \local_edwiserreports\utility::get_export_icons($output->certexport);
+
+            $output->searchicon = \local_edwiserreports\utility::image_icon('actions/search');
+            $output->placeholder = get_string('searchuser', 'local_edwiserreports');
+            $output->length = [10, 25, 50, 100];
         }
         return $output;
     }
@@ -379,6 +425,123 @@ class completion_renderable implements renderable, templatable {
             "downloadurl" => $CFG->wwwroot . "/local/edwiserreports/download.php",
             "filter" => $courseid
         );
+
+        // Add export icons to export array.
+        $output->completionexport = \local_edwiserreports\utility::get_export_icons($output->completionexport);
+
+        $output->searchicon = \local_edwiserreports\utility::image_icon('actions/search');
+        $output->placeholder = get_string('searchuser', 'local_edwiserreports');
+        $output->length = [10, 25, 50, 100];
+
+        return $output;
+    }
+}
+
+/**
+ * Grade more details page renderables.
+ */
+class grade_renderable implements renderable, templatable {
+    /**
+     * Function to export the renderer data in a format that is suitable for a
+     * edit mustache template.
+     *
+     * @param renderer_base $output Used to do a final render of any components that need to be rendered for export.
+     * @return stdClass|array
+     */
+    public function export_for_template(renderer_base $output) {
+        global $USER, $COURSE, $CFG;
+
+        $output = new stdClass();
+        $grade = new \local_edwiserreports\gradeblock();
+
+        $authentication = new authentication();
+
+        $output->secret = $authentication->get_secret_key($USER->id);
+
+        $output->courses = $grade->get_grade_filter(true);
+
+        // Fetch cohort filters.
+        if ($cohortfilters = local_edwiserreports_get_cohort_filter()) {
+            $output->cohortfilters = $cohortfilters;
+        }
+
+        $output->gradeexport = array(
+            "id" => "gradeblock",
+            "region" => "report",
+            "downloadurl" => $CFG->wwwroot . "/local/edwiserreports/download.php",
+            "filter" => json_encode([
+                "course" => "0",
+                "cohort" => "0",
+                "search" => "",
+                "ordering" => [
+                    "column" => "0",
+                    "dir" => "asc"
+                ]
+            ])
+        );
+
+        $output->pageheader = get_string("gradeheader", "local_edwiserreports");
+
+        // Table filter context.
+        $output->searchicon = \local_edwiserreports\utility::image_icon('actions/search');
+        $output->placeholder = get_string('searchuser', 'local_edwiserreports');
+        $output->length = [10, 25, 50, 100];
+
+        // Add export icons to export array.
+        $output->gradeexport = \local_edwiserreports\utility::get_export_icons($output->gradeexport);
+
+        $output->backurl = $CFG->wwwroot."/local/edwiserreports/index.php";
+
+        return $output;
+    }
+}
+
+/**
+ * Student engagement renderables.
+ */
+class learner_renderable implements renderable, templatable {
+    /**
+     * Function to export the renderer data in a format that is suitable for a
+     * edit mustache template.
+     *
+     * @param renderer_base $output Used to do a final render of any components that need to be rendered for export.
+     * @return stdClass|array
+     */
+    public function export_for_template(renderer_base $output) {
+        global $USER, $COURSE, $CFG;
+
+        $output = new stdClass();
+
+        $authentication = new authentication();
+
+        $output->secret = $authentication->get_secret_key($USER->id);
+
+        if (is_siteadmin() || has_capability('moodle/site:configview', context_system::instance())) {
+            $courses = get_courses();
+        } else {
+            $courses = enrol_get_users_courses($USER->id);
+        }
+        unset($courses[$COURSE->id]);
+
+        $output->courses = array_merge([
+            0 => [
+                'id' => 0,
+                'fullname' => get_string('fulllistofcourses')
+            ]
+        ], $courses);
+
+        // Fetch cohort filters.
+        if ($cohortfilters = local_edwiserreports_get_cohort_filter()) {
+            $output->cohortfilters = $cohortfilters;
+        }
+
+        $output->backurl = $CFG->wwwroot."/local/edwiserreports/index.php";
+
+        $output->pageheader = get_string("learnerreportheader", "local_edwiserreports");
+
+        $output->searchicon = \local_edwiserreports\utility::image_icon('actions/search');
+        $output->placeholder = get_string('searchcourse', 'local_edwiserreports');
+        $output->length = [10, 25, 50, 100];
 
         return $output;
     }

@@ -27,6 +27,11 @@ define(["jquery", "local_edwiserreports/variables", "local_edwiserreports/select
         requestDataType: v.requestDataType,
         component: v.component,
 
+        // Get color theme.
+        getColorTheme: function() {
+            return edwiser_reports_color_themes;
+        },
+
         // Todays Activity Block
         getTodaysActivityBlock: function() {
             var cpBlockData = $(v.todaysActivityBlock);
@@ -36,7 +41,6 @@ define(["jquery", "local_edwiserreports/variables", "local_edwiserreports/select
 
             // Return course progress graph object
             return {
-                ctx: $(v.todaysActivityBlock)[0].getContext("2d"),
                 labelName: "Page Access",
                 graph: {
                     type: "bar",
@@ -99,7 +103,6 @@ define(["jquery", "local_edwiserreports/variables", "local_edwiserreports/select
 
             // Return course progress graph object
             return {
-                ctx: $(v.activeUsersBlock)[0].getContext("2d"),
                 labelName: "Page Access",
                 graph: {
                     type: "line",
@@ -158,62 +161,6 @@ define(["jquery", "local_edwiserreports/variables", "local_edwiserreports/select
             };
         },
 
-        /**
-         * Get course progress block object
-         * @return {object} Course progress graph object
-         */
-        getCourseProgressBlock: function() {
-            var cpBlockData = $(v.courseProgressBlock);
-            if (cpBlockData.length == 0) {
-                return false;
-            }
-
-            // Return course progress graph object
-            return {
-                ctx: $(v.courseProgressBlock)[0].getContext("2d"),
-                graph: {
-                    type: "pie",
-                    data: [0, 0, 0, 0, 0, 0],
-                    options: {
-                        responsive: true,
-                        legend: {position: 'bottom'},
-                        maintainAspectRatio: false,
-                        aspectRatio: 1,
-                        tooltips: {
-                            callbacks: {
-                                title: function(tooltipItem, data) {
-                                    return [
-                                        M.util.get_string('cpblocktooltip1',
-                                            v.component,
-                                            {
-                                                "per": data.labels[tooltipItem[0].index],
-                                            }),
-                                        M.util.get_string('cpblocktooltip2',
-                                            v.component,
-                                            {
-                                                "val": data.datasets[0].data[tooltipItem[0].index]
-                                            })
-                                    ];
-                                },
-                                label: function() {
-                                    return '';
-                                }
-                            }
-                        }
-                    },
-                    labels: [
-                        M.util.get_string('per20-0', v.component),
-                        M.util.get_string('per40-20', v.component),
-                        M.util.get_string('per60-40', v.component),
-                        M.util.get_string('per80-60', v.component),
-                        M.util.get_string('per100-80', v.component),
-                        M.util.get_string('per100', v.component)
-                    ],
-                    backgroundColor: ["#fe6384", "#36a2eb", "#fdce56", "#cacbd0", "#4ac0c0", "#ff851b"]
-                }
-            };
-        },
-
         changeExportUrl: v.changeExportUrl,
 
         // Get learning program blocks
@@ -229,7 +176,7 @@ define(["jquery", "local_edwiserreports/variables", "local_edwiserreports/select
                     type: "pie",
                     options: {
                         responsive: true,
-                        legend: {position: 'bottom'},
+                        legend: { position: 'bottom' },
                         maintainAspectRatio: false,
                         aspectRatio: 1,
                         tooltips: {

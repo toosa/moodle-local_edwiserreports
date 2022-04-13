@@ -24,12 +24,11 @@ define([
     'core/modal_factory',
     'core/modal_events',
     'core/fragment',
-    'core/templates',
-    'local_edwiserreports/variables',
-    'local_edwiserreports/jquery.dataTables',
-    'local_edwiserreports/dataTables.bootstrap4',
-    'local_edwiserreports/common'
-], function($, ModalFactory, ModalEvents, Fragment, Templates, V) {
+    './variables',
+    './common',
+    './jquery.dataTables',
+    './dataTables.bootstrap4'
+], function($, ModalFactory, ModalEvents, Fragment, V, common) {
     /**
      * Initialize
      * @param {integer} CONTEXTID Current page context id
@@ -42,28 +41,40 @@ define([
         var url = V.requestUrl + '?action=get_courseengage_data_ajax&sesskey=' + sesskey;
         var CourseEngageUsers = CourseEngageTable + " a.modal-trigger";
         var datatable = null;
+        var modalTable = null;
         var exportUrlLink = ".dropdown-menu[aria-labelledby='export-dropdown'] .dropdown-item";
 
         // Varibales for cohort filter
-        var cohortFilterBtn = "#cohortfilter";
-        var cohortFilterItem = cohortFilterBtn + " ~ .dropdown-menu .dropdown-item";
         var cohortId = 0;
 
         $(document).ready(function() {
+
+            // Observer length change.
+            $('body').on('change', '#wdm-courseengage-individual .table-length-input select', function() {
+                datatable.page.len(this.value).draw();
+            });
+
+            // Search in table.
+            $('body').on('input', '#wdm-courseengage-individual .table-search-input input', function() {
+                datatable.column(0).search(this.value).draw();
+            });
+
+            // Search in modal table.
+            $('body').on('input', '.courseengage-modal .table-search-input input', function() {
+                modalTable.search(this.value).draw();
+            });
+
             createCourseEngageTable(cohortId);
 
             /* Select cohort filter for active users block */
-            $(document).on('click', cohortFilterItem, function() {
+            $(document).on('change', '#page-local-edwiserreports-coursereport .cohort-select', function() {
                 if (datatable) {
                     datatable.destroy();
                     $(CourseEngageTable).hide();
                     $(loader).show();
                 }
 
-                cohortId = $(this).data('cohortid');
-                $("#engagement").find('.download-links input[name="cohortid"]').val(cohortId);
-                V.changeExportUrl(cohortId, exportUrlLink, V.cohortReplaceFlag);
-                $(cohortFilterBtn).html($(this).text());
+                cohortId = $(this).val();
                 createCourseEngageTable(cohortId);
             });
 
@@ -78,8 +89,7 @@ define([
                     body: Fragment.loadFragment(
                         'local_edwiserreports',
                         'userslist',
-                        CONTEXTID,
-                        {
+                        CONTEXTID, {
                             page: 'courseengage',
                             courseid: courseid,
                             action: action,
@@ -88,6 +98,7 @@ define([
                     )
                 }).then(function(modal) {
                     ModalRoot = modal.getRoot();
+                    modal.getBody().addClass('courseengage-modal');
                     ModalRoot.find('.modal-dialog').addClass('modal-lg');
                     modal.setTitle(coursename);
                     modal.show();
@@ -108,17 +119,16 @@ define([
                         }
 
                         // Create dataTable for userslist
-                        ModalRoot.find(".modal-table").DataTable({
+                        modalTable = ModalTable.DataTable({
                             language: {
-                                searchPlaceholder: "Search User",
                                 emptyTable: "There are no users"
                             },
+                            dom: '<"edwiserreports-table"i<t><"table-pagination"p>>',
                             drawCallback: function() {
-                                ModalRoot.find('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                                ModalRoot.find('.dataTables_filter').addClass('pagination-sm pull-right');
+                                ModalTable.find('th').addClass('theme-3-bg text-white');
+                                common.stylePaginationButton(this);
                             },
-                            lengthChange: false,
-                            bInfo: false
+                            lengthChange: false
                         });
                     });
                     return;
@@ -131,33 +141,40 @@ define([
          * @param  {int} cohortId Cohort ID
          */
         function createCourseEngageTable(cohortId) {
+            common.loader.show('#page-local-edwiserreports-coursereport #wdm-courseengage-individual');
             $(CourseEngageTable).show();
             $(loader).hide();
 
             datatable = $(CourseEngageTable).DataTable({
                 ajax: url + "&cohortid=" + cohortId,
+                dom: '<"edwiserreports-table"<"p-2"i><t><"table-pagination"p>>',
                 columns: [
-                    {"data": "coursename"},
-                    {"data": "enrolment"},
-                    {"data": "visited"},
-                    {"data": "activitystart"},
-                    {"data": "completedhalf"},
-                    {"data": "coursecompleted"}
+                    { "data": "coursename" },
+                    { "data": "enrolment" },
+                    { "data": "visited" },
+                    { "data": "activitystart" },
+                    { "data": "completedhalf" },
+                    { "data": "coursecompleted" }
                 ],
                 columnDefs: [
-                    {className: "text-left", targets: 0},
-                    {className: "text-center modal-trigger", targets: "_all"}
+                    { className: "text-left", targets: 0 },
+                    { className: "text-center modal-trigger", targets: "_all" }
                 ],
                 language: {
                     searchPlaceholder: "Search Course",
                     emptyTable: "There are no courses"
                 },
                 drawCallback: function() {
-                    $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                    $('.dataTables_filter').addClass('pagination-sm pull-right');
+                    $(CourseEngageTable).find('th').addClass('theme-3-bg text-white');
+                    common.stylePaginationButton(this);
                 },
-                bInfo: false
+                initComplete: function() {
+                    common.loader.hide('#page-local-edwiserreports-coursereport #wdm-courseengage-individual');
+                }
             });
+
+            datatable.page.len($('#wdm-courseengage-individual .table-length-input select').val()).draw();
+            datatable.column(0).search($('#wdm-courseengage-individual .table-search-input input').val()).draw();
         }
     }
 

@@ -45,7 +45,14 @@ list($context, $course, $cm) = get_context_info_array($contextid);
 
 $secret = optional_param('secret', null, PARAM_TEXT);
 if ($secret == null) {
-    $nologinactions = ['get_loginstatus', 'read_page', 'get_courses_ajax']; // Actions which do not require login checks.
+    // Actions which do not require login checks.
+    $nologinactions = [
+        'get_loginstatus',
+        'read_page',
+        'get_courses_ajax',
+        'get_tracking_id',
+        'is_installed_ajax'
+    ];
     if (!in_array($action, $nologinactions)) {
         $courseactions = ['get_media', 'get_page'];
         if (in_array($action, $courseactions)) {

@@ -37,7 +37,7 @@ class customreportsblock extends block_base {
     /**
      * Layout variable to prepare layout
      *
-     * @var String
+     * @var object
      */
     public $layout;
 
@@ -176,15 +176,28 @@ class customreportsblock extends block_base {
         $this->layout->id = 'customreportsblock-' . $customreport->id;
         $this->layout->name = $customreport->fullname;
         $this->layout->info = $customreport->fullname;
-        $this->layout->hasdownloadlink = $reportsdata->downloadenable;
+        $this->layout->downloadlinks = $reportsdata->downloadenable ? $this->get_block_download_links() : false;
         $this->layout->iscustomblock = true;
         $this->layout->params = json_encode($reportsdata);
+        $this->layout->filters = $this->get_filters();
 
         // Set block edit capabilities.
         $this->set_block_edit_capabilities($this->layout->id);
 
         // Return blocks layout.
         return $this->layout;
+    }
+
+    /**
+     * Prepare Inactive users filter
+     * @return string Filter HTML content
+     */
+    public function get_filters() {
+        global $OUTPUT;
+        return $OUTPUT->render_from_template('local_edwiserreports/common-table-search-filter', [
+            'searchicon' => $this->image_icon('actions/search'),
+            'placeholder' => get_string('search')
+        ]);
     }
 
     /**

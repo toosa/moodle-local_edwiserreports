@@ -28,9 +28,9 @@ define(['jquery', 'local_edwiserreports/variables'], function($) {
         requestType: 'GET',
         requestDataType: 'json',
         whiteColor: "rgba(255, 255, 255, 0.8)",
-        todaysActivityBlock: "#todaysactivityblock .ct-chart",
-        activeUsersBlock: "#activeusersblock .ct-chart",
-        courseProgressBlock: "#courseprogressblock .ct-chart",
+        todaysActivityBlock: "#todaysactivityblock #apex-chart-todays-activity",
+        activeUsersBlock: "#activeusersblock #apex-chart-active-users",
+        courseProgressBlock: "#courseprogressblock #apex-chart-course-progress",
         lpStatsBlock: "#lpstatsblock .ct-chart",
         month_1: "JAN",
         month_2: "FEB",
@@ -81,11 +81,18 @@ define(['jquery', 'local_edwiserreports/variables'], function($) {
         // Plugin component
         component: 'local_edwiserreports',
 
+        // Datatable stylingclasses.
+        datatableClasses: {
+            buttonSpacing: 'mx-1',
+            buttonSize: "px-3 py-2",
+            buttonActive: "border-secondary bg-secondary text-dark rounded",
+            buttonInactive: "border theme-primary-border theme-primary-text rounded"
+        },
+
         // Get scheduled email context
         getScheduledEmailFormContext: function() {
             return {
-                timesdropdown: [
-                    {
+                timesdropdown: [{
                         timestring: "12:00 AM",
                         value: 0
                     },
@@ -182,8 +189,7 @@ define(['jquery', 'local_edwiserreports/variables'], function($) {
                         value: 23
                     },
                 ],
-                daysdropdown: [
-                    {
+                daysdropdown: [{
                         string: 1,
                         value: 1,
                     },
@@ -349,7 +355,8 @@ define(['jquery', 'local_edwiserreports/variables'], function($) {
         /* Format Date in specific format */
         formatDate: function(date, format, utc) {
             var MMMM = ["\x00", "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"];
+                "July", "August", "September", "October", "November", "December"
+            ];
             var MMM = ["\x01", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             var dddd = ["\x02", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             var ddd = ["\x03", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

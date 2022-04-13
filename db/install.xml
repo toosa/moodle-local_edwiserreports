@@ -37,6 +37,7 @@
                 <FIELD COMMENT="User Id" NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
                 <FIELD COMMENT="Completed Modules" NAME="completedmodules" TYPE="text" LENGTH="500" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD COMMENT="Total Modules" NAME="totalmodules" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD COMMENT="Completable Modules" NAME="completablemods" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD COMMENT="Course Progress" NAME="progress" TYPE="int" LENGTH="5" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
                 <FIELD COMMENT="Course Completion Time" NAME="completiontime" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
                 <FIELD COMMENT="Is Progress Change" NAME="pchange" TYPE="int" LENGTH="2" DEFAULT="1" NOTNULL="true" SEQUENCE="false"/>
@@ -63,18 +64,17 @@
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
             </KEYS>
         </TABLE>
-        <!-- Authentication table -->
         <TABLE
             COMMENT="Keeps secret keys for user authentication"
             NAME="edwreports_authentication">
             <FIELDS>
                 <FIELD COMMENT="Id" NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD COMMENT="User id" NAME="user" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD COMMENT="User id" NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD COMMENT="Secret key" NAME="secret" TYPE="text" LENGTH="10" NOTNULL="true"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-                <KEY NAME="unique" TYPE="unique" FIELDS="user"/>
+                <KEY NAME="unique" TYPE="unique" FIELDS="userid"/>
             </KEYS>
         </TABLE>
     </TABLES>

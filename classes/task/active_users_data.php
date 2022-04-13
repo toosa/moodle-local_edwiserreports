@@ -77,29 +77,46 @@ class active_users_data extends \core\task\scheduled_task {
     /**
      * Constructor
      */
-    public function prerequisite() {
+    public function generate_dates() {
 
         $this->dates = [];
-
-        // Based on the filter select labels.
+        $this->enddate = floor(time() / 86400 + 1) * 86400 - 1;
         switch ($this->filter) {
-            case LOCAL_SITEREPORT_WEEKLY:
+            case 'weekly':
                 // Weekly days.
                 $this->xlabelcount = LOCAL_SITEREPORT_WEEKLY_DAYS;
                 break;
-            case LOCAL_SITEREPORT_MONTHLY:
+            case 'monthly':
                 // Monthly days.
                 $this->xlabelcount = LOCAL_SITEREPORT_MONTHLY_DAYS;
                 break;
-            case LOCAL_SITEREPORT_YEARLY:
+            case 'yearly':
                 // Yearly days.
                 $this->xlabelcount = LOCAL_SITEREPORT_YEARLY_DAYS;
                 break;
+            default:
+                // Explode dates from custom date filter.
+                $dates = explode(" to ", $this->filter);
+                if (count($dates) == 2) {
+                    $startdate = strtotime($dates[0]." 00:00:00");
+                    $enddate = strtotime($dates[1]." 23:59:59");
+                }
+                // If it has correct startdat and end date then count xlabel.
+                if (isset($startdate) && isset($enddate)) {
+                    $days = round(($enddate - $startdate) / LOCAL_SITEREPORT_ONEDAY);
+                    $this->xlabelcount = $days;
+                    $this->enddate = $enddate;
+                } else {
+                    $this->xlabelcount = LOCAL_SITEREPORT_WEEKLY_DAYS; // Default one week.
+                }
+                break;
         }
 
-        // Get all lables.
-        for ($i = 0; $i < $this->xlabelcount; $i++) {
-            $time = $this->timenow - $i * LOCAL_SITEREPORT_ONEDAY;
+        $this->startdate = (round($this->enddate / 86400) - $this->xlabelcount) * 86400;
+
+        // Get all dates.
+        for ($i = $this->xlabelcount - 1; $i >= 0; $i--) {
+            $time = $this->enddate - $i * LOCAL_SITEREPORT_ONEDAY;
             $this->dates[floor($time / LOCAL_SITEREPORT_ONEDAY)] = 0;
         }
     }
@@ -108,12 +125,8 @@ class active_users_data extends \core\task\scheduled_task {
      * Execute the task.
      */
     public function execute() {
-        global $DB;
 
         $filters = ['weekly', 'monthly', 'yearly'];
-
-        // Set current time.
-        $this->timenow = time();
 
         // Data for graph.
         $activeusers = [];
@@ -123,7 +136,7 @@ class active_users_data extends \core\task\scheduled_task {
             // Generate data.
             echo "Calculating " . $filter . " data:\n";
             $this->filter = $filter;
-            $this->prerequisite();
+            $this->generate_dates();
 
             echo "Calculating active users:";
             // Start progress.
@@ -145,10 +158,80 @@ class active_users_data extends \core\task\scheduled_task {
             $activeusers[$filter]['completionrate'] = $this->get_course_completionrate();
             // End progress.
             $this->progress->end_progress();
+
+            echo "\nCalculating insight:";
+            // Start progress.
+            $this->progress->start_progress();
+            $activeusers[$filter]['insight'] = $this->calculate_insight(
+                $activeusers[$filter]['activeusers'],
+                $activeusers[$filter]['enrolments']
+            );
             echo "\n....................................................................................\n";
         }
         set_config('activeusersdata', json_encode($activeusers), 'local_edwiserreports');
         return true;
+    }
+
+    /**
+     * Calculate insight data for active users block.
+     *
+     * @param object $data   Response data
+     *
+     * @return object
+     */
+    public function calculate_insight($activeusers, $enrolments) {
+        $totalactiveusers = 0;
+        $count = 0;
+        foreach ($activeusers as $active) {
+            $totalactiveusers += $active;
+            $count ++;
+        }
+
+        $averageactiveusers = $totalactiveusers == 0 ? 0 : floor($totalactiveusers / $count);
+
+        $insight = [
+            'insight' => [
+                'title' => get_string('averageactiveusers', 'local_edwiserreports'),
+                'value' => $averageactiveusers
+            ],
+            'details' => [
+                'data' => [[
+                    'title' => get_string('totalactiveusers', 'local_edwiserreports'),
+                    'value' => $totalactiveusers
+                ], [
+                    'title' => get_string('totalcourseenrolments', 'local_edwiserreports'),
+                    'value' => array_sum($enrolments)
+                ]]
+            ]
+        ];
+        $startdate = $this->startdate;
+        $enddate = $this->enddate;
+        $timedifference = $enddate - $startdate;
+        $this->startdate = $startdate - $timedifference;
+        $this->enddate = $enddate - $timedifference;
+        $days = round($timedifference / 86400);
+        foreach ($this->dates as $key => $value) {
+            unset($this->dates[$key]);
+            $this->dates[$key - $days] = $value;
+        }
+        $oldactiveusers = array_sum($this->get_active_users());
+        $oldaverageactiveusers = $oldactiveusers == 0 ? 0 : floor($oldactiveusers / $count);
+        $difference = $averageactiveusers - $oldaverageactiveusers;
+        if ($difference == 0) {
+            return $insight;
+        }
+        if ($difference > 0) {
+            $insight['insight']['difference'] = [
+                'direction' => true,
+                'value' => floor($difference / $averageactiveusers * 100)
+            ];
+            return $insight;
+        }
+        $insight['insight']['difference'] = [
+            'direction' => false,
+            'value' => floor($difference / -$oldaverageactiveusers * 100)
+        ];
+        return $insight;
     }
 
     /**
@@ -158,10 +241,9 @@ class active_users_data extends \core\task\scheduled_task {
     public function get_active_users() {
         global $DB;
 
-        $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
         $params = array(
-            "starttime" => $starttime,
-            "endtime" => $this->timenow,
+            "starttime" => $this->startdate,
+            "endtime" => $this->enddate,
             "action" => "viewed"
         );
 
@@ -199,7 +281,7 @@ class active_users_data extends \core\task\scheduled_task {
 
         /* Reverse the array because the graph take
         value from left to right */
-        return array_reverse($activeusers);
+        return $activeusers;
     }
 
     /**
@@ -209,10 +291,9 @@ class active_users_data extends \core\task\scheduled_task {
     public function get_enrolments() {
         global $DB;
 
-        $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
         $params = array(
-            "starttime" => $starttime,
-            "endtime" => $this->timenow,
+            "starttime" => $this->startdate,
+            "endtime" => $this->enddate,
             "eventname" => '\core\event\user_enrolment_created',
             "actionname" => "created"
         );
@@ -258,9 +339,7 @@ class active_users_data extends \core\task\scheduled_task {
 
         $enrolments = array_values($enrolments);
 
-        /* Reverse the array because the graph take
-        value from left to right */
-        return array_reverse($enrolments);
+        return $enrolments;
     }
 
     /**
@@ -270,19 +349,13 @@ class active_users_data extends \core\task\scheduled_task {
     public function get_course_completionrate() {
         global $DB;
 
-        $starttime = $this->timenow - ($this->xlabelcount * LOCAL_SITEREPORT_ONEDAY);
         $params = array(
-            "starttime" => $starttime,
-            "endtime" => $this->timenow
+            "starttime" => $this->startdate,
+            "endtime" => $this->enddate
         );
 
         $sql = "SELECT FLOOR(cc.completiontime/86400) as userdate,
-                       COUNT(
-                           CONCAT(
-                               CONCAT(cc.courseid, '-'),
-                               cc.userid
-                           )
-                       ) as usercount
+                       COUNT(cc.completiontime) as usercount
                   FROM {edwreports_course_progress} cc
                  WHERE cc.completiontime IS NOT NULL
                     AND cc.completiontime >= :starttime
@@ -312,8 +385,6 @@ class active_users_data extends \core\task\scheduled_task {
 
         $completionrate = array_values($completionrate);
 
-        /* Reverse the array because the graph take
-        value from left to right */
-        return array_reverse($completionrate);
+        return $completionrate;
     }
 }

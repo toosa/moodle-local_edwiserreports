@@ -73,10 +73,18 @@ define('LOCAL_SITEREPORT_BLOCK_TYPE_CUSTOM', 1);
 // Block View.
 define('LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW', 'desktopview');
 define('LOCAL_SITEREPORT_BLOCK_TABLET_VIEW', 'tabletview');
-define('LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW', 'mobileview');
 define('LOCAL_SITEREPORT_BLOCK_LARGE', 2);
 define('LOCAL_SITEREPORT_BLOCK_MEDIUM', 1);
 define('LOCAL_SITEREPORT_BLOCK_SMALL', 0);
 
 // Course Progres Manager.
 define('CPM_STUDENTS_ARCHETYPE', 'student');
+
+// Color Themes.
+define('LOCAL_EDWISERREPORTS_COLOR_THEMES', [
+    ['#F98012', '#133F3F', '#00A1A8', '#444444', '#666666'],
+    ['#AC0034', '#142458', '#DFC11C', '#333333', '#999999'],
+    ['#ED553B', '#20639B', '#92CD53', '#222222', '#888888']
+]);
+
+define('UPGRADE_URL', 'https://bit.ly/3rJ9l24');

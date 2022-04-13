@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/local/edwiserreports/lib.php');
+
 /**
  * Custom code to be run on upgrading the plugin.
  * @param int $oldversion Plugin's old version
@@ -96,16 +98,38 @@ function xmldb_local_edwiserreports_upgrade($oldversion) {
     if (!$dbman->table_exists($table)) {
         // Table fields.
         $table->add_field('id', XMLDB_TYPE_INTEGER, 10, null, true, true);
-        $table->add_field('user', XMLDB_TYPE_INTEGER, 10, null, true);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, 10, null, true);
         $table->add_field('secret', XMLDB_TYPE_TEXT, 10, null, true);
 
         // Table keys.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('unique', XMLDB_KEY_UNIQUE, array('user'));
+        $table->add_key('unique', XMLDB_KEY_UNIQUE, array('userid'));
 
         // Create the table.
         $dbman->create_table($table);
     }
+
+    // Adding new column in course progress table for storing completable activities.
+    $table = new xmldb_table('edwreports_course_progress');
+
+    $field = new xmldb_field('completablemods', XMLDB_TYPE_INTEGER, 10, null, true, false, 0);
+
+    if ($dbman->table_exists($table) && !$dbman->field_exists($table, $field)) {
+        $dbman->add_field($table, $field);
+        $DB->set_field('edwreports_course_progress', 'pchange', true);
+    }
+
+    // Removing activity log table.
+    $table = new xmldb_table('edwreports_activity_log');
+    if ($dbman->table_exists($table)) {
+        $dbman->drop_table($table);
+    }
+
+    local_edwiserreports_process_block_creation();
+
+    unset_config('siteaccessinformation', 'local_edwiserreports');
+
+    set_config('siteaccessrecalculate', true, 'local_edwiserreports');
 
     return true;
 }

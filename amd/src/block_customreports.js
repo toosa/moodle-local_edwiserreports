@@ -22,11 +22,11 @@
 define([
     'jquery',
     'core/str',
-    'local_edwiserreports/defaultconfig',
-    'local_edwiserreports/variables',
-    'local_edwiserreports/flatpickr',
-    'local_edwiserreports/jquery.dataTables',
-    'local_edwiserreports/dataTables.bootstrap4'
+    './defaultconfig',
+    './variables',
+    './flatpickr',
+    './jquery.dataTables',
+    './dataTables.bootstrap4'
 ], function($, str, config, v) {
     /**
      * Selector datable variable
@@ -120,12 +120,12 @@ define([
         if (selectorType == 'lps') {
             return {
                 "columns": [
-                    {"data": "select"},
-                    {"data": "fullname"},
-                    {"data": "shortname"},
-                    {"data": "startdate"},
-                    {"data": "enddate"},
-                    {"data": "duration"},
+                    { "data": "select" },
+                    { "data": "fullname" },
+                    { "data": "shortname" },
+                    { "data": "startdate" },
+                    { "data": "enddate" },
+                    { "data": "duration" },
                 ],
                 "language": {
                     "searchPlaceholder": "Search Learning Programs",
@@ -135,12 +135,12 @@ define([
         } else {
             return {
                 "columns": [
-                    {"data": "select"},
-                    {"data": "fullname"},
-                    {"data": "shortname"},
-                    {"data": "category"},
-                    {"data": "startdate"},
-                    {"data": "enddate"},
+                    { "data": "select" },
+                    { "data": "fullname" },
+                    { "data": "shortname" },
+                    { "data": "category" },
+                    { "data": "startdate" },
+                    { "data": "enddate" },
                 ],
                 "language": {
                     "searchPlaceholder": "Search Course",
@@ -187,6 +187,7 @@ define([
         // Get all courses/learningprogram
         selectorTable = customReportSelectors.find(tableSelectorClass).show().DataTable({
             ajax: url,
+            dom: '<"edwiserreports-table"<"table-filter d-flex"f><t><"table-pagination"p>>',
             columns: dtConfig.columns,
             language: dtConfig.language,
             responsive: true,
@@ -198,7 +199,10 @@ define([
             scrollX: true,
             paging: false,
             bInfo: false,
-            bSort: false
+            bSort: false,
+            drawCallback: function() {
+                common.stylePaginationButton(this);
+            }
         }).columns.adjust();
     };
 

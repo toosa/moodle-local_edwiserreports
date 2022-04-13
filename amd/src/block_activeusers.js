@@ -22,31 +22,116 @@
 /* eslint-disable no-console */
 define([
     'jquery',
-    'core/chartjs',
+    './chart/apexcharts',
     'core/notification',
     './defaultconfig',
-    './variables',
     './common',
     './flatpickr'
-], function($, Chart, Notification, cfg, V, common) {
+], function($, ApexCharts, Notification, CFG, common) {
     /* Varible for active users block */
     var activeUsersData = null;
     var activeUsersGraph = null;
-    var panel = cfg.getPanel("#activeusersblock");
-    var panelBody = cfg.getPanel("#activeusersblock", "body");
-    var panelTitle = cfg.getPanel("#activeusersblock", "title");
-    var panelFooter = cfg.getPanel("#activeusersblock", "footer");
-    var dropdownMenu = panel + " .dropdown-menu[aria-labelledby='filter-dropdown']:not('custom')";
-    var dropdownItem = dropdownMenu + " .dropdown-item";
-    var dropdownToggle = panel + " #filter-dropdown.dropdown-toggle";
-    var flatpickrCalender = panel + " #flatpickrCalender";
+    var panelBody = CFG.getPanel("#activeusersblock", "body");
+    var panelFooter = CFG.getPanel("#activeusersblock", "footer");
     var chart = panelBody + " .ct-chart";
     var loader = panelBody + " .loader";
-    var dropdownButton = panel + " button#filter-dropdown";
     var refreshBtn = panelBody + " .refresh";
-    var exportUrlLink = panel + V.exportUrlLink;
-    var filter = null;
-    var dropdownInput = panelBody + " input.form-control.input";
+    var filter = 'weekly';
+    var timer = null;
+
+    /**
+     * Line chart default config.
+     */
+    const lineChartDefault = {
+        series: [],
+        chart: {
+            type: 'line',
+            height: 350,
+            dropShadow: {
+                enabled: true,
+                color: '#000',
+                top: 18,
+                left: 7,
+                blur: 10,
+                opacity: 0.2
+            },
+            toolbar: {
+                show: false,
+                tools: {
+                    download: false,
+                    reset: '<i class="fa fa-refresh"></i>'
+                }
+            },
+            zoom: {
+                enabled: false
+            }
+        },
+        markers: {
+            size: 0
+        },
+        tooltip: {
+            enabled: true,
+            enabledOnSeries: undefined,
+            shared: true,
+            followCursor: false,
+            intersect: false,
+            inverseOrder: false,
+            fillSeriesColor: false,
+            onDatasetHover: {
+                highlightDataSeries: false,
+            },
+            y: {
+                formatter: undefined,
+                title: {},
+            },
+            items: {
+                display: 'flex'
+            },
+            fixed: {
+                enabled: false,
+                position: 'topRight',
+                offsetX: 0,
+                offsetY: 0,
+            },
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2,
+            lineCap: 'round'
+        },
+        grid: {
+            borderColor: '#e7e7e7'
+        },
+        xaxis: {
+            categories: null,
+            type: 'datetime',
+            labels: {
+                hideOverlappingLabels: true,
+                datetimeFormatter: {
+                    year: 'yyyy',
+                    month: 'MMM \'yy',
+                    day: 'dd MMM',
+                    hour: ''
+                }
+            },
+            tooltip: {
+                enabled: false
+            }
+        },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'left',
+            offsetY: '-20',
+            itemMargin: {
+                horizontal: 10,
+                vertical: 0
+            },
+        },
+        colors: CFG.getColorTheme(),
+        dataLabels: {
+            enabled: false
+        }
+    };
 
     /**
      * Initialize
@@ -55,115 +140,50 @@ define([
     function init(invalidUser) {
 
         /* Custom Dropdown hide and show */
-        activeUsersData = cfg.getActiveUsersBlock();
+        activeUsersData = CFG.getActiveUsersBlock();
 
         // If course progress block is there
         if (activeUsersData) {
-            /* Show custom dropdown */
-            $(dropdownToggle).on("click", function() {
-                $(dropdownMenu).addClass("show");
-            });
-
-            /* Added Custom Value in Dropdown */
-            $(dropdownInput).ready(function() {
-                var placeholder = $(dropdownInput).attr("placeholder");
-                $(dropdownInput).val(placeholder);
-            });
-
-            /* Hide dropdown when click anywhere in the screen */
-            $(document).click(function(e) {
-                if (!($(e.target).hasClass("dropdown-menu") ||
-                    $(e.target).parents(".dropdown-menu").length)) {
-                    $(dropdownMenu).removeClass('show');
-                }
-            });
-
-            /* Select filter for active users block */
-            $(dropdownItem + ":not(.custom)").on('click', function() {
-                filter = $(this).attr('value');
-                $(dropdownMenu).removeClass('show');
-                $(dropdownButton).html($(this).text());
-                getActiveUsersBlockData(filter);
-                $(flatpickrCalender).val("Custom");
-                $(dropdownInput).val("Custom");
-            });
 
             /* Refresh when click on the refresh button */
             $(refreshBtn).on('click', function() {
                 $(this).addClass("refresh-spin");
-                getActiveUsersBlockData(filter);
+                getActiveUsersBlockData();
             });
 
-            createDropdownCalendar();
+            // Date selector listener.
+            common.dateChange(function(date) {
+                filter = date;
+
+                // Set export filter to download link.
+                $('#activeusersblock').find('.download-links [name="filter"]').val(filter);
+                getActiveUsersBlockData();
+            });
+
             /* Call function to initialize the active users block graph */
             getActiveUsersBlockData()
         }
 
         /**
-         * Create Calender in dropdown tp select range.
-         */
-        function createDropdownCalendar() {
-
-            $(flatpickrCalender).flatpickr({
-                mode: 'range',
-                altInput: true,
-                altFormat: "d/m/Y",
-                dateFormat: "Y-m-d",
-                maxDate: "today",
-                appendTo: document.getElementById("activeUser-calendar"),
-                onOpen: function() {
-                    $(dropdownMenu).addClass('withcalendar');
-                },
-                onClose: function() {
-                    $(dropdownMenu).removeClass('withcalendar');
-                    $(dropdownMenu).removeClass('show');
-                    selectedCustomDate();
-                }
-            });
-        }
-
-        /**
-         * After Select Custom date get active users details.
-         */
-        function selectedCustomDate() {
-            filter = $(flatpickrCalender).val();
-            var date = $(dropdownInput).val();
-
-            /* If correct date is not selected then return false */
-            if (!filter.includes("to")) {
-                return;
-            }
-
-            cfg.changeExportUrl(filter, exportUrlLink, V.filterReplaceFlag);
-            $(dropdownButton).html(date);
-            $(flatpickrCalender).val("");
-            getActiveUsersBlockData(filter);
-        }
-
-        /**
          * Get data for active users block.
-         * @param {String} filter Filter string
          */
-        function getActiveUsersBlockData(filter) {
+        function getActiveUsersBlockData() {
             $(chart).hide();
             $(loader).show();
 
-            /* If filter is not set then select all */
-            if (!filter) {
-                filter = "weekly";
-            }
             // Show loader.
             common.loader.show('#activeusersblock');
             $.ajax({
-                url: cfg.requestUrl,
-                type: cfg.requestType,
-                dataType: cfg.requestDataType,
+                url: CFG.requestUrl,
+                type: CFG.requestType,
+                dataType: CFG.requestDataType,
                 data: {
                     action: 'get_activeusers_graph_data_ajax',
                     secret: M.local_edwiserreports.secret,
                     data: JSON.stringify({
                         precalculated: ['weekly', 'monthly', 'yearly'].indexOf(filter) !== -1,
-                        filter: filter
+                        filter: filter,
+                        graphajax: true
                     })
                 },
             }).done(function(response) {
@@ -173,6 +193,7 @@ define([
                 }
                 activeUsersData.graph.data = response.data;
                 activeUsersData.graph.labels = response.labels;
+                common.insight('#activeusersblock .insight', response.insight);
             }).fail(function(error) {
                 Notification.exception(error);
             }).always(function() {
@@ -182,7 +203,8 @@ define([
 
                 // Change graph variables
                 resetUpdateTime();
-                setInterval(inceamentUpdateTime, 1000 * 60);
+                clearInterval(timer);
+                timer = setInterval(inceamentUpdateTime, 1000 * 60);
                 $(refreshBtn).removeClass('refresh-spin');
                 $(loader).hide();
                 $(chart).fadeIn("slow");
@@ -204,7 +226,7 @@ define([
          */
         function inceamentUpdateTime() {
             $(panelBody + " #updated-time > span.minute")
-            .html(parseInt($(panelBody + " #updated-time > span.minute").text()) + 1);
+                .html(parseInt($(panelBody + " #updated-time > span.minute").text()) + 1);
         }
 
         /**
@@ -215,14 +237,8 @@ define([
             if (activeUsersGraph) {
                 activeUsersGraph.destroy();
             }
-
-            Chart.defaults.global.defaultFontFamily = activeUsersData.graph.fontFamily;
-            Chart.defaults.global.defaultFontStyle = activeUsersData.graph.fontStyle;
-            activeUsersGraph = new Chart(activeUsersData.ctx, {
-                type: activeUsersData.graph.type,
-                data: getGraphData(),
-                options: activeUsersData.graph.options
-            });
+            activeUsersGraph = new ApexCharts($("#apex-chart-active-users").get(0), getGraphData());
+            activeUsersGraph.render();
             return activeUsersGraph;
         }
 
@@ -231,40 +247,28 @@ define([
          * @return {Object}
          */
         function getGraphData() {
+            let data = Object.assign({}, lineChartDefault);
             try {
-                return {
-                    labels: activeUsersData.graph.labels,
-                    datasets: [{
-                        label: activeUsersData.graph.labelName.activeUsers,
-                        data: activeUsersData.graph.data.activeUsers,
-                        backgroundColor: activeUsersData.graph.backgroundColor.activeUsers,
-                        borderColor: activeUsersData.graph.borderColor.activeUsers,
-                        pointBorderColor: activeUsersData.graph.borderColor.activeUsers,
-                        pointBackgroundColor: activeUsersData.graph.borderColor.activeUsers,
-                        pointStyle: activeUsersData.graph.pointStyle
-                    },
-                    {
-                        label: activeUsersData.graph.labelName.enrolments,
-                        data: activeUsersData.graph.data.enrolments,
-                        backgroundColor: activeUsersData.graph.backgroundColor.enrolments,
-                        borderColor: activeUsersData.graph.borderColor.enrolments,
-                        pointBorderColor: activeUsersData.graph.borderColor.enrolments,
-                        pointBackgroundColor: activeUsersData.graph.borderColor.enrolments,
-                        pointStyle: activeUsersData.graph.pointStyle
-                    },
-                    {
-                        label: activeUsersData.graph.labelName.completionRate,
-                        data: activeUsersData.graph.data.completionRate,
-                        backgroundColor: activeUsersData.graph.backgroundColor.completionRate,
-                        borderColor: activeUsersData.graph.borderColor.completionRate,
-                        pointBorderColor: activeUsersData.graph.borderColor.completionRate,
-                        pointBackgroundColor: activeUsersData.graph.borderColor.completionRate,
-                        pointStyle: activeUsersData.graph.pointStyle
-                    }]
-                };
+                data.series = [{
+                    name: activeUsersData.graph.labelName.activeUsers,
+                    data: activeUsersData.graph.data.activeUsers,
+                }, {
+                    name: activeUsersData.graph.labelName.enrolments,
+                    data: activeUsersData.graph.data.enrolments,
+                }, {
+                    name: activeUsersData.graph.labelName.completionRate,
+                    data: activeUsersData.graph.data.completionRate,
+                }];
+                data.xaxis.categories = activeUsersData.graph.labels;
+                data.chart.toolbar.show = activeUsersData.graph.labels.length > 30;
+                data.chart.zoom.enabled = activeUsersData.graph.labels.length > 30;
             } catch (error) {
-                return {};
+                data.series = [];
+                data.xaxis.categories = [];
+                data.chart.toolbar.show = false;
+                data.chart.zoom.enabled = false;
             }
+            return data;
         }
     }
 

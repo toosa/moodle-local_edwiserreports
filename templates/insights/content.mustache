@@ -1,0 +1,17 @@
+<div class="insight-wrap d-flex">
+    <label class="insight-value pr-2 theme-primary-text h3">{{{value}}}</label>
+    {{#difference}}
+        <span class="insight-direction d-inline-block pr-6 insight-{{#direction}}success{{/direction}}{{^direction}}danger{{/direction}}">
+            <span class="value">
+                <i class="fa fa-arrow-circle-{{#direction}}up{{/direction}}{{^direction}}down{{/direction}}"></i>
+                {{value}}%
+                {{#direction}}
+                    <span class="ml-1">{{#str}} up {{/str}}</span>
+                {{/direction}}
+                {{^direction}}
+                    <span class="ml-1">{{#str}} down {{/str}}</span>
+                {{/direction}}
+            </span>
+        </span>
+    {{/difference}}
+</div>

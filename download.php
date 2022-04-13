@@ -70,12 +70,15 @@ if (strpos($blockname, 'customreports') === false) {
 }
 
 // Prepare export filname.
-$filename = local_edwiserreports_prepare_export_filename(array(
+$params = array(
     "region" => $region,
     "blockname" => $blockname,
-    "date" => date("d_M_y", time()),
-    "filter" => $filter ? $filter : ""
-));
+    "date" => date("d_M_y", time())
+);
+if ($filter) {
+    $params['filter'] = $filter;
+}
+$filename = local_edwiserreports_prepare_export_filename($params);
 
 // Get export object.
 $export = new export($type, $region, $blockname);
@@ -86,6 +89,8 @@ if ($type == "emailscheduled") {
 } else {
     // Prepare exportable data.
     $data = $export->get_exportable_data($filter);
+
+    $filename .= $export->data_export_file_postfix($filter);
 
     // If data is there then download data with files.
     if ($data) {

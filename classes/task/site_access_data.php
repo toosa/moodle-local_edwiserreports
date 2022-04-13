@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . "/local/edwiserreports/classes/constants.php");
 
 use local_edwiserreports\controller\progress;
+use cache;
 
 /**
  * Scheduled Task to Update Report Plugin Table.
@@ -63,14 +64,9 @@ class site_access_data extends \core\task\scheduled_task {
     public function __construct() {
 
         $this->progress = new progress('siteaccessdata');
-        // Initialize the site access information response.
-        $value = array(
-            "opacity" => 0,
-            "value" => 0
-        );
 
         // Initialize access value for site access.
-        $access = array($value, $value, $value, $value, $value, $value, $value);
+        $data = array(0, 0, 0, 0, 0, 0, 0);
 
         // Getting time strings for access inforamtion block.
         $times = array(
@@ -102,11 +98,10 @@ class site_access_data extends \core\task\scheduled_task {
 
         // Initialize access inforamtion object.
         foreach ($times as $time) {
-            $value = array(
-                "access" => $access,
-                "time" => $time
+            $this->siteaccess[] = array(
+                "name" => $time,
+                "data" => $data
             );
-            $this->siteaccess[] = $value;
         }
     }
 
@@ -139,6 +134,11 @@ class site_access_data extends \core\task\scheduled_task {
         $siteaccess = $this->get_accessinfo(array_values($accesslog));
         $this->progress->end_progress();
         set_config('siteaccessinformation', json_encode($siteaccess), 'local_edwiserreports');
+
+        unset_config('siteaccessrecalculate', 'local_edwiserreports');
+
+        cache::make('local_edwiserreports', 'siteaccess')->purge();
+
         return true;
     }
 
@@ -167,33 +167,12 @@ class site_access_data extends \core\task\scheduled_task {
                 $row = number_format(date("H", $log->timecreated));
 
                 // Calculate site access for row and colums.
-                $this->siteaccess[$row]["access"][$col]["value"] += (1 / ($weeks * 10));
+                $this->siteaccess[$row]['data'][$col]++;
 
                 $progress += $increament;
                 if (++$updater >= 500) {
                     $updater = 0;
                     $this->progress->update_progress($progress);
-                }
-            }
-
-            // Checking maximum value in a week.
-            // Written separate loop to save time and resource.
-            foreach ($this->siteaccess as $row => $value) {
-                foreach ($value["access"] as $col => $val) {
-                    // Maximum value in week.
-                    if ($weekmax < $this->siteaccess[$row]["access"][$col]["value"]) {
-                        $weekmax = $this->siteaccess[$row]["access"][$col]["value"];
-                    }
-                }
-            }
-
-            // Get Opacity value for siteaccess inforamtion.
-            if ($weekmax) {
-                foreach ($this->siteaccess as $row => $value) {
-                    foreach ($value["access"] as $col => $val) {
-                        $this->siteaccess[$row]["access"][$col]["opacity"] = $val["value"] / $weekmax;
-                        $this->siteaccess[$row]["access"][$col]["value"] = (string)number_format($val['value'], 2);
-                    }
                 }
             }
         }

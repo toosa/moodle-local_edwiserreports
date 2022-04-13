@@ -37,34 +37,70 @@
     <div class="customreports-block-section col-12  mb-5">
         <div class="">
             <div class="reports-list-header d-flex">
-                <h4> {{#str}} reportslist, local_edwiserreports {{/str}} </h4>
-                <div class="ml-auto mb-2">
-                    <a href="{{{createnewlink}}}" class="btn btn-primary">
-                        {{#str}} createnewcustomreports, local_edwiserreports {{/str}}
-                    </a>
-                </div>
+                <h4 class="font-weight-bold"> {{#str}} reportslist, local_edwiserreports {{/str}} </h4>
             </div>
             <div class="reports-list-body">
-                <div class="">
-                    <div class="border reports-list-content loader d-flex justify-content-center align-items-center">
-                        <div class="w-full text-center">
-                            {{# pix }} i/loading, core, {{#str}} loadinghelp, moodle {{/str}} {{/ pix }}
+                <div class="pt-4">
+                    <div class="row pb-3">
+                        <div class="filter-selector col-12 col-md-3 mb-1">
+                            {{> local_edwiserreports/datatable/search }}
                         </div>
                     </div>
                     <div class="reports-list-content d-none justify-content-center align-items-center">
                         <table id="cr-list-table" class="datatable table"></table>
-                    </div>
-                    <div class="border reports-list-content empty d-none justify-content-center align-items-center">
-                        {{#str}} noreportslist, local_edwiserreports {{/str}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div id="wdm-cr-create-header" class="col-12">
-        <h4> {{#str}} createcustomreports, local_edwiserreports {{/str}} </h4>
+        <h4 class="font-weight-bold"> {{#str}} createcustomreports, local_edwiserreports {{/str}} </h4>
     </div>
-    <div class="customreports-block-section col-md-9 col-sm-12">
+    <div class="customreports-block-section col-12">
+        <div class="h-auto mb-5">
+            <div class="reports-filter-header">
+                <h4> {{#str}} reportsfilter, local_edwiserreports {{/str}} </h4>
+            </div>
+            <div class="reports-filter-body row">
+                <div class="col-3">
+                    <select id="wdm-cohort-select" class="custom-field-select form-control singleselect w-full">
+                        <option value="0">{{#str}} allcohorts, local_edwiserreports {{/str}}</option>
+                        {{#cohorts}}
+                        <option value="{{id}}">{{name}}</option>
+                        {{/cohorts}}
+                    </select>
+                </div>
+                <div class="col-3">
+                    <select id="wdm-course-select" class="custom-field-select form-control singleselect w-full">
+                        <option value="0" {{#allcourses}}selected{{/allcourses}}>{{#str}} fulllistofcourses {{/str}}</option>
+                        {{#courses}}
+                        <option value="{{id}}" {{#selected}}selected{{/selected}}>{{{fullname}}}</option>
+                        {{/courses}}
+                    </select>
+                </div>
+                {{#fields}}
+                <div class="col-3 field-group-wrap" data-key="{{key}}">
+                    <div id="{{key}}-field-group" class="field-group w-full p-2 border mb-1">
+                        {{title}}
+                        <i class="fa fa-angle-right pull-right p-1"></i>
+                    </div>
+                    <div class="field ml-3 mr-3" aria-control="{{key}}-field-group">
+                        {{#fieldsarray}}
+                        <div class="{{id}} p-2">
+                            <div class="checkbox-edwiserreports">
+                                <input type="checkbox" id="{{id}}" class="custom-field-checkbox" value="{{id}}" {{#selected}}checked{{/selected}}>
+                                <label for="{{id}}" class="checkmark"></label>
+                                <label for="{{id}}" class="mb-0">{{text}}</label>
+                            </div>
+                        </div>
+                        {{/fieldsarray}}
+                    </div>
+                </div>
+                {{/fields}}
+            </div>
+        </div>
+    </div>
+    <div class="customreports-block-section col-12">
         <div class="h-auto mb-5">
             <div class="reports-preview-header">
                 <h4 class="rp-header">
@@ -90,7 +126,7 @@
                 </div>
             </div>
             <div class="reports-preview-footer py-1 text-right">
-                <button id="wdm-custom-reports-save" class="btn btn-primary" disabled>
+                <button id="wdm-custom-reports-save" class="btn theme-primary-bg text-white" disabled>
                     {{#isediting}}
                         {{#str}} updatereports, local_edwiserreports {{/str}}
                     {{/isediting}}
@@ -98,51 +134,9 @@
                         {{#str}} createreports, local_edwiserreports {{/str}}
                     {{/isediting}}
                 </button>
-            </div>
-        </div>
-    </div>
-    <div class="customreports-block-section col-md-3 col-sm-12">
-        <div class="h-auto mb-5">
-            <div class="reports-filter-header">
-                <h4> {{#str}} reportsfilter, local_edwiserreports {{/str}} </h4>
-            </div>
-            <div class="reports-filter-body">
-                <div>
-                    <div class="mb-2">
-                        <div class="position-relative my-1">
-                            <select id="wdm-cohort-select" class="custom-field-select form-control singleselect w-full">
-                                <option value="0">{{#str}} allcohorts, local_edwiserreports {{/str}}</option>
-                                {{#cohorts}}
-                                <option value="{{id}}">{{name}}</option>
-                                {{/cohorts}}
-                            </select>
-                        </div>
-                        <div class="position-relative my-1">
-                            <select id="wdm-course-select" class="custom-field-select form-control singleselect w-full">
-                                <option value="0" {{#allcourses}}selected{{/allcourses}}>{{#str}} allcourses, local_edwiserreports {{/str}}</option>
-                                {{#courses}}
-                                <option value="{{id}}" {{#selected}}selected{{/selected}}>{{{fullname}}}</option>
-                                {{/courses}}
-                            </select>
-                        </div>
-                    </div>
-                    {{#fields}}
-                    <div id="{{key}}-field-group" class="field-group w-full p-3 border mb-1">
-                        {{title}}
-                        <i class="fa fa-angle-right pull-right p-1"></i>
-                    </div>
-                    <div class="field" aria-control="{{key}}-field-group">
-                        {{#fieldsarray}}
-                        <div class="{{id}} p-2">
-                            <div class="checkbox-custom checkbox-primary">
-                                <input type="checkbox" id="{{id}}" class="custom-field-checkbox" value="{{id}}" {{#selected}}checked{{/selected}}>
-                                <label for="{{id}}" class="mb-0">{{text}}</label>
-                            </div>
-                        </div>
-                        {{/fieldsarray}}
-                    </div>
-                    {{/fields}}
-                </div>
+                <a href="{{{createnewlink}}}" class="btn theme-primary-text theme-primary-border">
+                    {{#str}} reset, moodle {{/str}}
+                </a>
             </div>
         </div>
     </div>
@@ -202,13 +196,5 @@ require([
     });
 
     customreportsblock.init();
-
-    $(document).ready(function() {
-        $(document).on('click', '.field-group', function() {
-            var id = this.id;
-            $(this).toggleClass('open');
-            $("[aria-control='" + id + "']").toggleClass('show');
-        });
-    });
 });
 {{/js}}

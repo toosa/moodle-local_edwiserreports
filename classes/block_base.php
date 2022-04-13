@@ -25,6 +25,8 @@ namespace local_edwiserreports;
 
 use stdClass;
 use context_system;
+use context_helper;
+use context_course;
 
 /**
  * Abstract class for reports_block
@@ -52,14 +54,34 @@ class block_base {
         $this->layout = new stdClass();
         $this->layout->sesskey = sesskey();
         $this->layout->extraclasses = '';
+        $this->layout->infoicon = $this->image_icon('info');
         $this->layout->contextid = $context->id;
         $this->layout->caneditadv = false;
         $this->layout->region = 'block';
         $this->block = new stdClass();
+        if (is_siteadmin()) {
+            $this->layout->upgradelink = UPGRADE_URL;
+        }
 
         if ($blockid) {
             $this->blockid = $blockid;
         }
+    }
+
+    /**
+     * Get current user from authentication or global variable.
+     *
+     * @return int User id.
+     */
+    public function get_current_user() {
+        global $USER;
+        $secret = optional_param('secret', null, PARAM_TEXT);
+        if ($secret !== null) {
+            $authentication = new \local_edwiserreports\controller\authentication();
+            return $authentication->get_user($secret);
+        }
+
+        return $USER->id;
     }
 
     /**
@@ -105,7 +127,7 @@ class block_base {
 
     /**
      * Set block size
-     * @param String $block Block name
+     * @param Object $block Block name
      */
     public function set_block_size($block) {
         $prefname = 'pref_' . $block->classname;
@@ -196,5 +218,176 @@ class block_base {
 
         // If have capability to edit.
         $this->layout->editopt = true;
+    }
+
+    /**
+     * Get users courses based on user role.
+     * Admin/Manager - All courses.
+     * Teacher/Editing Teacher - Enrolled courses.
+     *
+     * @param int $userid User id
+     *
+     * @return array
+     */
+    public function get_courses_of_user($userid) {
+
+        // Admin or Manager.
+        if (is_siteadmin($userid) || has_capability('moodle/site:configview', context_system::instance(), $userid)) {
+            return get_courses();
+        }
+
+        $courses = enrol_get_all_users_courses($userid);
+
+        // Preload contexts and check visibility.
+        foreach ($courses as $id => $course) {
+            context_helper::preload_from_record($course);
+            if ($course->visible) {
+                if (!$context = context_course::instance($id)) {
+                    unset($courses[$id]);
+                    continue;
+                }
+                if (!has_capability('moodle/course:viewhiddencourses', $context, $userid)) {
+                    unset($courses[$id]);
+                    continue;
+                }
+            }
+        }
+
+        return $courses;
+    }
+
+    /**
+     * Get users from courses who are enrolled as student.
+     *
+     * @param int   $user    Accessing User id
+     * @param mixed $courses Courses list
+     *
+     * @return array
+     */
+    public function get_users_of_course($course) {
+        global $DB;
+        // Admin or Manager.
+
+        $params = [
+            'contextlevel' => CONTEXT_COURSE,
+            'archetype' => 'student',
+            'course' => $course
+        ];
+
+        $fullname = $DB->sql_fullname("u.firstname", "u.lastname");
+
+        $sql = "SELECT DISTINCT u.id, $fullname fullname
+                  FROM {context} ctx
+                  JOIN {role_assignments} ra ON ctx.id = ra.contextid
+                  JOIN {role} r ON ra.roleid = r.id
+                  JOIN {user} u ON ra.userid = u.id
+                 WHERE ctx.contextlevel = :contextlevel
+                   AND ctx.instanceid = :course
+                   AND r.archetype = :archetype
+                   AND u.confirmed = 1";
+        $users = $DB->get_records_sql($sql, $params);
+
+        return $users;
+    }
+
+    /**
+     * Get users from courses who are enrolled as student.
+     *
+     * @param int   $user    Accessing User id
+     * @param mixed $courses Courses list
+     *
+     * @return array
+     */
+    public function get_users_of_courses($userid, $courses) {
+        global $DB;
+        // Admin or Manager.
+
+        $params = [
+            'contextlevel' => CONTEXT_COURSE,
+            'archetype' => 'student'
+        ];
+
+        $fullname = $DB->sql_fullname("u.firstname", "u.lastname");
+        if (is_siteadmin($userid) || has_capability('moodle/site:configview', context_system::instance(), $userid)) {
+            $sql = "SELECT DISTINCT u.id, $fullname fullname
+                  FROM {context} ctx
+                  JOIN {role_assignments} ra ON ctx.id = ra.contextid
+                  JOIN {role} r ON ra.roleid = r.id
+                  JOIN {user} u ON ra.userid = u.id
+                 WHERE ctx.contextlevel = :contextlevel
+                   AND r.archetype = :archetype
+                   AND u.confirmed = 1";
+            return $DB->get_records_sql($sql, $params);
+        }
+
+        // Temporary course table.
+        $coursetable = 'tmp_stengage_courses';
+        // Creating temporary table.
+        utility::create_temp_table($coursetable, array_keys($courses));
+
+        $sql = "SELECT DISTINCT u.id, $fullname fullname
+                  FROM {{$coursetable}} c
+                  JOIN {context} ctx ON c.tempid = ctx.instanceid
+                  JOIN {role_assignments} ra ON ctx.id = ra.contextid
+                  JOIN {role} r ON ra.roleid = r.id
+                  JOIN {user} u ON ra.userid = u.id
+                 WHERE ctx.contextlevel = :contextlevel
+                   AND r.archetype = :archetype
+                   AND u.confirmed = 1";
+        $users = $DB->get_records_sql($sql, $params);
+
+        // Droppping course table.
+        utility::drop_temp_table($coursetable);
+
+        return $users;
+    }
+
+    /**
+     * Default method which will return empty postfix.
+     * If any block has additional name content for export file
+     * then override this method.
+     *
+     * @param string $filter
+     *
+     * @return string
+     */
+    public function get_exportable_data_block_file_postfix($filter) {
+        return '';
+    }
+
+    /**
+     * Get download link list for dropdown.
+     *
+     * @return array
+     */
+    public function get_block_download_links() {
+        return [[
+            'name' => 'pdf',
+            'label' => get_string('exporttopdf', 'local_edwiserreports'),
+            'type' => 'submit'
+        ], [
+            'name' => 'csv',
+            'label' => get_string('exporttocsv', 'local_edwiserreports'),
+            'type' => 'button'
+        ], [
+            'name' => 'excel',
+            'label' => get_string('exporttoexcel', 'local_edwiserreports'),
+            'type' => 'button'
+        ], [
+            'name' => 'email',
+            'label' => get_string('sendoveremail', 'local_edwiserreports'),
+            'type' => 'button'
+        ]];
+    }
+
+    /**
+     * Get svg content.
+     *
+     * @return string
+     */
+    public function image_icon($type) {
+        global $CFG;
+        $image = file_get_contents($CFG->dirroot . '/local/edwiserreports/pix/' . $type . '.svg');
+        return $image;
     }
 }

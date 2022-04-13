@@ -24,18 +24,25 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Edwiser Reports';
-$string['reportsdashboard'] = 'Reports & Analytics Dashboard';
+$string['pluginname'] = 'Edwiser Reports Free';
+$string['reportsdashboard'] = 'Edwiser Reports Free';
 $string['reportsandanalytics'] = "Reports & Analytics";
 $string['all'] = "All";
 $string['refresh'] = "Refresh";
 $string['noaccess'] = "Sorry. You don't have rights to access this page.";
+$string['showdatafor'] = "SHOW DATA FOR";
+$string['dashboard'] = 'Edwiser Reports Free Dashboard';
+$string['permissionwarning'] = 'You have allowed following users to see this block which is not recommended. Please hide this block from those users. Once you hide this block, it will not appear again.';
+$string['showentries'] = 'Show Entries';
 
 /* Blocks Name */
 $string['realtimeusers'] = 'Real Time Users';
-$string['activeusersheader'] = 'Active Users, Course Enrolment and Course Completion Rate';
+$string['activeusersheader'] = 'Site Overview Status';
 $string['courseprogress'] = 'Course Progress';
 $string['courseprogressheader'] = 'Course Progress';
+$string['studentengagementheader'] = 'Student Engagement';
+$string['gradeheader'] = 'Grades';
+$string['learnerheader'] = 'Learner Block';
 $string['courseengagement'] = 'Course Engagement';
 $string['coursereports'] = 'Course Reports';
 $string['coursereportsheader'] = 'Course Reports';
@@ -71,6 +78,7 @@ $string['unselectall'] = 'Unselect All';
 $string['selectall'] = 'Select All';
 $string['activity'] = 'Activity';
 $string['cohorts'] = 'Cohorts';
+$string['nographdata'] = 'No data';
 
 // Breakdown the tooltip string to display in 2 lines.
 $string['cpblocktooltip1'] = '{$a->per} course completed';
@@ -112,12 +120,14 @@ $string['message'] = "Message";
 $string['reset'] = "Reset";
 $string['send'] = "Send Now";
 
-
 /* Block help tooltips */
-$string['activeusersblocktitlehelp'] = "This block will show active users, course enrolment and course completion over the period in line chart.";
+$string['activeusersblocktitlehelp'] = "An overview of daily activity on your site. Essential for Managers to check overall activity in the site.";
 $string['activeusersblockhelp'] = "This block will show graph of active users over the period with course enrolment and course completion.";
 $string['courseprogressblockhelp'] = "This block will show the pie chart of a course with percantage.";
 $string['activecoursesblockhelp'] = "This block will show the most active courses based on the visits enrolment and completions.";
+$string['studentengagementblockhelp'] = "Student engagement reports displays timespent by students on sites, courses and the total visits on the course.";
+$string['gradeblockhelp'] = "This block shows grades.";
+$string['learnerblockhelp'] = "Track your course progress and timespent on site.";
 $string['certificatestatsblockhelp'] = "This block will show all created custom certificates and how many enrolled users awarded with this certificates.";
 $string['realtimeusersblockhelp'] = "This block will show all logged in users in this site.";
 $string['f2fsessionsblockhelp'] = "This block will show all created face to face sessions and count of all signups and attendees.";
@@ -129,6 +139,7 @@ $string['inactiveusersexporthelp'] = "This report will show inactivity of users 
 $string['none'] = "None";
 
 /* Block Course Progress */
+$string['averagecourseprogress'] = 'Average Course Progress';
 $string['nocourses'] = "No Courses Found";
 
 /* Block Learning Program */
@@ -136,7 +147,10 @@ $string['nolearningprograms'] = "No Learning Programs Found";
 
 /* Block Site access information */
 $string['siteaccessinformationtask'] = 'Calculate site access information';
-$string['siteaccessinformationcronwarning'] = '<strong>Calculate site access information</strong> task has not in last 24 hours. Please <a target="_blank" href="{$a}">run now</a> to see accurate result.';
+$string['siteaccessrecalculate'] = 'Plugin is just upgraded. Please <a target="_blank" href="{$a}">run</a> <strong>Calculate site access information</strong> task to see the result.';
+$string['siteaccessinformationcronwarning'] = '<strong>Calculate site access information</strong> task should run every 24 hours. Please <a target="_blank" href="{$a}">run now</a> to see accurate result.';
+$string['busiest'] = 'Busiest';
+$string['quietest'] = 'Quietest';
 
 /* Block Inactive Users */
 $string['siteaccess'] = "Site Access:";
@@ -146,6 +160,32 @@ $string['before6month'] = "Before 6 Month";
 
 /* Active users block */
 $string['activeuserstask'] = 'Calculate active users block data';
+$string['averageactiveusers'] = 'Average active users';
+$string['totalactiveusers'] = 'Total active users';
+$string['totalcourseenrolments'] = 'Total course enrolments';
+$string['totalcoursecompletions'] = 'Total course completions';
+
+/* Student Engagement block */
+$string['studentengagementexportheader'] = 'Student Engagement Report';
+$string['studentengagementreportheader'] = 'Student Engagement Report';
+$string['visitsonlms'] = 'Visits On Site';
+$string['timespentonlms'] = 'Time Spent On Site';
+$string['timespentonsite'] = 'Time Spent On Site';
+$string['timespentoncourse'] = 'Time Spent On Course';
+$string['assignmentsubmitted'] = 'Assignments submitted';
+$string['visitsoncourse'] = 'Visits on course';
+$string['studentengagementtask'] = 'Student Engagement Data';
+$string['searchuser'] = 'Search user';
+$string['emptytable'] = 'No records to show';
+$string['courseactivitystatus'] = 'Assignment submitted, activities completed';
+$string['courseactivitystatus-submissions'] = 'Assignment submitted';
+$string['courseactivitystatus-completions'] = 'Activities completed';
+
+/* Learner block */
+$string['learnerreportexportheader'] = 'Learner Report';
+$string['learnerreportheader'] = 'Learner Report';
+$string['searchcourse'] = 'Search course';
+$string['own'] = 'Own';
 
 /* Active Users Page */
 $string['noofactiveusers'] = "No. of active users";
@@ -161,9 +201,18 @@ $string['recordnotfound'] = 'Record not found';
 $string['jsondecodefailed'] = 'Json decode failed';
 $string['emaildataisnotasarray'] = 'Email data is not an array';
 $string['sceduledemailnotexist'] = 'Schedule email not exist';
+$string['searchdate'] = 'Search date';
 
 /* Active courses block */
-$string['activecoursestask'] = 'Calculate site access information';
+$string['activecoursestask'] = 'Calculate active courses data';
+
+/* Grades block */
+$string['gradeblockview'] = 'Grade Block View';
+$string['coursegrades'] = 'Course grades';
+$string['studentgrades'] = 'Student grades';
+$string['activitygrades'] = 'Activity grades';
+$string['averagegrade'] = 'Average grade';
+// Export header strings.
 
 /* Course Progress Page */
 $string['coursename'] = "Course Name";
@@ -252,6 +301,10 @@ $string['csv'] = "CSV";
 $string['excel'] = "Excel";
 $string['pdf'] = "PDF";
 $string['email'] = "Email";
+$string['exporttocsv'] = "Export to CSV";
+$string['exporttoexcel'] = "Export to Excel";
+$string['exporttopdf'] = "Export to PDF";
+$string['sendoveremail'] = "Send over Email";
 $string['copy'] = "Copy";
 $string['activeusers_status'] = "User Active";
 $string['enrolments_status'] = "User Enrolled";
@@ -263,9 +316,9 @@ $string['reportemailhelp'] = "Report will be send to this email address.";
 $string['emailnotsent'] = "Failed to send email";
 $string['subject'] = "Subject";
 $string['content'] = "Content";
-$string['emailexample'] = "example1.mail.com; example2.mail.com;";
+$string['emailexample'] = "example1.mail.com, example2.mail.com;";
 
-$string['activeusersblockexportheader'] = "Active Users, Course Enrolment and Course Completion Rate";
+$string['activeusersblockexportheader'] = "Site activity overview";
 $string['activeusersblockexporthelp'] = "This report will show active users, course enrolment and course completion over the period.";
 $string['courseprogressblockexportheader'] = "Course Progress Report";
 $string['courseprogressblockexporthelp'] = "This report will show the course progress of a particular course by the users.";
@@ -285,6 +338,10 @@ $string['completionblockexporthelp'] = "This report will show the course complet
 $string['completionexporthelp'] = "This report will show the course completions by the users.";
 $string['courseanalyticsblockexportheader'] = "Course Completion Report";
 $string['courseanalyticsblockexporthelp'] = "This report will show the course completions by the users.";
+$string['studentengagementblockexportheader'] = "Student Engagement Report";
+$string['gradeblockexportheader'] = "Grade Report";
+$string['gradeblockexporthelp'] = "This report will show student/s grades.";
+$string['studentengagementblockexporthelp'] = "This report will show the Student Engagements of users.";
 $string['exportlpdetailedreports'] = 'Export Detailed Reports';
 $string['inactiveusersblockexporthelp'] = "This report will show inactivity of users in the website";
 
@@ -312,6 +369,7 @@ $string['everydays'] = 'Everyday {$a->time}';
 $string['everyweeks'] = 'Every {$a->day}';
 $string['everymonths'] = 'Every month at {$a->time}';
 $string['schedule'] = "Schedule Email";
+$string['downloadreport'] = 'Download Report';
 $string['scheduledlist'] = "All Scheduled Reports";
 $string['reset'] = "Reset";
 $string['confirmemailremovaltitle'] = "Delete Scheduled Email";
@@ -326,7 +384,6 @@ $string['nousersavailable'] = "No Users Available";
 /* Course Completion Page */
 $string['completionheader'] = 'Course Completion Reports: {$a->coursename}';
 $string['completionreports'] = "Completion Reports";
-$string['activitycompletion'] = "Activity Completion";
 $string['completionpercantage'] = "Completion Percentage";
 $string['activitycompleted'] = '{$a->completed} out of {$a->total}';
 
@@ -355,9 +412,10 @@ $string['gettinguserrecord'] = 'Getting userid {$a->userid} in courseid {$a->cou
 $string['creatinguserrecord'] = 'Create records for users completions';
 $string['sendscheduledemails'] = 'Send Scheduled Emails';
 $string['sendingscheduledemails'] = 'Sending Scheduled Emails...';
+$string['sending'] = 'Sending';
 
 /* Cache Strings */
-$string['cachedef_edwiserReport'] = 'This is the caches of elucid site report';
+$string['cachedef_edwiserReport'] = 'This is the caches of Edwiser Reports';
 
 /* Capabilties */
 $string['edwiserReport:view'] = 'View Reports and analytics dashboard';
@@ -389,14 +447,17 @@ $string['customreportfailed'] = '<h4><i class="fa fa-check" aria-hidden="true"><
 $string['duration'] = 'Duration';
 $string['na'] = 'NA';
 $string['activityname'] = 'Activity Name';
+$string['searchtitle'] = 'Search Title';
 
 // Setting.
-$string['edwiserReport_settings'] = 'Reports & Analytics Dashboard Settings';
+$string['edwiserReport_settings'] = 'Edwiser Reports & Analytics Dashboard Settings';
 $string['selectblocks'] = 'Select blocks to show for Reporting Managers: ';
 $string['rpmblocks'] = 'Reporting Manager Blocks';
 $string['addblocks'] = 'Add Blocks';
 $string['notselected'] = 'Not Selected';
-
+$string['colortheme'] = 'Color Theme';
+$string['colorthemehelp'] = 'Choose color Theme for dashboard.';
+$string['theme'] = 'Theme';
 
 // Custom Query Report.
 $string['customqueryreport'] = 'Custom Query Report';
@@ -443,28 +504,33 @@ $string['editcapability'] = 'Change Capability';
 
 $string['desktopview'] = 'Desktop View';
 $string['tabletview'] = 'Tablet View';
-$string['mobileview'] = 'Mobile View';
 $string['large'] = 'Large';
 $string['medium'] = 'Medium';
 $string['small'] = 'Small';
 $string['position'] = 'Position';
 
 $string['capabilties'] = 'Capabilities';
-$string['activeusersblockview'] = 'Active Users Block View';
-$string['activeusersblockedit'] = 'Active Users Block Edit';
-$string['activeusersblockeditadvance'] = 'Active Users Block Advance Edit';
+$string['activeusersblockview'] = 'Site Overview Status View';
+$string['activeusersblockedit'] = 'Site Overview Status Edit';
+$string['activeusersblockeditadvance'] = 'Site Overview Status Advance Edit';
 $string['activecoursesblockview'] = 'Popoler Courses Block View';
 $string['activecoursesblockedit'] = 'Popoler Courses Block Edit';
 $string['activecoursesblockeditadvance'] = 'Popoler Courses Block Advance Edit';
+$string['studentengagementblockview'] = 'Student Engagement Block View';
+$string['studentengagementblockedit'] = 'Student Engagement Block Edit';
+$string['studentengagementblockeditadvance'] = 'Student Engagement Block Advance Edit';
+$string['learnerblockview'] = 'Learner Block View';
+$string['learnerblockedit'] = 'Learner Block Edit';
+$string['learnerblockeditadvance'] = 'Learner Block Advance Edit';
 $string['courseprogressblockview'] = 'Course Progress Block View';
 $string['courseprogressblockedit'] = 'Course Progress Block Edit';
 $string['courseprogressblockeditadvance'] = 'Course Progress Block Advance Edit';
 $string['certificatesblockview'] = 'Certificates Block View';
 $string['certificatesblockedit'] = 'Certificates Block Edit';
 $string['certificatesblockeditadvance'] = 'Certificates Block Advance Edit';
-$string['liveusersblockview'] = 'Live Users Block View';
-$string['liveusersblockedit'] = 'Live Users Block Edit';
-$string['liveusersblockeditadvance'] = 'Live Users Block Advance Edit';
+$string['liveusersblockview'] = 'Real Time Users Block View';
+$string['liveusersblockedit'] = 'Real Time Users Block Edit';
+$string['liveusersblockeditadvance'] = 'Real Time Users Block Advance Edit';
 $string['siteaccessblockview'] = 'Site Access Block View';
 $string['siteaccessblockedit'] = 'Site Access Block Edit';
 $string['siteaccessblockeditadvance'] = 'Site Access Block Advance Edit';
@@ -474,93 +540,6 @@ $string['todaysactivityblockeditadvance'] = 'Todays Activity Block Advance Edit'
 $string['inactiveusersblockview'] = 'Inactive Users Block View';
 $string['inactiveusersblockedit'] = 'Inactive Users Block Edit';
 $string['inactiveusersblockeditadvance'] = 'Inactive Users Block Advance Edit';
-
-$string['manageedwiserreportss'] = 'Manage Site Reports Dashboard';
-$string['activeusersrolesetting'] = 'Active Users Block Roles';
-$string['activeusersrolesettinghelp'] = 'Define view capability for active users block';
-$string['courseprogressrolesetting'] = 'Course Progress Block Roles';
-$string['courseprogressrolesettinghelp'] = 'Define view capability for Course Progress Block';
-$string['activecoursesrolesetting'] = 'Popular Courses Block Roles';
-$string['activecoursesrolesettinghelp'] = 'Define view capability for Popular Courses Block';
-$string['certificatesrolesetting'] = 'Certificates Block Roles';
-$string['certificatesrolesettinghelp'] = 'Define view capability for Certificates Block';
-$string['liveusersrolesetting'] = 'Live Users Block Roles';
-$string['liveusersrolesettinghelp'] = 'Define view capability for Live Users Block';
-$string['siteaccessrolesetting'] = 'Site Access Information Block Roles';
-$string['siteaccessrolesettinghelp'] = 'Define view capability for Site Access Information Block';
-$string['todaysactivityrolesetting'] = 'Todays Activity Block Roles';
-$string['todaysactivityrolesettinghelp'] = 'Define view capability for Todays Activity Block';
-$string['inactiveusersrolesetting'] = 'Inactive Users Block Roles';
-$string['inactiveusersrolesettinghelp'] = 'Define view capability for inactive users block';
-$string['confignotfound'] = 'Configuration not found for this plugin';
-
-$string['activeusersdesktopsize'] = 'Active Users Block in Desktop';
-$string['activeusersdesktopsizehelp'] = 'Desktop view of active users block';
-$string['courseprogressdesktopsize'] = 'Course Progress Block in Desktop';
-$string['courseprogressdesktopsizehelp'] = 'Desktop view of course progress block';
-$string['activecoursesdesktopsize'] = 'Popular Courses Block in Desktop';
-$string['activecoursesdesktopsizehelp'] = 'Desktop view of popular courses block';
-$string['certificatesdesktopsize'] = 'Certificates Block in Desktop';
-$string['certificatesdesktopsizehelp'] = 'Desktop view of certificates block';
-$string['liveusersdesktopsize'] = 'Live Users Block in Desktop';
-$string['liveusersdesktopsizehelp'] = 'Desktop view of live users block';
-$string['siteaccessdesktopsize'] = 'Site Access Information Block in Desktop';
-$string['siteaccessdesktopsizehelp'] = 'Desktop view of active site access information block';
-$string['todaysactivitydesktopsize'] = 'Todays Activity Block in Desktop';
-$string['todaysactivitydesktopsizehelp'] = 'Desktop view of todays activity block';
-$string['inactiveusersdesktopsize'] = 'Inactive Users Block  in Desktop';
-$string['inactiveusersdesktopsizehelp'] = 'Desktop view of inactive users block';
-
-$string['activeuserstabletsize'] = 'Active Users Block in Tablet';
-$string['activeuserstabletsizehelp'] = 'Tablet view of active users block';
-$string['courseprogresstabletsize'] = 'Course Progress Block in Tablet';
-$string['courseprogresstabletsizehelp'] = 'Tablet view of course progress block';
-$string['activecoursestabletsize'] = 'Popular Courses Block in Tablet';
-$string['activecoursestabletsizehelp'] = 'Tablet view of popular courses block';
-$string['certificatestabletsize'] = 'Certificates Block in Tablet';
-$string['certificatestabletsizehelp'] = 'Tablet view of certificates block';
-$string['liveuserstabletsize'] = 'Live Users Block in Tablet';
-$string['liveuserstabletsizehelp'] = 'Tablet view of live users block';
-$string['siteaccesstabletsize'] = 'Site Access Information Block in Tablet';
-$string['siteaccesstabletsizehelp'] = 'Tablet view of active site access information block';
-$string['todaysactivitytabletsize'] = 'Todays Activity Block in Tablet';
-$string['todaysactivitytabletsizehelp'] = 'Tablet view of todays activity block';
-$string['inactiveuserstabletsize'] = 'Inactive Users Block  in Tablet';
-$string['inactiveuserstabletsizehelp'] = 'Tablet view of inactive users block';
-
-$string['activeusersmobilesize'] = 'Active Users Block in Mobile';
-$string['activeusersmobilesizehelp'] = 'Mobile view of active users block';
-$string['courseprogressmobilesize'] = 'Course Progress Block in Mobile';
-$string['courseprogressmobilesizehelp'] = 'Mobile view of course progress block';
-$string['activecoursesmobilesize'] = 'Popular Courses Block in Mobile';
-$string['activecoursesmobilesizehelp'] = 'Mobile view of popular courses block';
-$string['certificatesmobilesize'] = 'Certificates Block in Mobile';
-$string['certificatesmobilesizehelp'] = 'Mobile view of certificates block';
-$string['liveusersmobilesize'] = 'Live Users Block in Mobile';
-$string['liveusersmobilesizehelp'] = 'Mobile view of live users block';
-$string['siteaccessmobilesize'] = 'Site Access Information Block in Mobile';
-$string['siteaccessmobilesizehelp'] = 'Mobile view of active site access information block';
-$string['todaysactivitymobilesize'] = 'Todays Activity Block in Mobile';
-$string['todaysactivitymobilesizehelp'] = 'Mobile view of todays activity block';
-$string['inactiveusersmobilesize'] = 'Inactive Users Block  in Mobile';
-$string['inactiveusersmobilesizehelp'] = 'Mobile view of inactive users block';
-
-$string['activeusersposition'] = 'Active Users Block in Position';
-$string['activeuserspositionhelp'] = 'Position active users block';
-$string['courseprogressposition'] = 'Course Progress Block in Position';
-$string['courseprogresspositionhelp'] = 'Position course progress block';
-$string['activecoursesposition'] = 'Popular Courses Block in Position';
-$string['activecoursespositionhelp'] = 'Position popular courses block';
-$string['certificatesposition'] = 'Certificates Block in Position';
-$string['certificatespositionhelp'] = 'Position certificates block';
-$string['liveusersposition'] = 'Live Users Block in Position';
-$string['liveuserspositionhelp'] = 'Position live users block';
-$string['siteaccessposition'] = 'Site Access Information Block in Position';
-$string['siteaccesspositionhelp'] = 'Position active site access information block';
-$string['todaysactivityposition'] = 'Todays Activity Block in Position';
-$string['todaysactivitypositionhelp'] = 'Position todays activity block';
-$string['inactiveusersposition'] = 'Inactive Users Block  in Position';
-$string['inactiveuserspositionhelp'] = 'Position inactive users block';
 
 /* Course progress manager strings */
 $string['update_course_progress_data'] = 'Update Course Progress Data';
@@ -576,6 +555,7 @@ $string['moduleidnotdefined'] = 'Module id is not defined';
 $string['clicktogetuserslist'] = 'Click in numbers in order to get the users list';
 
 /* Email Schedule Strings */
+$string['enabledisableemail'] = 'Enable/Disable Email';
 $string['scheduleerrormsg'] = '<div class="alert alert-danger"><b>ERROR:</b> Error while scheduling email</div>';
 $string['schedulesuccessmsg'] = '<div class="alert alert-success"><b>SUCCESS:</b> Email scheduled successfully</div>';
 $string['deletesuccessmsg'] = '<div class="alert alert-success"><b>SUCCESS:</b> Email deleted successfully</div>';
@@ -595,7 +575,7 @@ $string['delete'] = 'Delete';
 $string['report/edwiserreports_activeusersblock:editadvance'] = 'Edit Advance';
 
 /* Custom Reports block related strings */
-$string['customreportedit'] = 'Custom Reports Block Manage';
+$string['customreportedit'] = 'Custom Reports';
 $string['reportspreview'] = 'Reports Preview';
 $string['reportsfilter'] = 'Reports Filter';
 $string['noreportspreview'] = 'No Preview Available';
@@ -605,7 +585,8 @@ $string['activityfields'] = 'Activity Fields';
 $string['reportslist'] = 'Custom Reports List';
 $string['noreportslist'] = 'No Custom Reports';
 $string['allcohorts'] = 'All Cohorts';
-$string['allcourses'] = 'All Courses';
+$string['allstudents'] = 'All students';
+$string['allactivities'] = 'All activities';
 $string['save'] = 'Save';
 $string['reportname'] = 'Report Name';
 $string['reportshortname'] = 'Short Name';
@@ -642,5 +623,208 @@ $string['guestaccess'] = 'Course Guest Access';
 $string['selectcourses'] = 'Select Courses';
 $string['selectcohorts'] = 'Select Cohorts';
 $string['createnewcustomreports'] = 'Create new Report';
+$string['unlockthisfeature'] = 'Available in PRO version';
+$string['availableinpro'] = 'Available in PRO<br>version';
+$string['upgradetopro'] = 'Upgrade to PRO';
+$string['okaygotit'] = 'Okay got it!';
+$string['imponotice'] = 'IMPORTANT NOTICE';
+$string['csvprowarning'] = '<strong>Export to CSV will no longer be available in version 1.2.1</strong> (Next update of Edwiser Reports FREE) as we are making code and feature level improvements to this feature. <br><strong>Please note:</strong> It will continue to be a part of Edwiser Reports PRO.';
+$string['excelprowarning'] = '<strong>Export to Excel will no longer be available in version 1.2.1</strong> (Next update of Edwiser Reports FREE) as we are making code and feature level improvements to this feature. <br><strong>Please note:</strong> It will continue to be a part of Edwiser Reports PRO.';
+$string['emailprowarning'] = '<strong>Email scheduling will no longer be available in version 1.2.1</strong> (Next update of Edwiser Reports FREE) as we are making code and feature level improvements to this feature. <br><strong>Please note:</strong> It will continue to be a part of Edwiser Reports PRO.';
+$string['courseengagementprowarning'] = '<strong>The course engagement Report will no longer be available in version 1.2.1 </strong> (Next update of Edwiser Reports FREE) as we are making code and feature level improvements to this feature. <br><strong>Please note: </strong> It will continue to be a part of Edwiser Reports PRO.';
 
 $string['invalidsecretkey'] = 'Invalid secret key. Please logout and login again.';
+
+$string['time'] = 'Time';
+
+// Settings.
+$string['generalsettings'] = 'General Settings';
+$string['blockssettings'] = 'Block\'s Settings';
+$string['trackfrequency'] = 'Time Log update frequency <strong>(PRO)</strong>';
+$string['trackfrequencyhelp'] = 'This setting helps you to set the frequency of updating the user time log (detailed sequence of user activities with a time stamp) in the database.
+';
+$string['precalculated'] = 'Show pre calculated data <strong>(PRO)</strong>';
+$string['precalculatedhelp'] = 'If enabled, it loads weekly, monthly and yearly reports quicker. They are continuously pre calculated, processed and stored in the background for faster loading of reports.
+
+If disabled, this process of report generation stops running in the background. This way the reporting dashboard will pull, process and calculate the required data at that instant, only when requested, that is, when you filter reports, increasing the load time of reports.
+
+We recommend enabling this feature.
+
+<strong>Note:</strong> Cron task should be scheduled for every hour to get precise data. Turn off this setting if the cron task is not set to run frequently.
+';
+$string['positionhelp'] = 'Set block position on dashboard.';
+$string['positionhelpupgrade'] = '<br><strong>Note: Do not modify this setting on upgrade page. You can rearrange blocks on dashboard and admin settings page.</strong>';
+$string['desktopsize'] = 'Size in Desktop';
+$string['desktopsizehelp'] = 'Size of block in Desktop devices';
+$string['tabletsize'] = 'Size in Tablet';
+$string['tabletsizehelp'] = 'Size of block in Tablet devices';
+$string['rolesetting'] = 'Allowed roles';
+$string['rolesettinghelp'] = 'Define which users can view this block';
+$string['confignotfound'] = 'Configuration not found for this plugin';
+
+// Settings for plugin upgrade.
+$string['activeusersrolesetting'] = 'Site Overview Status block allowed roles';
+$string['courseprogressrolesetting'] = 'Course Progress block allowed roles';
+$string['studentengagementrolesetting'] = 'Student Engagement block allowed roles';
+$string['learnerrolesetting'] = 'Learner block allowed roles';
+$string['activecoursesrolesetting'] = 'Popular Courses block allowed roles';
+$string['certificatesrolesetting'] = 'Certificates block allowed roles';
+$string['liveusersrolesetting'] = 'Live Users block allowed roles';
+$string['siteaccessrolesetting'] = 'Site Access Information block allowed roles';
+$string['todaysactivityrolesetting'] = 'Todays Activity block allowed roles';
+$string['inactiveusersrolesetting'] = 'Inactive Users block allowed roles';
+$string['graderolesetting'] = 'Grade block allowed roles';
+
+$string['activeusersdesktopsize'] = 'Site Overview Status block size in Desktop';
+$string['courseprogressdesktopsize'] = 'Course Progress Block size in Desktop';
+$string['studentengagementdesktopsize'] = 'Student Engagement Block size in Desktop';
+$string['learnerdesktopsize'] = 'Learner Block size in Desktop';
+$string['activecoursesdesktopsize'] = 'Popular Courses Block size in Desktop';
+$string['certificatesdesktopsize'] = 'Certificates Block size in Desktop';
+$string['liveusersdesktopsize'] = 'Live Users Block size in Desktop';
+$string['siteaccessdesktopsize'] = 'Site Access Information Block size in Desktop';
+$string['todaysactivitydesktopsize'] = 'Todays Activity Block size in Desktop';
+$string['inactiveusersdesktopsize'] = 'Inactive Users Block size in Desktop';
+$string['gradedesktopsize'] = 'Grade Block size in Desktop';
+
+$string['activeuserstabletsize'] = 'Site Overview Status Block size in Tablet';
+$string['courseprogresstabletsize'] = 'Course Progress Block size in Tablet';
+$string['studentengagementtabletsize'] = 'Student Engagement Block size in Tablet';
+$string['learnertabletsize'] = 'Learner Block size in Tablet';
+$string['activecoursestabletsize'] = 'Popular Courses Block size in Tablet';
+$string['certificatestabletsize'] = 'Certificates Block size in Tablet';
+$string['liveuserstabletsize'] = 'Live Users Block size in Tablet';
+$string['siteaccesstabletsize'] = 'Site Access Information Block size in Tablet';
+$string['todaysactivitytabletsize'] = 'Todays Activity Block size in Tablet';
+$string['inactiveuserstabletsize'] = 'Inactive Users Block size in Tablet';
+$string['gradetabletsize'] = 'Grade Block size in Tablet';
+
+$string['activeusersposition'] = 'Site Overview Status Block\'s Position';
+$string['courseprogressposition'] = 'Course Progress Block\'s Position';
+$string['studentengagementposition'] = 'Student Engagement Block\'s Position';
+$string['learnerposition'] = 'Learner Block\'s Position';
+$string['activecoursesposition'] = 'Popular Courses Block\'s Position';
+$string['certificatesposition'] = 'Certificates Block\'s Position';
+$string['liveusersposition'] = 'Live Users Block\'s Position';
+$string['siteaccessposition'] = 'Site Access Information Block\'s Position';
+$string['todaysactivityposition'] = 'Todays Activity Block\'s Position';
+$string['inactiveusersposition'] = 'Inactive Users Block\'s Position';
+$string['gradeposition'] = 'Grade Block\'s Position';
+
+// License.
+$string['licensestatus'] = 'Manage License';
+$string['licensenotactive'] = '<strong>Alert!</strong> License is not activated , please <strong>activate</strong> the license in Edwiser Reports settings.';
+$string['licensenotactiveadmin'] = '<strong>Alert!</strong> License is not activated , please <strong>activate</strong> the license <a href="'.$CFG->wwwroot.'/admin/settings.php?section=local_edwiserreports" >here</a>.';
+$string['activatelicense'] = 'Activate License';
+$string['deactivatelicense'] = 'Deactivate License';
+$string['renewlicense'] = 'Renew License';
+$string['active'] = 'Active';
+$string['notactive'] = 'Not Active';
+$string['expired'] = 'Expired';
+$string['no_activations_left'] = 'Limit exceeded';
+$string['licensekey'] = 'License key';
+$string['noresponsereceived'] = 'No response received from the server. Please try again later.';
+$string['licensekeydeactivated'] = 'License Key is deactivated.';
+$string['siteinactive'] = 'Site inactive (Press Activate license to activate plugin).';
+$string['entervalidlicensekey'] = 'Please enter valid license key.';
+$string['nolicenselimitleft'] = 'Maximum activation limit reached, No activations left.';
+$string['licensekeyisdisabled'] = 'Your license key is Disabled.';
+$string['licensekeyhasexpired'] = "Your license key has Expired. Please, Renew it.";
+$string['licensekeyactivated'] = "Your license key is activated.";
+$string['enterlicensekey'] = "Please enter correct license key.";
+
+// Visits On Site block.
+$string['visitsonsiteheader'] = 'Visits On Site';
+$string['visitsonsiteblockhelp'] = 'The number of visits users had on your site in a given user session. Session duration is defined in Edwiser Reports settings.';
+$string['visitsonsiteblockview'] = 'Visits On Site View';
+$string['visitsonsiteblockedit'] = 'Visits On Site Edit';
+$string['visitsonsiterolesetting'] = 'Visits On Site allowed roles';
+$string['visitsonsitedesktopsize'] = 'Visits On Site size in Desktop';
+$string['visitsonsitetabletsize'] = 'Visits On Site size in Tablet';
+$string['visitsonsiteposition'] = 'Visits On Site\'s Position';
+$string['visitsonsiteblockexportheader'] = 'Visits On Site Report';
+$string['visitsonsiteblockexporthelp'] = 'This report will show the Visits On Site exported data.';
+$string['visitsonsiteblockeditadvance'] = 'Visits On Site Block Advance Edit';
+$string['averagesitevisits'] = 'Average site visits';
+$string['totalsitevisits'] = 'Total site visits';
+
+// Time spent on site block.
+$string['timespentonsiteheader'] = 'Time Spent On Site';
+$string['timespentonsiteblockhelp'] = 'Time spent by the users on your site in a day.';
+$string['timespentonsiteblockview'] = 'Time spent on site View';
+$string['timespentonsiteblockedit'] = 'Time spent on site Edit';
+$string['timespentonsiterolesetting'] = 'Time spent on site allowed roles';
+$string['timespentonsitedesktopsize'] = 'Time spent on site size in Desktop';
+$string['timespentonsitetabletsize'] = 'Time spent on site size in Tablet';
+$string['timespentonsiteposition'] = 'Time spent on site\'s Position';
+$string['timespentonsiteblockexportheader'] = 'Time spent on site Report';
+$string['timespentonsiteblockexporthelp'] = 'This report will show the Time spent on site exported data.';
+$string['timespentonsiteblockeditadvance'] = 'Time spent on site Block Advance Edit';
+$string['averagetimespent'] = 'Average time spent';
+$string['totaltimespent'] = 'Total times spent';
+
+// Time spent on course block.
+$string['timespentoncourseheader'] = 'Time Spent On Course';
+$string['timespentoncourseblockhelp'] = 'Time spent by the learners in a particular courses in a day.';
+$string['timespentoncourseblockview'] = 'Time spent on course View';
+$string['timespentoncourseblockedit'] = 'Time spent on course Edit';
+$string['timespentoncourserolesetting'] = 'Time spent on course allowed roles';
+$string['timespentoncoursedesktopsize'] = 'Time spent on course size in Desktop';
+$string['timespentoncoursetabletsize'] = 'Time spent on course size in Tablet';
+$string['timespentoncourseposition'] = 'Time spent on course\'s Position';
+$string['timespentoncourseblockexportheader'] = 'Time spent on course Report';
+$string['timespentoncourseblockexporthelp'] = 'This report will show the Time spent on course exported data.';
+$string['timespentoncourseblockeditadvance'] = 'Time spent on course Block Advance Edit';
+
+// Course activity block.
+$string['courseactivitystatusheader'] = 'Course Activity Status';
+$string['courseactivitystatusblockhelp'] = 'Course activities performed by the learners. It is a combination of activities completed and assignments submitted line graphs.';
+$string['courseactivitystatusblockview'] = 'Course activity status View';
+$string['courseactivitystatusblockedit'] = 'Course activity status Edit';
+$string['courseactivitystatusrolesetting'] = 'Course activity status allowed roles';
+$string['courseactivitystatusdesktopsize'] = 'Course activity status size in Desktop';
+$string['courseactivitystatustabletsize'] = 'Course activity status size in Tablet';
+$string['courseactivitystatusposition'] = 'Course activity status\'s Position';
+$string['courseactivitystatusblockexportheader'] = 'Course activity status Report';
+$string['courseactivitystatusblockexporthelp'] = 'This report will show the Course activity status exported data.';
+$string['courseactivitystatusblockeditadvance'] = 'Course activity status Block Advance Edit';
+$string['averagecompletion'] = 'Average activity completed';
+$string['totalassignment'] = 'Total assignment submitted';
+$string['totalcompletion'] = 'Total activity completed';
+
+// Learner Course Progress block.
+$string['learnercourseprogressheader'] = 'My Course Progress';
+$string['learnercourseprogressblockhelp'] = 'Your course completion progress in a particular course.';
+$string['learnercourseprogressblockview'] = 'My Course Progress View';
+$string['learnercourseprogressblockedit'] = 'My Course Progress Edit';
+$string['learnercourseprogressrolesetting'] = 'My Course Progress allowed roles';
+$string['learnercourseprogressdesktopsize'] = 'My Course Progress size in Desktop';
+$string['learnercourseprogresstabletsize'] = 'My Course Progress size in Tablet';
+$string['learnercourseprogressposition'] = 'My Course Progress\'s Position';
+$string['learnercourseprogressblockexportheader'] = 'My Course Progress Report';
+$string['learnercourseprogressblockexporthelp'] = 'This report will show the My Course Progress exported data.';
+$string['learnercourseprogressblockeditadvance'] = 'My Course Progress Block Advance Edit';
+
+// Learner Time spent on site block.
+$string['learnertimespentonsiteheader'] = 'My Time Spent On Site';
+$string['learnertimespentonsiteblockhelp'] = 'Your time spent on the site in a day.';
+$string['learnertimespentonsiteblockview'] = 'My Time spent on site View';
+$string['learnertimespentonsiteblockedit'] = 'My Time spent on site Edit';
+$string['learnertimespentonsiterolesetting'] = 'My Time spent on site allowed roles';
+$string['learnertimespentonsitedesktopsize'] = 'My Time spent on site size in Desktop';
+$string['learnertimespentonsitetabletsize'] = 'My Time spent on site size in Tablet';
+$string['learnertimespentonsiteposition'] = 'My Time spent on site\'s Position';
+$string['learnertimespentonsiteblockexportheader'] = 'My Time spent on site Report';
+$string['learnertimespentonsiteblockexporthelp'] = 'This report will show the My Time spent on site exported data.';
+$string['learnertimespentonsiteblockeditadvance'] = 'My Time spent on site Block Advance Edit';
+
+// Top page insights.
+$string['newregistrations'] = 'New registrations';
+$string['courseenrolments'] = 'Course enrolments';
+$string['coursecompletions'] = 'Course completions';
+$string['activeusers'] = 'Active users';
+$string['activitycompletions'] = 'Activity completions';
+$string['timespentoncourses'] = 'Time spent on courses';
+$string['totalcoursesenrolled'] = 'Total courses enrolled';
+$string['coursecompleted'] = 'Course completed';
+$string['activitiescompleted'] = 'Activities completed';

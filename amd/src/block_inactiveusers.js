@@ -22,15 +22,13 @@
 /* eslint-disable no-console */
 define([
     'jquery',
-    'core/chartjs',
-    'local_edwiserreports/defaultconfig',
-    'local_edwiserreports/variables',
+    './defaultconfig',
+    './variables',
     './common',
-    'local_edwiserreports/jquery.dataTables',
-    'local_edwiserreports/dataTables.bootstrap4'
+    './jquery.dataTables',
+    './dataTables.bootstrap4'
 ], function(
     $,
-    Chart,
     cfg,
     V,
     common
@@ -41,7 +39,6 @@ define([
      * @param {function} invalidUser Callback function
      */
     function init(invalidUser) {
-        var activeUsersTable;
         var panel = cfg.getPanel("#inactiveusersblock");
         var panelBody = cfg.getPanel("#inactiveusersblock", "body");
         var panelTitle = cfg.getPanel("#inactiveusersblock", "title");
@@ -52,8 +49,36 @@ define([
         var dropdownToggle = panelBody + " button.dropdown-toggle";
         var inActiveUsersTable = null;
         var exportUrlLink = panel + " .dropdown-menu[aria-labelledby='export-dropdown'] .dropdown-item";
+        var searchTable = panel + " .table-search-input input";
 
         if ($(panel).length) {
+            // Rending data table.
+            inActiveUsersTable = $(table).DataTable({
+                dom: '<"edwiserreports-table"<t><"table-pagination"p>>',
+                aaSorting: [
+                    [2, 'desc']
+                ],
+                oLanguage: {
+                    sEmptyTable: "No inactive users are available.",
+                    sSearchPlaceholder: "Search Users"
+                },
+                columnDefs: [{
+                    "targets": 1,
+                    "className": "d-none d-sm-none d-md-table-cell d-lg-table-cell "
+                }, {
+                    "targets": 2,
+                    "className": "text-center"
+                }],
+                drawCallback: function() {
+                    common.stylePaginationButton(this);
+                    // Hide loader.
+                    common.loader.hide('#inactiveusersblock');
+                },
+                responsive: true,
+                lengthChange: false,
+                bInfo: false
+            });
+
             // Get inactive users data on load
             getInactiveUsersData($(dropdown).data("value"));
 
@@ -65,16 +90,6 @@ define([
                 var filter = $(this).data("value");
                 $(panel).find('.download-links input[name="filter"]').val(filter);
 
-                // If table is already created then destroy the tablw
-                if (activeUsersTable) {
-                    activeUsersTable.destroy();
-                }
-
-                // Show load and remove table
-                $(loader).show();
-                $(table).hide();
-                $(tableWrapper).hide();
-
                 // Set dropdown button value
                 $(dropdownToggle).html($(this).html());
 
@@ -83,6 +98,11 @@ define([
 
                 // Get inactive users
                 getInactiveUsersData($(this).data("value"));
+            });
+
+            // Search in table.
+            $('body').on('input', searchTable, function() {
+                inActiveUsersTable.search(this.value).draw();
             });
         }
 
@@ -96,71 +116,32 @@ define([
             common.loader.show('#inactiveusersblock');
 
             $.ajax({
-                url: cfg.requestUrl,
-                type: cfg.requestType,
-                dataType: cfg.requestDataType,
-                data: {
-                    action: 'get_inactiveusers_data_ajax',
-                    secret: M.local_edwiserreports.secret,
-                    data: JSON.stringify({
-                        filter: filter
-                    })
-                },
-            })
-            .done(function(response) {
-                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
-                    invalidUser('inactiveusersblock', response);
-                    return;
-                }
-                createInactiveUsersTable(response.data);
-            })
-            .fail(function(error) {
-                // console.log(error);
-            }).always(function() {
-                // Hide loader.
-                common.loader.hide('#inactiveusersblock');
-            });
-        }
-
-        /**
-         * Create inactive users table
-         * @param  {String} data Table data
-         */
-        function createInactiveUsersTable(data) {
-            // If table is creted then destroy table
-            if (inActiveUsersTable) {
-                // Remove table data first
-                $("#inactiveuserstable tbody").remove();
-                inActiveUsersTable.destroy();
-            }
-
-            // Display loader
-            $(loader).hide();
-            $(table).show();
-
-            // Create inactive users table
-            inActiveUsersTable = $(table).DataTable({
-                data: data,
-                // Dom : '<"pull-left"f><t>',
-                aaSorting: [[2, 'desc']],
-                oLanguage: {
-                    sEmptyTable: "No inactive users are available.",
-                    sSearchPlaceholder: "Search Users"
-                },
-                columnDefs: [
-                    {
-                        "targets": 2,
-                        "className": "text-center"
+                    url: cfg.requestUrl,
+                    type: cfg.requestType,
+                    dataType: cfg.requestDataType,
+                    data: {
+                        action: 'get_inactiveusers_data_ajax',
+                        secret: M.local_edwiserreports.secret,
+                        data: JSON.stringify({
+                            filter: filter
+                        })
+                    },
+                })
+                .done(function(response) {
+                    if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                        invalidUser('inactiveusersblock', response);
+                        return;
                     }
-                ],
-                drawCallback: function() {
-                    $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                    $('.dataTables_filter').addClass('pagination-sm pull-right');
-                },
-                responsive: true,
-                lengthChange: false,
-                bInfo: false
-            });
+                    inActiveUsersTable.clear();
+                    inActiveUsersTable.rows.add(response.data);
+                    inActiveUsersTable.draw();
+                })
+                .fail(function(error) {
+                    // console.log(error);
+                }).always(function() {
+                    // Hide loader.
+                    common.loader.hide('#inactiveusersblock');
+                });
         }
     }
 

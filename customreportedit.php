@@ -37,7 +37,6 @@ if (!has_capability('report/local_edwiserreports:view', $context)) {
     throw new moodle_exception(get_string('noaccess', 'local_edwiserreports'));
 }
 
-
 $reportsid = optional_param('id', 0, PARAM_INT);
 if ($reportsid) {
     if (!$DB->record_exists('edwreports_custom_reports', array('id' => $reportsid))) {
@@ -50,6 +49,9 @@ if (!has_capability('report/edwiserreports_customreports:manage', $context)) {
 }
 
 local_edwiserreports_get_required_strings_for_js();
+
+// Load color themes from constants.
+local_edwiserreports\utility::load_color_pallets();
 
 // Page URL.
 $pageurl = new moodle_url($CFG->wwwroot."/local/edwiserreports/customreportedit.php");

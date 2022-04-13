@@ -27,8 +27,10 @@ define([
     'core/templates',
     'core/notification',
     'core/str',
-    'local_edwiserreports/jquery.dataTables',
-    'local_edwiserreports/dataTables.bootstrap4'
+    './variables',
+    './common',
+    './jquery.dataTables',
+    './dataTables.bootstrap4'
 ], function(
     $,
     ajax,
@@ -36,7 +38,9 @@ define([
     modalEvents,
     templates,
     notif,
-    str
+    str,
+    V,
+    common
 ) {
     'use strict';
 
@@ -150,23 +154,21 @@ define([
                 selectedFields.push($(this).val());
             });
 
-            var getCustomReportsDataAjax = ajax.call([{
-                methodname: 'local_edwiserreports_get_customreports_data',
-                args: {
-                    params: JSON.stringify({
-                        fields: selectedFields,
-                        cohorts: cohorts,
-                        courses: courses
-                    })
-                }
-            }]);
-
             if (selectedFields.length == 0) {
-                cfPreview.empty();
                 $(cfSave).prop('disabled', true);
                 reportsDataLoaded = true;
             } else {
-                cfPreview.hide();
+                common.loader.show('#wdm-customreports-edit');
+                var getCustomReportsDataAjax = ajax.call([{
+                    methodname: 'local_edwiserreports_get_customreports_data',
+                    args: {
+                        params: JSON.stringify({
+                            fields: selectedFields,
+                            cohorts: cohorts,
+                            courses: courses
+                        })
+                    }
+                }]);
                 getCustomReportsDataAjax[0].done(function(response) {
                     if (response.success) {
                         var data = JSON.parse(response.data);
@@ -181,14 +183,15 @@ define([
                             cfPreview.show();
                             cfPreviewTable = $('#cr-preview-table').DataTable({
                                 columns: data.columns,
+                                dom: '<"edwiserreports-table"<"table-filter d-flex"f><t><"table-pagination"p>>',
                                 data: data.reportsdata,
                                 bInfo: false,
                                 bFilter: false,
                                 searching: false,
                                 lengthChange: false,
                                 drawCallback: function() {
-                                    $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                                    $('.dataTables_filter').addClass('pagination-sm pull-right');
+                                    $('#cr-preview-table').find('th').addClass('theme-3-bg text-white');
+                                    common.stylePaginationButton(this);
                                 }
                             });
                             $(cfSave).prop('disabled', false);
@@ -196,6 +199,7 @@ define([
                     }
                 }).always(function() {
                     reportsDataLoaded = true;
+                    common.loader.hide('#wdm-customreports-edit');
                 });
             }
         }
@@ -244,7 +248,15 @@ define([
         }).done(function(modal) {
             var root = modal.getRoot();
             root.find('.modal-dialog').addClass('modal-lg');
+            modal.getFooter().find('[data-action="save"]').removeClass('btn-primary').addClass('theme-primary-bg text-white');
             modal.show();
+
+            // Destroying modal on hide event.
+            root.on(modalEvents.hidden, function() {
+                modal.destroy();
+            });
+
+            // Saving modal data.
             root.on(modalEvents.save, function(e) {
                 // Stop the default save button behaviour which is to close the modal.
                 e.preventDefault();
@@ -306,10 +318,9 @@ define([
                 });
             }
             if (modal) {
-                $("html, body").animate({scrollTop: 0}, "slow");
+                $("html, body").animate({ scrollTop: 0 }, "slow");
                 getCustomReportsList();
                 modal.hide();
-                modal.destroy();
             }
         });
     }
@@ -332,12 +343,10 @@ define([
                 } else {
                     if (crListTable) {
                         crListTable.clear().destroy();
-                        $('#cr-list-table').html('');
                     }
 
                     crListTable = $('#cr-list-table').DataTable({
-                        columns: [
-                            {
+                        columns: [{
                                 data: 'fullname',
                                 title: M.util.get_string('title', 'local_edwiserreports')
                             },
@@ -355,20 +364,24 @@ define([
                             },
                             {
                                 data: 'managehtml',
-                                title: M.util.get_string('manage', 'local_edwiserreports')
+                                title: M.util.get_string('manage', 'local_edwiserreports'),
+                                orderable: false
                             }
                         ],
+                        dom: '<"edwiserreports-table"<t><"table-pagination"p>>',
                         language: {
                             searchPlaceholder: M.util.get_string('searchreports', 'local_edwiserreports'),
                             emptyTable: M.util.get_string('noresult', 'local_edwiserreports')
                         },
-                        order: [[0, 'asc']],
+                        order: [
+                            [0, 'asc']
+                        ],
                         data: data,
                         bInfo: false,
                         lengthChange: false,
                         drawCallback: function() {
-                            $('.dataTables_paginate > .pagination').addClass('pagination-sm pull-right');
-                            $('.dataTables_filter').addClass('pagination-sm pull-right');
+                            $('#cr-list-table').find('th').addClass('theme-3-bg text-white');
+                            common.stylePaginationButton(this);
                         }
                     });
                     crList.show();
@@ -385,7 +398,7 @@ define([
         var deleteCustomReport = ajax.call([{
             methodname: 'local_edwiserreports_delete_custom_report',
             args: {
-                params: JSON.stringify({reportsid: reportsId})
+                params: JSON.stringify({ reportsid: reportsId })
             }
         }]);
         deleteCustomReport[0].done(function(response) {
@@ -401,7 +414,7 @@ define([
                 });
             }
         }).always(function() {
-            $("html, body").animate({scrollTop: 0}, "slow");
+            $("html, body").animate({ scrollTop: 0 }, "slow");
             getCustomReportsList();
         });
     }
@@ -437,8 +450,7 @@ define([
             e.preventDefault();
 
             var reportId = $(this).data('reportsid');
-            str.get_strings([
-                {
+            str.get_strings([{
                     key: 'deletecustomreportstitle',
                     component: 'local_edwiserreports'
                 },
@@ -468,20 +480,49 @@ define([
                 $(this).attr('title', $(this).data('titlehide'));
                 $(this).attr('data-original-title', $(this).data('titlehide'));
                 $(this).data('value', 0);
+                $(this).attr('data-value', 0);
             } else {
                 $(this).attr('title', $(this).data('titleshow'));
                 $(this).attr('data-original-title', $(this).data('titleshow'));
                 $(this).data('value', 1);
+                $(this).attr('data-value', 1);
             }
             $(this).find('.icon').toggleClass('fa-eye');
             $(this).find('.icon').toggleClass('fa-eye-slash');
             $(checkboxId).trigger('click');
         });
+
+
+        // Search in table.
+        $('body').on('input', '.customreports-block-section .table-search-input input', function() {
+            crListTable.column(0).search(this.value).draw();
+        });
+
+        common.handleSearchInput();
     }
 
     return {
         init: function() {
             $(document).ready(function() {
+
+                $(document).on('click', '.field-group', function() {
+                    var id = this.id;
+                    $(this).toggleClass('open');
+                    $("[aria-control='" + id + "']").toggleClass('show');
+                });
+
+                $(document).on('click', function(e) {
+                    let wrap = $(e.target).closest(".field-group-wrap");
+                    if (wrap.length === 0) {
+                        $('.field-group-wrap .field-group').removeClass('open');
+                        $('.field-group-wrap .field').removeClass('show');
+                        return;
+                    }
+                    let current = wrap.data('key') === 'user' ? 'course' : 'user';
+                    $(`.field-group-wrap[data-key='${current}'] .field-group`).removeClass('open');
+                    $(`.field-group-wrap[data-key='${current}'] .field`).removeClass('show');
+                });
+
                 customReportServiceInit();
                 reportsId = $(crPageId).val();
                 if (reportsId !== 0) {

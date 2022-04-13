@@ -247,7 +247,7 @@ function local_edwiserreports_output_fragment_get_blocksetting_form($params) {
     $output .= html_writer::tag(
         'button',
         'Save',
-        array('type' => 'submit', 'class' => 'btn btn-primary pull-right save-block-settings')
+        array('type' => 'submit', 'class' => 'btn theme-primary-bg text-white pull-right save-block-settings')
     );
 
     $output .= html_writer::end_tag('form');
@@ -287,13 +287,13 @@ function local_edwiserreports_output_fragment_get_blockscap_form($block) {
     $output .= html_writer::start_tag('div', array('class' => 'col-md-3'));
     $output .= html_writer::tag('label',
         get_string('capabilties', $component),
-        array('class' => 'col-form-label d-inline', 'for' => 'id_capabilities')
+        array('class' => 'col-form-label d-inline h4', 'for' => 'id_capabilities')
     );
     $output .= html_writer::end_tag('label');
     $output .= html_writer::end_tag('div');
     $output .= html_writer::start_tag('div', array('class' => 'col-md-9'));
-    $output .= $capabilities[$capvalue];
-    $output .= html_writer::select($capabilities, 'capabilities', $capvalue, null, array('class' => 'hidden'));
+    $output .= html_writer::tag('label', $capabilities[$capvalue], array('class' => 'col-form-label d-inline h4'));
+    $output .= html_writer::select($capabilities, 'capabilities', $capvalue, null, array('class' => 'hidden h4'));
     $output .= html_writer::end_tag('label');
     $output .= html_writer::end_tag('div');
     $output .= html_writer::end_tag('div');
@@ -302,7 +302,7 @@ function local_edwiserreports_output_fragment_get_blockscap_form($block) {
     $blockname = $block->classname . '-' . $block->id;
     $output .= local_edwiserreports_output_fragment_block_overview_display($capvalue, $blockname);
     $output .= html_writer::end_div();
-    $btnparams = array('type' => 'submit', 'class' => 'btn btn-primary pull-right save-block-caps');
+    $btnparams = array('type' => 'submit', 'class' => 'btn theme-primary-bg text-white pull-right save-block-caps');
     $output .= html_writer::tag('button', 'Save', $btnparams);
 
     $output .= html_writer::end_tag('form');
@@ -310,6 +310,37 @@ function local_edwiserreports_output_fragment_get_blockscap_form($block) {
     return $output;
 }
 
+/**
+ * Fragment to generate email tabs
+ * @param array $block Fragment parameter data object
+ * @return string
+ */
+function local_edwiserreports_output_fragment_export_data_warning($args) {
+    global $OUTPUT;
+    $warning = clean_param($args["warning"], PARAM_RAW);
+    $data = [
+        'warningicon' => \local_edwiserreports\utility::image_icon('warning'),
+        'warning' => get_string($warning, 'local_edwiserreports')
+    ];
+    return $OUTPUT->render_from_template('local_edwiserreports/exportwarning', $data);
+}
+
+/**
+ * Fragment to generate email tabs
+ * @param array $block Fragment parameter data object
+ * @return string
+ */
+function local_edwiserreports_output_fragment_email_schedule_tabs($args) {
+    global $OUTPUT;
+    $response = null;
+    $data = clean_param($args["data"], PARAM_RAW);
+    $data = json_decode($data, true);
+    $data['searchicon'] = \local_edwiserreports\utility::image_icon('actions/search');
+    $data['warningicon'] = \local_edwiserreports\utility::image_icon('warning');
+    $data['placeholder'] = get_string('search');
+    $data['length'] = [10, 25, 50, 100];
+    return $OUTPUT->render_from_template('local_edwiserreports/email_schedule_tabs', $data);
+}
 /**
  * Render blocks capability view
  * @param Array $capvalue  Fragment parameter array
@@ -322,16 +353,12 @@ function local_edwiserreports_output_fragment_block_overview_display($capvalue, 
 
     $context = context_system::instance();
     $strpermissions = array(
-        CAP_INHERIT => new lang_string('inherit', 'role'),
-        CAP_ALLOW => new lang_string('allow', 'role'),
-        CAP_PREVENT => new lang_string('prevent', 'role'),
-        CAP_PROHIBIT => new lang_string('prohibit', 'role')
+        CAP_ALLOW => new lang_string('show'),
+        CAP_PREVENT => new lang_string('hide')
     );
     $permissionclasses = array(
-        CAP_INHERIT => 'inherit',
         CAP_ALLOW => 'allow',
-        CAP_PREVENT => 'prevent',
-        CAP_PROHIBIT => 'prohibit',
+        CAP_PREVENT => 'prevent'
     );
 
     $output = html_writer::start_tag('table', array('class' => 'comparisontable w-full'));
@@ -341,15 +368,33 @@ function local_edwiserreports_output_fragment_block_overview_display($capvalue, 
     // Prepare data in same loop.
     $data = html_writer::start_tag('tbody');
     $data .= html_writer::start_tag('tr');
+    if (stripos($blockname, 'customreportsblock') !== false) {
+        $defaultcaps = \local_edwiserreports\utility::get_default_capabilities()['report/edwiserreports_customreports:manage'];
+    } else {
+        // Default capability.
+        $defaultcaps = \local_edwiserreports\utility::get_default_capabilities()[$capvalue];
+    }
 
     // Get capability context.
     $roles = role_fix_names(get_all_roles($context));
     $capabilitycontext = tool_capability_calculate_role_data($capvalue, $roles);
-    foreach ($roles as $roleid => $role) {
+    $warnings = [];
+    foreach ($roles as $role) {
+        $rolecap = \local_edwiserreports\utility::get_rolecap_from_context($capabilitycontext[$context->id], $role, $blockname);
+
+        if ($rolecap == CAP_INHERIT && isset($defaultcaps[$role->archetype])) {
+            $rolecap = $defaultcaps[$role->archetype];
+        }
+        if (!isset($defaultcaps[$role->archetype])) {
+            if ($rolecap == CAP_ALLOW) {
+                $warnings[] = $role->localname;
+            } else {
+                continue;
+            }
+        }
         $output .= '<th><div><a href="javascript:void(0)">' . $role->localname . '</a></div></th>';
 
-        $rolecap = \local_edwiserreports\utility::get_rolecap_from_context($capabilitycontext[$context->id], $role, $blockname);
-        $permission = isset($rolecap) ? $rolecap : CAP_INHERIT;
+        $permission = $rolecap > 0 ? CAP_ALLOW : CAP_PREVENT;
         $data .= '<td class="switch-capability ' . $permissionclasses[$permission] . '" data-permission="' . $permission . '">';
         $data .= '<label>' . $strpermissions[$permission] . '</label>';
         foreach ($permissionclasses as $key => $class) {
@@ -373,7 +418,22 @@ function local_edwiserreports_output_fragment_block_overview_display($capvalue, 
     $output .= $data;
     $output .= html_writer::end_tag('table');
 
-    return $output;
+    $warning = '';
+    if (!empty($warnings)) {
+        $warning = html_writer::start_tag('div');
+        $warning .= html_writer::tag('div', get_string('warning'), array('class' => 'text-warning h3'));
+        $warning .= html_writer::tag(
+            'label',
+            get_string('permissionwarning', 'local_edwiserreports')
+        );
+        $warning .= html_writer::start_tag('ul');
+        foreach ($warnings as $role) {
+            $warning .= html_writer::tag('li', $role);
+        }
+        $warning .= html_writer::end_tag('ul');
+        $warning .= html_writer::end_tag('div');
+    }
+    return $warning . $output;
 }
 
 /**
@@ -435,66 +495,163 @@ function local_edwiserreports_extend_navigation(navigation_node $nav) {
 }
 
 /**
+ * Delete orphan block records from db which is removed from default block list.
+ *
+ * @return void
+ */
+function local_edwiserreports_process_orphan_blocks() {
+    global $DB;
+    $defaultblocks = local_edwiserreports_get_default_block_settings();
+    $installedblocks = $DB->get_records('edwreports_blocks');
+    foreach ($installedblocks as $block) {
+        if (!array_key_exists($block->blockname, $defaultblocks)) {
+            $DB->delete_records('edwreports_blocks', array('id' => $block->id));
+        }
+    }
+}
+
+/**
+ * Adding new/missing block records in edwreports_blocks table.
+ *
+ * @return bool
+ */
+function local_edwiserreports_process_block_creation() {
+    global $DB;
+
+    // All Default blocks.
+    $defaultblocks = local_edwiserreports_get_default_block_settings();
+
+    // Create each block.
+    $blocks = array();
+    $index = -1;
+    foreach ($defaultblocks as $key => $block) {
+        $index++;
+        if ($DB->record_exists('edwreports_blocks', array('blockname' => $key))) {
+            unset($defaultblocks[$key]);
+            continue;
+        }
+    }
+
+    foreach ($defaultblocks as $key => $block) {
+        $blockdata = new stdClass();
+        $blockdata->blockname = $key;
+        $blockdata->classname = $block['classname'];
+        $blockdata->blocktype = LOCAL_SITEREPORT_BLOCK_TYPE_DEFAULT;
+        $blockdata->blockdata = json_encode((object) array(
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => $block[LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW],
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => $block[LOCAL_SITEREPORT_BLOCK_TABLET_VIEW],
+            'position' => $index++
+        ));
+        $blockdata->timecreated = time();
+        $blocks[] = $blockdata;
+    }
+
+    $status = $DB->insert_records('edwreports_blocks', $blocks);
+
+    local_edwiserreports_process_orphan_blocks();
+    return $status;
+}
+
+/**
  * Get default block settings
+ *
+ * @return Array
  */
 function local_edwiserreports_get_default_block_settings() {
     // Return default block settings.
-    return array(
+    $index = 0;
+    $blocks = array(
         'activeusers' => array(
             'classname' => 'activeusersblock',
-            'position' => 0,
-            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+            'position' => $index++,
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+        ),
+        'visitsonsite' => array(
+            'classname' => 'visitsonsiteblock',
+            'position' => $index++,
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+        ),
+        'timespentonsite' => array(
+            'classname' => 'timespentonsiteblock',
+            'position' => $index++,
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+        ),
+        'timespentoncourse' => array(
+            'classname' => 'timespentoncourseblock',
+            'position' => $index++,
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+        ),
+        'courseactivitystatus' => array(
+            'classname' => 'courseactivitystatusblock',
+            'position' => $index++,
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+        ),
+        'learnertimespentonsite' => array(
+            'classname' => 'learnertimespentonsiteblock',
+            'position' => $index++,
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
         ),
         'courseprogress' => array(
             'classname' => 'courseprogressblock',
-            'position' => 1,
+            'position' => $index++,
             LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
-            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
         ),
         'activecourses' => array(
             'classname' => 'activecoursesblock',
-            'position' => 2,
+            'position' => $index++,
             LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
-            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
         ),
         'certificates' => array(
             'classname' => 'certificatesblock',
-            'position' => 3,
+            'position' => $index++,
             LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
-            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
         ),
         'liveusers' => array(
             'classname' => 'liveusersblock',
-            'position' => 4,
+            'position' => $index++,
             LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
-            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
         ),
         'siteaccess' => array(
             'classname' => 'siteaccessblock',
-            'position' => 5,
+            'position' => $index++,
             LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
-            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
         ),
         'todaysactivity' => array(
             'classname' => 'todaysactivityblock',
-            'position' => 6,
+            'position' => $index++,
             LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
-            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
         ),
         'inactiveusers' => array(
             'classname' => 'inactiveusersblock',
-            'position' => 7,
+            'position' => $index++,
             LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
-            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE,
-            LOCAL_SITEREPORT_BLOCK_MOBILE_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+        ),
+        'grade' => array(
+            'classname' => 'gradeblock',
+            'position' => $index++,
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
+        ),
+        'learnercourseprogress' => array(
+            'classname' => 'learnercourseprogressblock',
+            'position' => $index++,
+            LOCAL_SITEREPORT_BLOCK_DESKTOP_VIEW => LOCAL_SITEREPORT_BLOCK_MEDIUM,
+            LOCAL_SITEREPORT_BLOCK_TABLET_VIEW => LOCAL_SITEREPORT_BLOCK_LARGE
         )
     );
+
+    return $blocks;
 }

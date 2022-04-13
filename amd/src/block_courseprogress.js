@@ -22,12 +22,12 @@
 /* eslint-disable no-console */
 define([
     'jquery',
-    'core/chartjs',
+    'local_edwiserreports/chart/apexcharts',
     'local_edwiserreports/defaultconfig',
     'local_edwiserreports/variables',
     './common',
     'local_edwiserreports/select2'
-], function($, Chart, cfg, V, common) {
+], function($, ApexCharts, CFG, v, common) {
 
     /**
      * Initialize
@@ -35,31 +35,55 @@ define([
      */
     function init(invalidUser) {
         var cpGraph = null;
-        var panel = cfg.getPanel("#courseprogressblock");
-        var panelBody = cfg.getPanel("#courseprogressblock", "body");
+        var panel = CFG.getPanel("#courseprogressblock");
+        var panelBody = CFG.getPanel("#courseprogressblock", "body");
         var selectedCourse = panelBody + " #wdm-courseprogress-select";
         var chart = panelBody + " .ct-chart";
         var loader = panelBody + " .loader";
-        var cpBlockData = false;
+        var position = 'right';
+        var donutChart = {
+            data: [0, 0, 0, 0, 0, 0],
+            labels: [
+                '81% - 100%',
+                '61% - 80%',
+                '41% - 60%',
+                '21% - 40%',
+                '0% - 20%'
+            ]
+        };
+
         var form = $(panel + ' form.download-links');
 
-        /**
-         * Generate course progress block
-         */
-        cpBlockData = cfg.getCourseProgressBlock();
-
-        // If course progress block is there
-        if (cpBlockData) {
-            getCourseProgressData();
-            $(panelBody + ' .singleselect').select2();
-
-            $(selectedCourse).on("change", function() {
-                $(chart).hide();
-                $(loader).show();
-
-                getCourseProgressData();
-            });
+        if ($(selectedCourse).length == 0) {
+            return;
         }
+
+        getCourseProgressData();
+        $(panelBody + ' .singleselect').select2();
+
+        $(selectedCourse).on("change", function() {
+            $(loader).show();
+
+            getCourseProgressData();
+        });
+
+        // Handling legend position based on width.
+        setInterval(function() {
+            if (cpGraph === null) {
+                return;
+            }
+            let width = $(panel).find('.apexcharts-canvas').width();
+            let newPosition = width >= 400 ? 'right' : 'bottom';
+            if (newPosition == position) {
+                return;
+            }
+            position = newPosition;
+            cpGraph.updateOptions({
+                legend: {
+                    position: position
+                }
+            })
+        }, 1000);
 
         /**
          * Get progress data through ajax
@@ -77,35 +101,38 @@ define([
             common.loader.show('#courseprogressblock');
 
             $.ajax({
-                url: cfg.requestUrl,
-                type: cfg.requestType,
-                dataType: cfg.requestDataType,
-                data: {
-                    action: 'get_courseprogress_graph_data_ajax',
-                    secret: M.local_edwiserreports.secret,
-                    data: JSON.stringify({
-                        courseid: courseId
-                    })
-                },
-            })
-            .done(function(response) {
-                if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
-                    invalidUser('courseprogressblock', response);
-                    return;
-                }
-                cpBlockData.graph.data = response.data;
-            })
-            .fail(function(error) {
-                // console.log(error);
-            })
-            .always(function() {
-                cpGraph = generateCourseProgressGraph();
-                $(loader).hide();
-                $(chart).fadeIn("slow");
+                    url: CFG.requestUrl,
+                    type: CFG.requestType,
+                    dataType: CFG.requestDataType,
+                    data: {
+                        action: 'get_courseprogress_graph_data_ajax',
+                        secret: M.local_edwiserreports.secret,
+                        data: JSON.stringify({
+                            courseid: courseId
+                        })
+                    },
+                })
+                .done(function(response) {
+                    if (response.error === true && response.exception.errorcode === 'invalidsecretkey') {
+                        invalidUser('courseprogressblock', response);
+                        return;
+                    }
+                    donutChart.data = response.data;
+                    donutChart.average = response.average == 0 ? 0 : response.average.toPrecision(2);
+                    donutChart.tooltipStrings = response.tooltip;
+                    common.insight('#courseprogressblock .insight', response.insight);
+                })
+                .fail(function(error) {
+                    // console.log(error);
+                    donutChart.average = '0';
+                })
+                .always(function() {
+                    cpGraph = generateCourseProgressGraph();
+                    $(loader).hide();
 
-                // Hide loader.
-                common.loader.hide('#courseprogressblock');
-            });
+                    // Hide loader.
+                    common.loader.hide('#courseprogressblock');
+                });
         }
 
         /**
@@ -113,22 +140,46 @@ define([
          * @returns {Object} chart object
          */
         function generateCourseProgressGraph() {
-            // Create configuration data for course progress block
-            var data = {
-                labels: cpBlockData.graph.labels,
-                datasets: [{
-                    label: cpBlockData.graph.label,
-                    data: cpBlockData.graph.data,
-                    backgroundColor: cpBlockData.graph.backgroundColor
-                }]
+
+            var options = {
+                series: donutChart.data.reverse(),
+                chart: {
+                    type: 'donut',
+                    height: 350
+                },
+                colors: CFG.getColorTheme(),
+                fill: {
+                    type: 'solid',
+                },
+                labels: donutChart.labels,
+                dataLabels: {
+                    enabled: false
+                },
+                tooltip: {
+                    custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                        let value = series[seriesIndex];
+                        let tooltip = value < 2 ? donutChart.tooltipStrings.single : donutChart.tooltipStrings.plural;
+                        let label = w.config.labels[seriesIndex];
+                        let color = w.config.colors[seriesIndex];
+                        return `<div class="custom-donut-tooltip" style="color: ${color};">
+                                <span style="font-weight: 500;"> ${label}:</span>
+                                <span style="font-weight: 700;"> ${value} ${tooltip}</span>
+                            </div>`;
+                    }
+                },
+                legend: {
+                    position: position,
+                    formatter: function(seriesName, opts) {
+                        return [seriesName + ": " + opts.w.globals.series[opts.seriesIndex]]
+                    }
+                }
             };
 
+            var chart = new ApexCharts($('#apex-chart-course-progress').get(0), options);
+            chart.render();
+
             // Return chart object
-            return new Chart(cpBlockData.ctx, {
-                data: data,
-                type: cpBlockData.graph.type,
-                options: cpBlockData.graph.options
-            });
+            return chart;
         }
     }
 
