@@ -1,38 +1,39 @@
-V 1.1.1
+v 1.2.0
 ====================================================
-Fixed moodle standard and listing issues
+Tweak
+- Now Active Users block is Site Overview Status block
+- Warning on capability modal to show block for recommended users only.
+- Removed Block capabilities settings from Plugin settings page.
+
+Features
+- Dummy blocks to get overview of pro blocks
+- Completely redesigned UI.
+- Created common date selector for following block
+    - Site Overview Status
+- Added color themes for Dashboard and more details page
+
+Fix
+- Fixed Site Overview Status block's data calculation
+
 
 v 1.1.0
 ====================================================
 Features
-- Added custom reports editing page.
-- Preview custom query reports
+- New graph: Course activity status block which shows daily Assignment submission and activities completion.
+- New block: Grade block shows Student, Course, and Activity grade categories.
 
-Tweak
-- Improved Active Users graph and table data calculation
-- Improved security of data export and more details page.
-- Improved cappability and security system.
+Tweaks
+- Improved time logging. Now will be logged when the user leaves the page within Time-Frequency.
+- Improved date labeling of the x-axis for Active users, Student Engagement, and Learner block.
+- Improved UI of all blocks.
+- Improved data calculation based on date selection.
+- Changed line chart to Area chart.
 
 Fixes
-- Active users and Course Progress filter ui issue
-- Active users data export issue.
-- Custom report creation issue with Moodle 3.10
-- Cohort filter issue with custom report - It was showing only 20 cohorts
+- Fixed total activity count of custom reports.
+- Fixed course progress block partitioning issue.
 
-v 1.0.1
-====================================================
-
-Feature - Added support for Oracle, MsSQL and PostgreSQL databases.
-Feature - Compatibility with Moodle 3.10+.
-Tweak - Code Optimization.
-Tweak - Converted CSS to SCSS.
-Tweak - Added function prefix in global context lib.php.
-Tweak - Removed unused functions from the converted.
-Tweak - Removed the edit advance select option in capability.
-Fix - Fixed the redirection issue for non logged in users at homepage.
-Fix - Fixed report blocks access permission related issues.
-
-v 1.0.0
+V 1.0.0
 ====================================================
 
 - Initial version
