@@ -27,4 +27,4 @@ $plugin->component = 'local_edwiserreports';
 $plugin->release   = '1.3.1';
 $plugin->version   = 2022043001;
 $plugin->requires  = 2018120300;
-$plugin->maturity  = MATURITY_STABLE;
+$plugin->maturity  = 'MATURITY_STABLE';
