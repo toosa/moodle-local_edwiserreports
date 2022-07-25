@@ -1,8 +1,8 @@
 # Digitos Edwiser Reports #
 
-[![N|Solid](https://edwiser.org/wp-content/uploads/2015/07/edwiser-logoalternate-100x46.png)](https://edwiser.org/)
+[![N|Solid](https://github.com/toosa/moodle-local_edwiserreports/blob/main/pix/Digitos125.png)](https://digitos.id/)
 
-This is the birth version of Edwiser Reports.
+This is the birth version of Digitos Edwiser Reports.
 
 # #Features
 =============
