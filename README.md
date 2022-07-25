@@ -1,4 +1,4 @@
-# Edwiser Reports #
+# Digitos Edwiser Reports #
 
 [![N|Solid](https://edwiser.org/wp-content/uploads/2015/07/edwiser-logoalternate-100x46.png)](https://edwiser.org/)
 
